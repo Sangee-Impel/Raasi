@@ -1,0 +1,202 @@
+// @import "./spark/spark";
+//@import "./../../vendor/laravel/spark-aurelius/resources/assets/sass/spark";
+@import "~vue-multiselect/dist/vue-multiselect.min.css";
+@import '~semantic-ui-css/semantic.min.css';
+//@import '~pretty-checkbox/src/pretty-checkbox.scss';
+@import "v-tooltip";
+.v-treeview > .v-treeview-node {
+  margin-left: 0
+}
+
+.v-treeview > .v-treeview-node--leaf {
+  margin-left: 24px
+}
+
+.v-treeview-node {
+  margin-left: 26px
+}
+
+.v-treeview-node--excluded {
+  display: none
+}
+
+.v-treeview-node--click > .v-treeview-node__root, .v-treeview-node--click > .v-treeview-node__root > .v-treeview-node__content > * {
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none
+}
+
+.v-treeview-node--leaf {
+  margin-left: 50px
+}
+
+.v-treeview-node__root {
+  display: flex;
+  align-items: center;
+  min-height: 34px
+}
+
+.v-treeview-node__content {
+  display: flex;
+  flex-grow: 1;
+  flex-shrink: 0;
+  align-items: center
+}
+
+.v-treeview-node__content .v-btn {
+  flex-grow: 0 !important;
+  flex-shrink: 1 !important
+}
+
+.v-treeview-node__label {
+  font-size: 1.2rem;
+  margin-left: 6px;
+  flex-grow: 1;
+  flex-shrink: 0
+}
+
+.v-treeview-node__label .v-icon {
+  padding-right: 8px
+}
+
+.v-treeview-node__checkbox, .v-treeview-node__toggle {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none
+}
+
+.v-treeview-node__toggle {
+  -webkit-transform: rotate(-90deg);
+  transform: rotate(-90deg)
+}
+
+.v-treeview-node__toggle--open {
+  -webkit-transform: none;
+  transform: none
+}
+
+.v-treeview-node__toggle--loading {
+  -webkit-animation: progress-circular-rotate 1s linear infinite;
+  animation: progress-circular-rotate 1s linear infinite
+}
+
+.v-treeview-node__children {
+  transition: all .2s cubic-bezier(0, 0, .2, 1)
+}
+
+/*
+.v-treeview-node__content{
+  display: inline-block !important;
+}
+
+.v-treeview-node--leaf{
+  margin-left: 50px !important;
+}
+.v-treeview-node__root{
+  display:flex !important;
+  align-items: center;
+  min-height: 34px !important;
+}
+.v-treeview-node__content{
+  display:flex;
+}*/
+.overlay{
+  position: absolute;
+  background-color: rgba(0,0,0,0.3);
+  z-index: 10000;
+  margin: auto;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+.loading {
+  position: absolute;
+  bottom: 0px;
+  /*top: 0px;
+  left: 0;
+  width: 100%;
+  height: auto;*/
+  font-size: 50px;
+  color: white;
+  top: 50%;
+  left: 50%;
+  margin-top: -25px;
+  margin-left: -50px;
+}
+.box-shadow-z0, .box-shadow-z0 .box, .box-shadow-z0 .box-color{
+  box-shadow:0 0px 1px rgba(12, 12, 12, 0.98)!important;
+}
+.hover-text-black:hover{
+  color: black!important;
+}
+.c-mt-1p5em{
+  margin-top: 1.5em!important;
+}
+.custom{
+  .ui.modal{
+    background: unset!important;
+  }
+}
+.ui.standard.modal{
+  height: auto !important;
+  position: initial;
+}
+.model-left-unset{
+  .dimmer{
+    .modal.transition{
+      left: unset!important;
+
+    }
+  }
+}
+.custom_popup .ui.standard.modal {
+  width: 300px;
+  overflow: visible !important;
+}
+
+.ui.dimmer{
+  z-index:1400!important;
+}
+.vue-js-switch{
+  .v-switch-label.v-right{
+    left : 40px!important;
+  }
+}
+.wrap-pre{
+  white-space: pre!important;
+}
+.wrap-normal{
+  white-space: normal!important;
+}
+.nav-icon{
+  margin-top:0.3em !important;
+}
+.split-list-scroll{
+  height: 20em !important;
+  overflow-y: scroll !important;
+
+}
+.split-list-scroll .active {
+  background: #e0e0e0!important;
+  color: rgba(0,0,0,.87)!important;
+}
+.split-list-scroll .split-sender:hover, .split-list-scroll .split-receiver:hover{
+  background-color: rgba(0, 0, 0, 0.065) !important;
+}
+.split-sender,.split-receiver{
+  color: black !important;
+}
+.word-break-all{
+  word-break: break-all !important;
+}
+.custom-hover-blue{
+    color: #014c8c;
+}
+.custom-hover-blue:focus, .custom-hover-blue:hover{
+    color: #014c8c;
+    text-decoration: underline;
+}
