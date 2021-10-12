@@ -399,7 +399,7 @@
                                                                     <div class="ui middle aligned divided list">
                                                                         <div class="ui medium header m-2" v-if="selected_bag != null">@{{selected_bag.bag_number}}</div>
                                                                         <div class="ui segment m-1 split-sender"  v-for="(split_item,split_item_index) in transaction_items" :class="[( viewedSplitIndex == split_item_index ?'active':''), (split_item.split.transfer.class)]" @click="splitItemSelected(split_item_index)" >
-                                                                            <div class="row">
+                                                                            <div class="row" v-if="split_item.split.transfer.quantity != 0">
                                                                                 <div class="col-lg-12">
                                                                                     <div class="row">
                                                                                         <div class="col-lg-8">
@@ -485,7 +485,7 @@
                                                                     <div class="ui middle aligned divided list">
                                                                         <div class="ui medium header m-2" v-if="selected_bag != null">@{{selected_bag.bag_number}}@{{types.split_string}}@{{selected_bag.iteration+1}}</div>
                                                                         <div class="ui segment m-1 split-receiver"  v-for="(split_item,split_item_index) in transaction_items"  :class="[( viewedSplitIndex == split_item_index ?'active':''), (split_item.split.receive.class)]"  @click="splitItemSelected(split_item_index)">
-                                                                            <div class="row">
+                                                                            <div class="row" v-if="split_item.split.transfer.quantity != 0">
                                                                                 <div class="col-lg-12">
                                                                                     <div class="row">
                                                                                         <div class="col-lg-8">

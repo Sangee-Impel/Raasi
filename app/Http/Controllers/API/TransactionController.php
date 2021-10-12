@@ -430,9 +430,9 @@ class TransactionController extends Controller
                         $status = XModel::getConfigType("in_progress","bag_status","value")['id'];
                         foreach ($transaction_item_loss_details as $transaction_item_loss_detail_key => $transaction_item_loss_detail_value ){
                             if( $transaction_item_loss_detail_value['weight'] > 0 ){
-                                //$transaction_item_loss_detail_value['transaction_item_id'] = $transaction_item['id'];
+                                $transaction_item_loss_detail_value['transaction_item_id'] = $transaction_item['id'];
                                 $transaction_item_loss_detail_value['transaction_id'] = $transaction['id'];
-                                //$transaction_item_loss_detail_value['bag_style_id'] = $transaction_item_value['bag_style_id'];
+                                $transaction_item_loss_detail_value['bag_style_id'] = $transaction_item_value['bag_style_id'];
                                 $transaction_item_loss_detail_value['date'] = $transaction['transaction_date'];
                                 $transaction_item_loss_detail_value['user_id'] = $bagEmployee['user_id'];
                                 $transaction_item_loss_detail_value['admin_approval_loss_weight'] = $admin_approval_loss_weight;
