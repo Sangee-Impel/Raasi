@@ -822,7 +822,8 @@
                                                 <div class="col-lg-12">
                                                     <div class="row">
                                                         <div class="col-lg-12">
-                                                            Max allowed Loss/Scrap Weight - @{{form.max_loss_weight}}
+                                                            @{{checkTotalScrapLossWeight}}
+                                                            Max allowed Loss/Scrap Weight - @{{selectedTransferItem.remaining_loss}}
                                                         </div>
                                                         <!--<div class="col-lg-6">
                                                             <button class="ui inverted primary button pull-right" type="button" @click="addTransferItemLossAndScrapItem()">Add Loss/Scrap</button>
@@ -888,7 +889,7 @@
                                                             </tr>
                                                             <tr v-else>
                                                                 <td >Total Scrap And Loss Weight</td>
-                                                                @{{checkTotalScrapLossWeight}}
+
                                                                 <td>@{{selectedTransferItem.user_loss_scrap_weight}}</td>
                                                             </tr>
                                                             </tbody>

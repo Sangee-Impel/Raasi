@@ -97,7 +97,7 @@ Vue.component('transaction', {
             if( transaction_items.length > 0 ){
                 isValid = true;
                 for( var index in transaction_items ){
-                    if( (transaction_items[index].quantity <= 1 && parseInt(transaction_items[index].uom_id) === 1) || this.form.transaction_item_loss_detail_status )
+                    if( (transaction_items[index].quantity <= 1 && transaction_items[index].other_accessories.id === undefined ) || this.form.transaction_item_loss_detail_status )
                         isValid = false;
                 }
             }
@@ -140,7 +140,7 @@ Vue.component('transaction', {
             if( transaction_items.length > 0 ){
                 for( var index= 0; index <= transaction_items.length;index++ ){
                     if( transaction_items[index] != undefined ){
-                        let weight          = parseFloat(transaction_items[index].weight);
+                        let weight          = parseFloat(transaction_items[index].weight).toFixed(2);
                         let quantity        = parseInt(transaction_items[index].quantity);
                         transaction_items[index].receive_weight     = weight;
                         if( !isNaN(weight) ) {
@@ -156,14 +156,12 @@ Vue.component('transaction', {
 
             // totalReceiveWeight  = CommonMethods.precisionRound( this.form.total_receive_weight - pre_loss_weight );
             totalReceiveWeight  = ( this.form.total_transfer_weight != totalWeight )? totalWeight : totalReceiveWeight;
-            console.log( "totalWeight: "  + totalWeight );
-            console.log( "totalReceiveWeight: "  + totalReceiveWeight );
-            if( parseFloat( totalWeight ) < parseFloat( totalReceiveWeight ) ){
+            if( totalWeight < totalReceiveWeight ){
                 totalReceiveWeight = totalWeight;
             }
-            this.form.total_transfer_weight     = ( totalWeight );
-            this.form.total_transfer_quantity   = ( totalQuantity );
-            this.form.total_receive_weight      = ( totalReceiveWeight );
+            this.form.total_transfer_weight     = totalWeight;
+            this.form.total_transfer_quantity   = parseInt( totalQuantity );
+            this.form.total_receive_weight      = totalReceiveWeight;
             this.form.total_loss_weight         = CommonMethods.precisionRound( totalWeight - totalReceiveWeight );
             this.form.max_loss_weight           = CommonMethods.precisionRound( totalWeight - totalReceiveWeight );
             // this.last_transaction_items.total_loss_weight   = CommonMethods.precisionRound( pre_loss_weight - this.form.total_loss_weight );
@@ -238,6 +236,7 @@ Vue.component('transaction', {
                 this.selectedTransferItem.user_scrap_weight         = CommonMethods.precisionRound(user_scrap_weight);
                 this.selectedTransferItem.user_loss_weight          = CommonMethods.precisionRound(user_loss_weight);
                 this.selectedTransferItem.user_channam_weight       = CommonMethods.precisionRound(user_channam_weight);
+                this.selectedTransferItem.remaining_loss            = CommonMethods.precisionRound(this.form.max_loss_weight - totalScrapLossQuantityForSelectedItem);
 
                 var pre_loss_weight = 0;
                 if( this.selected_bag != null ){
@@ -416,8 +415,8 @@ Vue.component('transaction', {
                                 transaction_item_loss_detail.type = type_drop_down.id;
                                 if( type_drop_down.id == this.types.findTransactionType('loss','value','transaction_item_loss_type')['id']){
                                     if(CommonMethods.CheckDifference(transaction_item.user_loss_weight,transaction_item_loss_detail.admin_approval_loss_weight) > 0 ){
-                                        transaction_item.status = this.types.findTransactionType('admin_loss_approval','value','transaction_item_status')['id']
-                                        this.form.status = this.types.findTransactionType('admin_loss_approval','value','transaction_status')['id']
+                                        // transaction_item.status = this.types.findTransactionType('admin_loss_approval','value','transaction_item_status')['id']
+                                        // this.form.status = this.types.findTransactionType('admin_loss_approval','value','transaction_status')['id']
                                     }
                                 }
                             }
@@ -740,7 +739,7 @@ Vue.component('transaction', {
                     }else{
                         uom = selectedBagStyle.style.uom;
                     }
-                    let weight = CommonMethods.precisionRound(parseFloat(selectedBagStyle.weight));
+                    let weight = CommonMethods.precisionRound(parseFloat(selectedBagStyle.weight).toFixed(3));
                     this.transaction_items.push({
                         id                  :   0,
                         status              :   this.types.findTransactionType("completed",'value','transaction_item_status')['id'],
@@ -1079,34 +1078,34 @@ Vue.component('transaction', {
                         this.form.transaction_mode = this.types.findTransactionType("split_mode","value","transaction_mode")['id'];
                         let transaction_items = this.transaction_items;
                         if( transaction_items.length > 0 ){
-                            var transfer_quantity   = parseFloat(0);
+                            var transfer_quantity   = 0;
                             var transfer_weight     = parseFloat(0);
                             for( var index in transaction_items){
                                 let transfer_transaction_item = Object.assign({}, transaction_items[index]);
-                                if( parseInt( transfer_transaction_item["uom_id"] ) === 1 ){
-                                    transfer_quantity   = parseFloat( transfer_transaction_item["quantity"] );
+                                if(  transfer_transaction_item["other_accessories_id"] == null ){
+                                    transfer_quantity   += transfer_transaction_item["quantity"];
                                 }
                                 transfer_weight     += parseFloat( transfer_transaction_item["receive_weight"] );
                             }
-                            transfer_weight = parseFloat( transfer_weight ) - parseFloat( this.last_transaction_items.total_loss_weight );
+                            transfer_weight = CommonMethods.precisionRound( transfer_weight ) - CommonMethods.precisionRound( this.last_transaction_items.total_loss_weight );
                             for( var index in transaction_items){
-                                let transfer_transaction_item = Object.assign({}, transaction_items[index]);
-                                if( parseInt( transfer_transaction_item["uom_id"] ) === 1 ){ // uom_id == 1 => piece
+                                if(  transaction_items[index].other_accessories.id === undefined ){
                                     transaction_items[index].split.transfer = {
-                                        weight   : CommonMethods.precisionRound(transfer_weight),
+                                        weight   : parseFloat(transfer_weight).toFixed(3),
                                         quantity : transfer_quantity,
                                         transfer_quantity : 0,
                                         transfer_weight : 0,
                                         class : ""
                                     };
                                     transaction_items[index].split.receive = {
-                                        weight   : CommonMethods.precisionRound(0),
+                                        weight   : parseFloat(0).toFixed(3),
                                         quantity : 0,
                                         transfer_quantity : 0,
                                         transfer_weight : 0,
                                         class : ""
                                     };
                                 }
+
                             }
                         }
                     }
@@ -1283,8 +1282,6 @@ Vue.component('transaction', {
                         type = "transfer";
                     }
                     let transaction_items = this.transaction_items;
-                    console.log( "SANGEETHA" );
-                    console.log( this.transaction_items );
                     if( transaction_items.length > 0 ){
                         //#check error...!
                         for( var index in transaction_items ){

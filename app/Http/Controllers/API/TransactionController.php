@@ -424,9 +424,15 @@ class TransactionController extends Controller
 
                         }
                     }
+
                     if( count( $transaction_item_loss_details ) > 0 ){
+
                         $admin_loss                 = StyleDepartmentLossApproval::where('department_id', $bag->department_id)->get();
-                        $admin_approval_loss_weight = $admin_loss[0]->percentage;
+                        $admin_approval_loss_weight = 0;
+                        if( count( $admin_loss ) > 0 ){
+                            $admin_approval_loss_weight = $admin_loss[0]->percentage;
+                        }
+
                         $status = XModel::getConfigType("in_progress","bag_status","value")['id'];
                         foreach ($transaction_item_loss_details as $transaction_item_loss_detail_key => $transaction_item_loss_detail_value ){
                             if( $transaction_item_loss_detail_value['weight'] > 0 ){
@@ -438,7 +444,7 @@ class TransactionController extends Controller
                                 $transaction_item_loss_detail_value['admin_approval_loss_weight'] = $admin_approval_loss_weight;
                                 $transaction_item_loss_detail_value['status'] = XModel::getConfigType("approved","transaction_item_loss_status","value")['id'];
                                 if( $transaction_item_loss_detail_value['type'] == XModel::getConfigType("loss","transaction_item_loss_type","value")['id'] ){
-                                    if( $admin_approval_loss_weight < $transaction_item_loss_detail_value['weight'] ){
+                                   if( ( $admin_approval_loss_weight != 0 ) && ( $admin_approval_loss_weight < $transaction_item_loss_detail_value['weight'] ) ){
                                         $transaction_item_loss_detail_value['status'] = XModel::getConfigType("waiting_admin_approval","transaction_item_loss_status","value")['id'];
                                         $status = XModel::getConfigType("admin_loss_approval","bag_status","value")['id'];
                                     }
@@ -448,6 +454,7 @@ class TransactionController extends Controller
                             }
                         }
                         $bag->status    = $status;
+
                         $bag->save();
 
                     }

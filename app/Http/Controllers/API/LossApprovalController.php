@@ -69,6 +69,7 @@ class LossApprovalController extends Controller
     }
     public function statusUpdate(Request $request){
         $data = $request->all();
+
         self::hasPermission('index.lossapproval');
         $request->validate([
             'id' => 'required|numeric',
@@ -89,12 +90,13 @@ class LossApprovalController extends Controller
                 if( $transactionItem->save() ){
                     //#check the transaction has any loss approval...!
                     $lossApproval = TransactionItemLossDetails::where('status',XModel::getConfigType("admin_loss_approval","transaction_type","value")['id'])->count();
-                    if(  $lossApproval != 0 ){
+                    if(  $lossApproval != 0 || true ){
                         //#transcation approved...!
                         $transaction = Transaction::findOrFail($transactionItem->transaction_id);
                         $transaction->status = XModel::getConfigType("completed","transaction","value")['id'];
                         if($transaction->save()){
                             $bag = Bag::findOrFail($transaction->bag_id);
+
                             $bag->department_id = $transaction['to_department_id'];
                             $bag->employee_id = $transaction['to_employee_id'];
                             $bag->status = XModel::getConfigType("in_progress","bag_status","value")['id'];
