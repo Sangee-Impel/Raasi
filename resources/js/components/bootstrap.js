@@ -72,3 +72,7 @@ require('./transaction_history/manage-tally-report');
 require('./configuration/manage-configuration');
 
 require('./loss_approval/manage-loss-approval');
+
+/*casting*/
+require('./casting/manage-casting');
+require('./casting/form-casting');

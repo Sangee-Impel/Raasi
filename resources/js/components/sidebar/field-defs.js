@@ -8,7 +8,6 @@ export default [
         dataClass: '',
         childrens: []
     },
-
     {
         title: 'Lot',
         icon: 'work',
@@ -52,6 +51,15 @@ export default [
         has_permission: false,
         dataClass: '',
         href: "/tally-report",
+        childrens: []
+    },
+    {
+        title: 'Casting',
+        icon: 'casting',
+        permission_slug: "index.casting",
+        has_permission: false,
+        dataClass: '',
+        href: "/casting",
         childrens: []
     },
     {

@@ -25,3 +25,8 @@ yarn-error.log
 /storage/debugbar/
 /storage/oauth-private.key
 /storage/oauth-public.key
+
+auth.json
+config/app.php
+config/database.php
+package-lock.json

@@ -65,6 +65,9 @@ Route::group([
     Route::apiResource('transaction', 'API\TransactionController');
 
 
+    Route::apiResource('casting', 'API\CastingController');
+
+
     Route::post('/transaction/change-transaction-item', 'API\TransactionController@changeTransactionItemStatus');
 
     Route::apiResource('other-accessories', 'API\OtherAccessoriesController');

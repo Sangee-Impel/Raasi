@@ -21,6 +21,7 @@ Route::group([
 
     Route::get('/home', 'HomeController@show');
     Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
+    
 
     Route::get('/roles', 'RoleController@index')->name('roles');
     Route::get('/user', 'UserController@index')->name('user');
@@ -36,7 +37,7 @@ Route::group([
     Route::get('/transactions', 'API\TransactionController@getTransaction');
     Route::get('/transactions-history', 'API\TransactionHistoryController@getIndex');
     Route::get('/uom', 'API\UomController@getIndex');
-    Route::get('/bag', 'API\BagController@getIndex');
+    Route::get('/bag', 'API\BagController@getIndex');    
     Route::get('/profile', 'UserController@getProfile');
     Route::get('/other-accessories', 'API\OtherAccessoriesController@getIndex');
     Route::get('/resetPassword','API\UserController@getResetView');
@@ -45,6 +46,8 @@ Route::group([
     Route::get('/configuration', 'API\ConfigurationController@getIndex');
     Route::get('/loss-approval', 'API\LossApprovalController@getIndex');
     Route::get('/tally-report', 'API\TransactionHistoryController@viewTallyReport');
+
+    Route::get('/casting', 'API\CastingController@getIndex');
 });
 
 

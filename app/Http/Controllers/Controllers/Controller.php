@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
@@ -20,29 +19,27 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public static function hasPermission($key)
-    {
+    public static function hasPermission($key){
         $user = Auth::user();
-        if (count($user->getRoles()) == 0) {
-            return  abort(403, 'Permission denied!');
+        if(  count($user->getRoles()) == 0   ){
+            return  abort(403,'Permission denied!');
         }
-        if (!Auth::user()->hasPermission($key)) {
-            return  abort(403, 'Permission denied!');
+        if( ! Auth::user()->hasPermission($key) ){
+            return  abort(403,'Permission denied!');
         }
     }
-    public static function checkIsAdmin($getTheme = true)
-    {
+    public static function checkIsAdmin($getTheme = true){
         $user   = Auth::user();
         $roles = $user->getRoles();
-        if (count($roles) != 0) {
-            if ($roles[0]['slug'] == Role::$role_admin_slug) {
-                if ($getTheme)
+        if(  count($roles) != 0   ){
+            if( $roles[0]['slug'] == Role::$role_admin_slug ){
+                if( $getTheme )
                     return 'theme-deep-orange';
                 else
                     return true;
             }
         }
-        if ($getTheme)
+        if( $getTheme )
             return 'theme-blue';
         else
             return true;
