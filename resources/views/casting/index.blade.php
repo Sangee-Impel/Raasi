@@ -68,7 +68,7 @@
                             <div class="box">
                                 <div class="box-header">
                                     <div class="row">
-                                        <div class="col-lg-8 offset-lg-2">
+                                        <div class="col-lg-8">
                                             <div class="row">
                                                 <div class="col-lg-8 ">
                                                     <h2 class="pt-1">@{{ formTitle }} Casting</h2>
@@ -76,7 +76,12 @@
                                                 <div class="col-lg-4 ">
                                                     <button class="btn btn-fw info pull-right" @click="showGrid">Manage</button>
                                                 </div>
+
                                             </div>
+                                        </div>
+                                        <div class="col-lg-4 " style="text-align:right">
+                                            <button class="btn btn-fw success " type="button" @click="submit" v-if="!isViewMode">Submit</button>
+                                            <button class="btn btn-fw dark " type="button" @click="showGrid">Cancel</button>
                                         </div>
                                     </div>
                                 </div>
@@ -149,10 +154,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="m-b btn-groups pull-right">
-                                                    <button class="btn btn-fw success " type="button" @click="submit" v-if="!isViewMode">Submit</button>
-                                                    <button class="btn btn-fw dark " type="button" @click="showGrid">Cancel</button>
-                                                </div>
+
                                             </form>
                                         </div>
                                     </div>

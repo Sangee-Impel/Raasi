@@ -9,6 +9,15 @@ export default [
         childrens: []
     },
     {
+        title: 'Casting',
+        icon: 'casting',
+        permission_slug: "index.casting",
+        has_permission: false,
+        dataClass: '',
+        href: "/casting",
+        childrens: []
+    },
+    {
         title: 'Lot',
         icon: 'work',
         permission_slug: "index.bag",
@@ -35,32 +44,41 @@ export default [
         href: "/transactions-history",
         childrens: []
     },
+
     {
-        title: 'Loss Approval',
-        icon: 'history',
-        permission_slug: "index.lossapproval",
+        title: "Reports",
+        icon: 'reports',
+        href: "#",
+        permission_slug: "",
         has_permission: false,
         dataClass: '',
-        href: "/loss-approval",
-        childrens: []
-    },
-    {
-        title: 'Tally Report',
-        icon: 'history',
-        permission_slug: "index.tallyreport",
-        has_permission: false,
-        dataClass: '',
-        href: "/tally-report",
-        childrens: []
-    },
-    {
-        title: 'Casting',
-        icon: 'casting',
-        permission_slug: "index.casting",
-        has_permission: false,
-        dataClass: '',
-        href: "/casting",
-        childrens: []
+        childrens: [
+            {
+                title: 'Loss Approval',
+                icon: 'history',
+                permission_slug: "index.lossapproval",
+                has_permission: false,
+                dataClass: '',
+                href: "/loss-approval",
+                childrens: []
+            },
+            {
+                title: 'Tally Report',
+                icon: 'history',
+                permission_slug: "index.tallyreport",
+                has_permission: false,
+                dataClass: '',
+                href: "/tally-report",
+                childrens: []
+            },
+            {
+                title: 'Opening Report',
+                permission_slug: "index.openingreport",
+                has_permission: false,
+                dataClass: '',
+                href: "/opening-report"
+            }
+        ]
     },
     {
         title: "Setup",
@@ -89,7 +107,7 @@ export default [
                 has_permission: false,
                 dataClass: '',
                 href: "/process"
-            },{
+            }, {
                 title: 'Employee',
                 permission_slug: "index.employee",
                 has_permission: false,

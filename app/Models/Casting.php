@@ -11,7 +11,7 @@ class Casting extends XModel
 
     public function castingWeights()
     {
-        return $this->hasMany(CastingWeight::class, 'casting_id', 'id')->whereIn('adjustment', ['Add', 'Deduct'])->orderBy("id", "ASC");
+        return $this->hasMany(CastingWeight::class, 'casting_id', 'id')->whereIn('adjustment', ['Add', 'Deduct'])->orderBy("id", "DESC");
     }
 
     public  function rules($styleData)

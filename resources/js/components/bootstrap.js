@@ -73,6 +73,8 @@ require('./configuration/manage-configuration');
 
 require('./loss_approval/manage-loss-approval');
 
+require('./opening_report/manage-opening-report');
+
 /*casting*/
 require('./casting/manage-casting');
 require('./casting/form-casting');

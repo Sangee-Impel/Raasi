@@ -78,7 +78,7 @@ Vue.component('form-casting', {
             this.$parent.showGrid();
         },
         addWeight() {
-            this.form.casting_weights.push({
+            this.form.casting_weights.unshift({
                 id: null,
                 weight: 0,
                 adjustment: null

@@ -144,12 +144,12 @@ class TransactionController extends Controller
                     if (!isset($name['Gold'])) {
                         $name['Gold'] = 0;
                     }
-                    $name['Gold'] += $transaction_item_value['quantity'] * $transaction_item_value['weight'];
+                    $name['Gold'] += $transaction_item_value['receive_weight'];
                 } else {
                     if (!isset($name[$transaction_item_value['other_accessories']['name']])) {
                         $name[$transaction_item_value['other_accessories']['name']] = 0;
                     }
-                    $name[$transaction_item_value['other_accessories']['name']] += $transaction_item_value['quantity'] * $transaction_item_value['weight'];
+                    $name[$transaction_item_value['other_accessories']['name']] +=  $transaction_item_value['receive_weight'];
                 }
             }
         }
@@ -234,7 +234,7 @@ class TransactionController extends Controller
                         $post_data_create['weight'] = (float)  $casting->weight - (float) $weight;
                         $weightValue['casting_id']   =   $casting['id'];
                         $weightValue['weight']   =    (float) $weight;
-                        $weightValue['adjustment']   =   'Transaction_Deduct';                        
+                        $weightValue['adjustment']   =   'Transaction_Deduct';
                         $casting->update($post_data_create);
                         CastingWeight::create($weightValue);
                     }

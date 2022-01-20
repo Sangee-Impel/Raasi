@@ -94,19 +94,18 @@ class BagController extends Controller
         $bag_starting_department  = Configuration::getConfigurationRowByConfigKey("bag_starting_department");
 
         $casting = Casting::where('name', '=', 'Gold')->first();
-        if($casting) {
+        if ($casting) {
             $casting_weight = $casting->weight;
             $total_weight = 0;
             foreach ($post_data['bag_styles'] as $styleBagKey => $styleBagValue) {
-                $unit =  $styleBagValue['quantity'];
                 $weight =  $styleBagValue['weight'];
-                $total_weight += $unit * $weight;
+                $total_weight += $weight;
             }
-            
+
             if ($casting_weight < $total_weight) {
                 return response()->json(["errors" => "Please enter a vaild weight", "message" => "Please enter a vaild weight."], 422);
             }
-    
+
             if (!is_null($bag_starting_department)) {
                 $post_data['department_id'] =  $bag_starting_department['bag_starting_department_id'];
                 $bagOrder = Bag::orderBy('inc_val', 'DESC')->first();
@@ -116,9 +115,9 @@ class BagController extends Controller
                 }
                 $post_data["inc_val"] = $bagOrderNum;
                 $post_data["bag_number"] = "BAG" . sprintf("%04d", $bagOrderNum);
-    
+
                 $bag    =   Bag::create($post_data);
-    
+
                 if ($bag) {
                     $request->validate((new BagStyle())->rules($post_data['bag_styles']));
                     foreach ($post_data['bag_styles'] as $styleBagKey => $styleBagValue) {
@@ -134,12 +133,12 @@ class BagController extends Controller
                 }
             } else {
                 //throw error...!
-    
+
             }
         } else {
             return response()->json(["errors" => "Please enter a vaild weight", "message" => "No casting data available"], 422);
         }
-        
+
 
         return response()->json([], 201);
     }

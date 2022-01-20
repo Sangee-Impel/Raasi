@@ -119,17 +119,25 @@ class CastingController extends Controller
             }
         }
 
+
+
         $casting_weight  = CastingWeight::where('casting_id', $casting['id'])->whereIn('adjustment', ['Lot_Deduct', 'Transaction_Deduct'])->get();
-       
-        if ($post_data['weight'] > 0) {
+        foreach ($casting_weight as $key => $w) {
+            $post_data['weight'] -= (float) $w['weight'];
+        }
+
+        if ($post_data['weight'] >= 0) {
             foreach ($post_data_create['casting_weights'] as $weightKey => $weightValue) {
                 $weightValue['casting_id']   =   $casting['id'];
                 if (isset($weightValue['id']) && $weightValue['id'] > 0) {
+                    $weight = CastingWeight::findOrFail($weightValue['id']);
                     if ($weightValue['adjustment'] == 'Add') {
                         $post_data_create['weight'] += (float) $weightValue['weight'];
                     } else {
                         $post_data_create['weight'] -= (float) $weightValue['weight'];
                     }
+                    $weight->fill($weightValue);
+                    $weight->update();
                 } else {
                     if ($weightValue['adjustment'] == 'Add') {
                         $post_data_create['weight'] += (float) $weightValue['weight'];

@@ -86,6 +86,8 @@ Route::group([
     Route::apiResource('loss-approval', 'API\LossApprovalController');
     Route::post('/loss-approval/status-update','API\LossApprovalController@statusUpdate');
     Route::post('/loss-approval/drop-down','API\LossApprovalController@dropDown');
+
+    Route::apiResource('opening-report', 'API\OpeningReportController');
 });
 
 

@@ -45,6 +45,7 @@ Route::group([
 
     Route::get('/configuration', 'API\ConfigurationController@getIndex');
     Route::get('/loss-approval', 'API\LossApprovalController@getIndex');
+    Route::get('/opening-report', 'API\OpeningReportController@getIndex');
     Route::get('/tally-report', 'API\TransactionHistoryController@viewTallyReport');
 
     Route::get('/casting', 'API\CastingController@getIndex');
