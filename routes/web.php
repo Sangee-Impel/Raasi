@@ -46,6 +46,17 @@ Route::group([
     Route::get('/configuration', 'API\ConfigurationController@getIndex');
     Route::get('/loss-approval', 'API\LossApprovalController@getIndex');
     Route::get('/opening-report', 'API\OpeningReportController@getIndex');
+
+    Route::get('/fctransaction-report', 'API\FcTransactionReportController@getIndex');
+    Route::get('/merge-report', 'API\MergeReportController@getIndex');
+    Route::get('/split-report', 'API\SplitReportController@getIndex');
+    Route::get('/scrap-report', 'API\ScrapReportController@getIndex');
+    Route::get('/channam-report', 'API\ChannamReportController@getIndex');
+    Route::get('/loss-report', 'API\LossReportController@getIndex');
+    Route::get('/pending-report', 'API\PendingReportController@getIndex');
+    Route::get('/emploss-report', 'API\EmplossReportController@getIndex');
+    Route::get('/castinginword-report', 'API\CastinginwordReportController@getIndex');
+    Route::get('/accessoriesinword-report', 'API\AccessoriesinwordReportController@getIndex');
     Route::get('/tally-report', 'API\TransactionHistoryController@viewTallyReport');
 
     Route::get('/casting', 'API\CastingController@getIndex');

@@ -77,6 +77,76 @@ export default [
                 has_permission: false,
                 dataClass: '',
                 href: "/opening-report"
+            },
+            {
+                title: 'Fc Transaction Report',
+                permission_slug: "index.fctransactionreport",
+                has_permission: false,
+                dataClass: '',
+                href: "/fctransaction-report"
+            },
+            {
+                title: 'Casting Inword Report',
+                permission_slug: "index.castinginwordreport",
+                has_permission: false,
+                dataClass: '',
+                href: "/castinginword-report"
+            },
+            {
+                title: 'Accessories Inword Report',
+                permission_slug: "index.accessoriesinwordreport",
+                has_permission: false,
+                dataClass: '',
+                href: "/accessoriesinword-report"
+            },
+            {
+                title: 'Merge Report',
+                permission_slug: "index.mergereport",
+                has_permission: false,
+                dataClass: '',
+                href: "/merge-report"
+            },
+            {
+                title: 'Split Report',
+                permission_slug: "index.splitreport",
+                has_permission: false,
+                dataClass: '',
+                href: "/split-report"
+            },
+            {
+                title: 'Scrap Report',
+                permission_slug: "index.scrapreport",
+                has_permission: false,
+                dataClass: '',
+                href: "/scrap-report"
+            },
+            {
+                title: 'Channam Report',
+                permission_slug: "index.channamreport",
+                has_permission: false,
+                dataClass: '',
+                href: "/channam-report"
+            },
+            {
+                title: 'Loss Report',
+                permission_slug: "index.lossreport",
+                has_permission: false,
+                dataClass: '',
+                href: "/loss-report"
+            },
+            {
+                title: 'Pending Lot Report',
+                permission_slug: "index.pendingreport",
+                has_permission: false,
+                dataClass: '',
+                href: "/pending-report"
+            },
+            {
+                title: 'Employee Loss Report',
+                permission_slug: "index.emplossreport",
+                has_permission: false,
+                dataClass: '',
+                href: "/emploss-report"
             }
         ]
     },

@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use App\GenXCommon\XModel;
 use Illuminate\Support\Facades\DB;
 
-class OpeningReportController extends Controller
+class EmplossReportController extends Controller
 {
   /**
    * Getting grid data
@@ -18,8 +18,8 @@ class OpeningReportController extends Controller
 
   public function getIndex()
   {
-    self::hasPermission('index.openingreport');
-    return view("opening_report.index");
+    self::hasPermission('index.emplossreport');
+    return view("emploss_report.index");
   }
   /**
    * Display a listing of the resource.
@@ -28,7 +28,7 @@ class OpeningReportController extends Controller
    */
   public function index(Request $request)
   {
-    self::hasPermission('index.openingreport');
+    self::hasPermission('index.emplossreport');
 
     $query = Bag::query()->select(
       "bag.*",

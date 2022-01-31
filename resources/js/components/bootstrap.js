@@ -75,6 +75,19 @@ require('./loss_approval/manage-loss-approval');
 
 require('./opening_report/manage-opening-report');
 
+require('./fctransaction_report/manage-fctransaction-report');
+require('./merge_report/manage-merge-report');
+require('./split_report/manage-split-report');
+
+require('./scrap_report/manage-scrap-report');
+require('./channam_report/manage-channam-report');
+
+require('./loss_report/manage-loss-report');
+require('./pending_report/manage-pending-report');
+require('./emploss_report/manage-emploss-report');
+require('./castinginword_report/manage-castinginword-report');
+require('./accessoriesinword_report/manage-accessoriesinword-report');
+
 /*casting*/
 require('./casting/manage-casting');
 require('./casting/form-casting');

@@ -128,6 +128,7 @@ class BagController extends Controller
                     $weightValue['casting_id']   =   $casting['id'];
                     $weightValue['weight']   =    (float) $total_weight;
                     $weightValue['adjustment']   =   'Lot_Deduct';
+                    $weightValue['bag_id'] = $bag['id'];
                     $casting->update($post_data_create);
                     CastingWeight::create($weightValue);
                 }

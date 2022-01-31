@@ -7,7 +7,7 @@ use App\GenXCommon\XModel;
 class CastingWeight extends XModel
 {
     protected $table = 'casting_weights';
-    protected $fillable = ['weight', 'adjustment', 'instruction', 'deleted_at', 'created_at', 'updated_at', 'casting_id'];
+    protected $fillable = ['weight', 'adjustment', 'instruction', 'deleted_at', 'created_at', 'updated_at', 'casting_id', 'bag_id', 'transaction_id'];
 
     public function casting()
     {

@@ -6,16 +6,16 @@ export default [
         dataClass: 'center aligned'
     },
     {
-        name: 'bag_number',
-        title:'Lot Number',
-        sortField: 'bag_number',
+        name: 'from_bag',
+        title:'From Lot',
+        sortField: 'from_bag',
         titleClass: 'center aligned',
         dataClass: 'left aligned'
     },
     {
-        name: 'order_number',
-        title:'Order Number',
-        sortField: 'order_number',
+        name: 'to_bag',
+        title:'To Lot',
+        sortField: 'to_bag',
         titleClass: 'center aligned',
         dataClass: 'left aligned'
     },{
@@ -33,16 +33,23 @@ export default [
         dataClass: 'left aligned'
     },
     {
-        name: 'quantity',
+        name: 'total_transfer_quantity',
         title:'Qty',
-        sortField: 'quantity',
+        sortField: 'total_transfer_quantity',
         titleClass: 'center aligned',
         dataClass: 'left aligned'
     },
     {
-        name: 'weight',
-        title:'Loss Weight',
-        sortField: 'weight',
+        name: 'total_transfer_weight',
+        title:'Weight',
+        sortField: 'total_transfer_weight',
+        titleClass: 'center aligned',
+        dataClass: 'left aligned'
+    },
+    {
+        name: 'employee',
+        title:'Emp Name',
+        sortField: 'employee',
         titleClass: 'center aligned',
         dataClass: 'left aligned'
     },

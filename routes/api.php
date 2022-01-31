@@ -88,6 +88,16 @@ Route::group([
     Route::post('/loss-approval/drop-down','API\LossApprovalController@dropDown');
 
     Route::apiResource('opening-report', 'API\OpeningReportController');
+    Route::apiResource('fctransaction-report', 'API\FcTransactionReportController');
+    Route::apiResource('merge-report', 'API\MergeReportController');
+    Route::apiResource('split-report', 'API\SplitReportController');
+    Route::apiResource('scrap-report', 'API\ScrapReportController');
+    Route::apiResource('channam-report', 'API\ChannamReportController');
+    Route::apiResource('loss-report', 'API\LossReportController');
+    Route::apiResource('pending-report', 'API\PendingReportController');
+    Route::apiResource('emploss-report', 'API\EmplossReportController');
+    Route::apiResource('castinginword-report', 'API\CastinginwordReportController');
+    Route::apiResource('accessoriesinword-report', 'API\AccessoriesinwordReportController');
 });
 
 

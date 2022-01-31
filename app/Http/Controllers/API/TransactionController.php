@@ -235,6 +235,7 @@ class TransactionController extends Controller
                         $weightValue['casting_id']   =   $casting['id'];
                         $weightValue['weight']   =    (float) $weight;
                         $weightValue['adjustment']   =   'Transaction_Deduct';
+                        $weightValue['transaction_id']   =   $transaction['id'];
                         $casting->update($post_data_create);
                         CastingWeight::create($weightValue);
                     }
