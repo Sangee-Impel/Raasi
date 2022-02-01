@@ -26,7 +26,7 @@ class FcTransactionReportController extends Controller
             "bag.bag_number",
             "bag.order_number",
             "department.name as department",
-            DB::raw("DATE_FORMAT(bag.updated_at, '%r') as time"),
+            DB::raw("DATE_FORMAT(bag.updated_at, '%d/%c/%Y %r') as time"),
             DB::raw("SUM(bag_styles.quantity) as quantity"),
             DB::raw("SUM(bag_styles.weight) as weight"),
             DB::raw("GROUP_CONCAT(bag_styles.style_id) as style"),

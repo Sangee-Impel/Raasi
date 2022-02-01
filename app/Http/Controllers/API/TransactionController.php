@@ -142,25 +142,26 @@ class TransactionController extends Controller
             if ($transaction_item_value['id'] == 0) {
                 if (isset($transaction_item_value['bag_style_id']) && $transaction_item_value['bag_style_id'] > 0) {
                     if (!isset($name['Gold'])) {
-                        $name['Gold'] = 0;
+                        $name['Gold']['weight'] = 0;
                     }
-                    $name['Gold'] += $transaction_item_value['receive_weight'];
+                    $name['Gold']['weight'] += $transaction_item_value['receive_weight'];
+                    $name['Gold']['quantity'] = $transaction_item_value['quantity'];
                 } else {
                     if (!isset($name[$transaction_item_value['other_accessories']['name']])) {
-                        $name[$transaction_item_value['other_accessories']['name']] = 0;
+                        $name[$transaction_item_value['other_accessories']['name']]['weight'] = 0;
                     }
-                    $name[$transaction_item_value['other_accessories']['name']] +=  $transaction_item_value['receive_weight'];
+                    $name[$transaction_item_value['other_accessories']['name']]['weight'] +=  $transaction_item_value['receive_weight'];
+                    $name[$transaction_item_value['other_accessories']['name']]['quantity'] =  $transaction_item_value['quantity'];
                 }
             }
         }
-
         if (!empty($name)) {
             foreach ($name as $n => $weight) {
                 $casting = Casting::where('name', '=', $n)->first();
                 if (!$casting) {
                     return response()->json(["errors" => "Please enter a vaild weight", "message" => "No casting data available for " . $n], 422);
                 }
-                if ($casting->weight < $weight) {
+                if ($casting->weight < $weight['weight']) {
                     return response()->json(["errors" => "Please enter a vaild weight", "message" => "Please enter a vaild weight for casting: " . $n], 422);
                 }
             }
@@ -231,9 +232,10 @@ class TransactionController extends Controller
                 if (!empty($name)) {
                     foreach ($name as $n => $weight) {
                         $casting = Casting::where('name', '=', $n)->first();
-                        $post_data_create['weight'] = (float)  $casting->weight - (float) $weight;
+                        $post_data_create['weight'] = (float)  $casting->weight - (float) $weight['weight'];;
                         $weightValue['casting_id']   =   $casting['id'];
-                        $weightValue['weight']   =    (float) $weight;
+                        $weightValue['quantity']   =   $weight['quantity'];
+                        $weightValue['weight']   =    (float) $weight['weight'];
                         $weightValue['adjustment']   =   'Transaction_Deduct';
                         $weightValue['transaction_id']   =   $transaction['id'];
                         $casting->update($post_data_create);

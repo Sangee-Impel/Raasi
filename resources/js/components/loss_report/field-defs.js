@@ -13,6 +13,13 @@ export default [
         dataClass: 'left aligned'
     },
     {
+        name: 'order_number',
+        title:'Order Number',
+        sortField: 'order_number',
+        titleClass: 'center aligned',
+        dataClass: 'left aligned'
+    },
+    {
         name: 'time',
         title: 'Time',
         sortField: 'time',
@@ -35,7 +42,7 @@ export default [
     },
     {
         name: 'weight',
-        title: 'Loss Weight',
+        title: 'Weight',
         sortField: 'weight',
         titleClass: 'center aligned',
         dataClass: 'left aligned'

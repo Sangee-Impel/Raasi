@@ -19,13 +19,20 @@ Vue.component('manage-loss-report', {
                 trash: 0,
                 advanceFilter: {
                     from_date: null,
-                    to_date: null
+                    to_date: null,
+                    department_id: null,
+                    employee_id: null
                 }
             },
+            department: null,
+            employee: null,
             isLoading: false,
             is_advance_search: true,
             from_date: null,
             to_date: null,
+            department_options: [],
+            employee_options: [],
+            all_employee_options: [],
         };
     },
     created() {
@@ -35,6 +42,7 @@ Vue.component('manage-loss-report', {
 
     },
     mounted() {
+        this.loadDropDown();
     },
 
     computed: {
@@ -71,8 +79,43 @@ Vue.component('manage-loss-report', {
             this.vueTableParams.filter = '';
             this.reloadDataTable(false);
         },
+        bindEmployee() {
+            if (this.department != null) {
+                this.employee = null;
+                this.employee_options = this.department.employees;
+            } else {
+                this.employee_options = this.all_employee_options;
+            }
+        },
+        loadDropDown() {
+            this.isLoading = true;
+            axios.post('/api/get-dropdown-data')
+                .then(response => {
+                    let dropDownData = response.data;
+                    this.department_options = dropDownData.department;
+                    this.employee_options = dropDownData.employee;
+                    this.all_employee_options = dropDownData.employee;
+                    //
+                })
+                .catch(reason => {
+                    console.log(reason.message);
+                }).finally(() => {
+                    this.isLoading = false;
+                });
+        },
         onFilterSearch() {
             this.isLoading = true;
+
+            this.vueTableParams.advanceFilter.employee_id = null;
+            if (this.employee != null) {
+                this.vueTableParams.advanceFilter.employee_id = this.employee.id;
+            }               
+
+            this.vueTableParams.advanceFilter.department_id = null;
+            if (this.department != null) {
+                this.vueTableParams.advanceFilter.department_id = this.department.id;
+            }
+
 
             this.vueTableParams.advanceFilter.from_date = null;
             if (this.from_date != null)
@@ -90,6 +133,8 @@ Vue.component('manage-loss-report', {
             this.is_advance_search = true;
             this.from_date = null;
             this.to_date = null;
+            this.employee = null;
+            this.department = null;
             this.isLoading = true;
             this.onFilterSearch();
             this.isLoading = false;

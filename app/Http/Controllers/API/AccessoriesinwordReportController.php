@@ -35,17 +35,17 @@ class AccessoriesinwordReportController extends Controller
       "bag.order_number",
       "casting_weights.weight",
       DB::raw("DATE_FORMAT(casting_weights.updated_at, '%d/%c/%Y %r') as time"),
-      DB::raw("sum(bag_styles.quantity) as quantity"),
+      "casting_weights.quantity",
       DB::raw("GROUP_CONCAT(style.sku) sku"),
-      "casting.name as casting_name",
-      "employee.name as employee_name",
-      "department.name as department_name",
+      "casting.name as casting",
+      "employee.name as employee",
+      "department.name as department",
     );
 
-    $query->leftJoin('bag', 'bag.id', '=', 'casting_weights.bag_id');
+    $query->leftJoin('transaction', 'transaction.id', '=', 'casting_weights.transaction_id');
+    $query->leftJoin('bag', 'bag.id', '=', 'transaction.bag_id');
     $query->leftJoin('bag_styles', 'bag_styles.bag_id', '=', 'bag.id');
     $query->leftJoin('style', 'bag_styles.style_id', '=', 'style.id');
-    $query->leftJoin('transaction', 'bag.id', '=', 'transaction.bag_id');
     $query->leftJoin('casting', 'casting.id', '=', 'casting_weights.casting_id');
     $query->leftJoin('employee', 'employee.id', '=', 'transaction.to_employee_id');
     $query->leftJoin('department', 'department.id', '=', 'transaction.to_department_id');
@@ -69,7 +69,7 @@ class AccessoriesinwordReportController extends Controller
     }
 
     $query->where("casting_weights.adjustment", "=", 'Transaction_Deduct');
-    $query->groupBy('bag.id', 'bag.bag_number', 'bag.order_number');
+    $query->groupBy('bag.id', 'bag.bag_number', 'bag.order_number', 'casting_weights.weight');
     $query->orderBy('bag.id', 'DESC');
 
     return XModel::preparePagination($query, $request, ['bag.bag_number', 'bag.order_number']);

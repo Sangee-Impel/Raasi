@@ -81,7 +81,7 @@ Route::group([
 
     Route::post('/configuration/get-configuration-data', 'API\ConfigurationController@getConfigurationData');
     Route::post('/configuration/save', 'API\ConfigurationController@store');
-    Route::post('/bag/dropDown/','API\BagController@dropDown');
+    Route::post('/drop-down/','API\BagController@getDropDown');
 
     Route::apiResource('loss-approval', 'API\LossApprovalController');
     Route::post('/loss-approval/status-update','API\LossApprovalController@statusUpdate');

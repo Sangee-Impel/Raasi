@@ -41,7 +41,7 @@ export default [
     },
     {
         name: 'weight',
-        title:'Loss Weight',
+        title:'Weight',
         sortField: 'weight',
         titleClass: 'center aligned',
         dataClass: 'left aligned'

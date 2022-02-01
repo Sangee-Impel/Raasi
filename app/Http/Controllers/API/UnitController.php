@@ -12,6 +12,7 @@ use App\Models\Uom;
 use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Employee;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
 
@@ -22,7 +23,8 @@ class UnitController extends Controller
      *
      */
 
-    public function getIndex() {
+    public function getIndex()
+    {
         self::hasPermission('index.unit');
         return view("unit.index");
     }
@@ -35,7 +37,7 @@ class UnitController extends Controller
     {
         self::hasPermission('index.unit');
         $query = Unit::query();
-        if($request->get('trash')==Config::get('constants.trash_on')) {
+        if ($request->get('trash') == Config::get('constants.trash_on')) {
             $query->onlyTrashed();
         }
         return XModel::preparePagination($query, $request, ['unit.name']);
@@ -53,7 +55,7 @@ class UnitController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|unique:unit,name',
         ]);
-        DB::transaction(function() use ($request) {
+        DB::transaction(function () use ($request) {
             Unit::create($request->all());
         });
         return response()->json([], 201);
@@ -84,7 +86,7 @@ class UnitController extends Controller
         $validatedData = $request->validate([
             'name' => "required|unique:unit,name,$unit->id",
         ]);
-        DB::transaction(function() use ($request,$unit) {
+        DB::transaction(function () use ($request, $unit) {
             $unit->update($request->all());
         });
         return response()->json($unit, 201);
@@ -96,36 +98,38 @@ class UnitController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request,$unit)
+    public function destroy(Request $request, $unit)
     {
         self::hasPermission('destroy.unit');
-        if ($request->filled('trash') && $request->get('trash') == 0)
-        {
-            $model= Unit::findOrFail($unit);
+        if ($request->filled('trash') && $request->get('trash') == 0) {
+            $model = Unit::findOrFail($unit);
             $model->delete();
         } else {
-            $model= Unit::withTrashed()->find($unit);
+            $model = Unit::withTrashed()->find($unit);
             $model->forceDelete();
         }
         return response()->json(null);
     }
-    public function restore($id){
+    public function restore($id)
+    {
         self::hasPermission('restore.unit');
         $model            = Unit::withTrashed()->find($id);
         $model->restore();
         return response()->json(null);
     }
-    public function getUnits(Request $request){
+    public function getUnits(Request $request)
+    {
         return Unit::get();
     }
-    public function getDropDownData(Request $request){
+    public function getDropDownData(Request $request)
+    {
         return [
             "unit" =>  Unit::get(),
-            "department" =>  Department::get(),
+            "department" =>  Department::with(['employees'])->get(),
             "product_category" =>  ProductCategory::get(),
             "process" =>  Process::get(),
-            "uom" =>  Uom::get()
+            "uom" =>  Uom::get(),
+            "employee" =>  Employee::get()
         ];
     }
-    
 }

@@ -36,7 +36,7 @@ class MergeReportController extends Controller
       "to_bag.bag_number as to_bag",
       "department.name as department",
       "employee.name as employee",
-      DB::raw("DATE_FORMAT(transaction.updated_at, '%r') as time"),      
+      DB::raw("DATE_FORMAT(transaction.updated_at, '%d/%c/%Y %r') as time"),
       DB::raw("(select GROUP_CONCAT(distinct(s.sku)) from style s left join bag_styles bs on bs.bag_id = `to_bag`.`id` where bs.style_id = s.id) as sku")
     );
 

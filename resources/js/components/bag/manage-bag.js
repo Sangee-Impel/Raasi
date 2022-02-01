@@ -7,127 +7,127 @@ import VueSelect from 'vue-multiselect';
 
 Vue.component('manage-bag', {
 
-    components : {
-        'vue-table':Vuetable,
-        'vuetable-pagination':VuetablePagination,
-         VuetablePaginationInfo,
+    components: {
+        'vue-table': Vuetable,
+        'vuetable-pagination': VuetablePagination,
+        VuetablePaginationInfo,
         'v-select': VueSelect,
     },
     data() {
         return {
-            fields          : FieldDefs,
-            types          : TypeDefs,
-            displayForm     : false,
-            currentRecord   : null,
-            isLoading       : false,
-            is_advance_search:true,
-            trash_off       : true,
-            trashText       : 'Trash',
-            department      :  null,
-            employee      :  null,
-            vueTableParams : {
-                trash     : 0,
-                advanceFilter:{
-                    department_id:null,
-                    employee_id:null,
+            fields: FieldDefs,
+            types: TypeDefs,
+            displayForm: false,
+            currentRecord: null,
+            isLoading: false,
+            is_advance_search: true,
+            trash_off: true,
+            trashText: 'Trash',
+            department: null,
+            employee: null,
+            vueTableParams: {
+                trash: 0,
+                advanceFilter: {
+                    department_id: null,
+                    employee_id: null,
                 }
             },
-            department_options:[],
-            employee_options:[],
-            all_employee_options:[],
-            isViewMode  :   false,
-            props:['props'],
+            department_options: [],
+            employee_options: [],
+            all_employee_options: [],
+            isViewMode: false,
+            props: ['props'],
             bagCancelOtpModel: false,
-            cancel_bag:{
-                id :    null,
-                otp:    ""
+            cancel_bag: {
+                id: null,
+                otp: ""
             }
 
 
         };
     },
 
-    created(){
+    created() {
 
     },
-    beforeDestroy(){
+    beforeDestroy() {
 
     },
 
-    mounted(){
+    mounted() {
         this.loadDropDown();
         console.log("list");
 
         // this.isLoading = false;
     },
 
-    computed:{
-        vueTableFetch: function() {
+    computed: {
+        vueTableFetch: function () {
             return axios.get;
         }
     },
 
-    methods : {
-        checkEditStatus(rowData){
-            if( this.vueTableParams.trash == 0 ){
-                if( rowData.status == this.types.findBagType("in_progress","value","bag_status")['id'] )
+    methods: {
+        checkEditStatus(rowData) {
+            if (this.vueTableParams.trash == 0) {
+                if (rowData.status == this.types.findBagType("in_progress", "value", "bag_status")['id'])
                     return true;
             }
             return false;
         },
-        changeBagStatus(value){
-            return this.types.findBagType(value,"id","bag_status")["name"];
+        changeBagStatus(value) {
+            return this.types.findBagType(value, "id", "bag_status")["name"];
         },
-        bindEmployee(){
-          if( this.department != null  ){
-              this.employee = null;
-              this.employee_options = this.department.employees;
-          }else{
-              this.employee_options = this.all_employee_options;
-          }
+        bindEmployee() {
+            if (this.department != null) {
+                this.employee = null;
+                this.employee_options = this.department.employees;
+            } else {
+                this.employee_options = this.all_employee_options;
+            }
         },
-        loadDropDown(){
+        loadDropDown() {
             this.isLoading = true;
-            axios.post('/api/bag/dropDown/')
-                .then(response=> {
+            axios.post('/api/get-dropdown-data')
+                .then(response => {
                     let dropDownData = response.data;
                     this.department_options = dropDownData.department;
-                    this.employee_options =  dropDownData.employee;
-                    this.all_employee_options =  dropDownData.employee;
+                    this.employee_options = dropDownData.employee;
+                    this.all_employee_options = dropDownData.employee;
                     //
                 })
-                .catch(reason=> {
+                .catch(reason => {
                     console.log(reason.message);
                 }).finally(() => {
-                this.isLoading = false;
-            });
+                    this.isLoading = false;
+                });
         },
 
 
-        reloadDataTable(dontResetPageNumber){
-            console.log("Dont Reset Page Number => "+ (dontResetPageNumber ? "TRUE":"FALSE"));
-            if(dontResetPageNumber){
+        reloadDataTable(dontResetPageNumber) {
+            console.log("Dont Reset Page Number => " + (dontResetPageNumber ? "TRUE" : "FALSE"));
+            if (dontResetPageNumber) {
                 this.$refs.vuetable.reload();
-            }else{
+            } else {
                 this.$refs.vuetable.refresh();
             }
         },
 
-        onPaginationData (paginationData) {
+        onPaginationData(paginationData) {
             console.log(this.tableData);
             this.$refs.pagination.setPaginationData(paginationData)
             this.$refs.paginationInfo.setPaginationData(paginationData)
         },
-        onChangePage (page) {
+        onChangePage(page) {
             this.$refs.vuetable.changePage(page)
         },
 
-        onAction (action, data, index) {
+        onAction(action, data, index) {
             var self = this;
-             console.log('slot) action: ' + action, data.title, index)
+            console.log('slot) action: ' + action, data.title, index)
             switch (action) {
                 case 'edit-item':
-                    axios.get('/api/bag/'+data.id)
+                    axios.get('/api/bag/' + data.id)
                         .then(response => {
                             //console.log(response);
                             this.currentRecord = response.data;
@@ -149,16 +149,16 @@ Vue.component('manage-bag', {
                         icon: "warning",
                         buttons: true,
                         dangerMode: true,
-                    }).then(isConfirm =>{
+                    }).then(isConfirm => {
                         if (isConfirm) {
                             this.generateOTP(data.id);
-                        }else{
+                        } else {
                             self.isLoading = false;
                         }
                     });
                     break;
                 case "view-item":
-                    axios.get('/api/bag/'+data.id)
+                    axios.get('/api/bag/' + data.id)
                         .then(response => {
                             this.isViewMode = true;
                             //console.log(response);
@@ -174,67 +174,67 @@ Vue.component('manage-bag', {
                         })
                     break;
                 case 'restore-item':
-            swal({
-                    title: "Are you sure?",
-                    text: "Bag  will be Restored!",
-                    icon: "warning",
-                     buttons: true,
-                     dangerMode: true,
-                }).then(isConfirm =>{
-                if (isConfirm) {
-                    axios.get('/api/bag/restore/'+data.id)
-                        .then(response => {
-                        console.log(response);
-                    self.$snotify.success('Restored!');
-                    self.showGrid();
-                    self.actionTrash();
-                    self.isLoading = false;
+                    swal({
+                        title: "Are you sure?",
+                        text: "Bag  will be Restored!",
+                        icon: "warning",
+                        buttons: true,
+                        dangerMode: true,
+                    }).then(isConfirm => {
+                        if (isConfirm) {
+                            axios.get('/api/bag/restore/' + data.id)
+                                .then(response => {
+                                    console.log(response);
+                                    self.$snotify.success('Restored!');
+                                    self.showGrid();
+                                    self.actionTrash();
+                                    self.isLoading = false;
 
-                })
-                .catch(reason => {
-                        console.log(reason);
-                    self.$snotify.error(reason);
+                                })
+                                .catch(reason => {
+                                    console.log(reason);
+                                    self.$snotify.error(reason);
 
-                }).finally(() => {self.isLoading = false;});
-                }else{
-                    self.isLoading = false;
-        }
-        });
+                                }).finally(() => { self.isLoading = false; });
+                        } else {
+                            self.isLoading = false;
+                        }
+                    });
 
                     break;
                 case 'delete-item':
-            swal({
-                    title: "Are you sure?",
-                    text: "Bag will be deleted!",
-                    icon: "warning",
-                    buttons: true,
-                    dangerMode: true,
-                }).then(isConfirm =>{
-                if (isConfirm) {
-                    axios.delete('/api/bag/'+data.id +"?trash="+this.vueTableParams.trash)
-                        .then(response => {
-                        self.$snotify.success('Deleted!');
-                        self.$refs.vuetable.reload();
+                    swal({
+                        title: "Are you sure?",
+                        text: "Bag will be deleted!",
+                        icon: "warning",
+                        buttons: true,
+                        dangerMode: true,
+                    }).then(isConfirm => {
+                        if (isConfirm) {
+                            axios.delete('/api/bag/' + data.id + "?trash=" + this.vueTableParams.trash)
+                                .then(response => {
+                                    self.$snotify.success('Deleted!');
+                                    self.$refs.vuetable.reload();
 
-                })
-                .catch(reason => {
-                    self.$snotify.error('Cannot delete Bag');
+                                })
+                                .catch(reason => {
+                                    self.$snotify.error('Cannot delete Bag');
 
-                })  .finally(() => {self.isLoading = false;});
-                }else{
-                    self.isLoading = false;
-        }
-        });
+                                }).finally(() => { self.isLoading = false; });
+                        } else {
+                            self.isLoading = false;
+                        }
+                    });
 
-            break;
+                    break;
             }
         },
 
-        createBag(){
+        createBag() {
             this.isViewMode = false;
             this.showForm();
         },
-        showForm(){
+        showForm() {
             this.displayForm = true;
             console.log(this.displayForm);
 
@@ -242,15 +242,15 @@ Vue.component('manage-bag', {
         /**
          * This method will be called from child component (form-client)
          */
-        showGrid(){
+        showGrid() {
             console.log("Parent function");
             this.displayForm = false;
             this.currentRecord = null;
         },
-        actionTrash(){
-            if(this.vueTableParams.trash == this.$root.trashFields.trashOff){
+        actionTrash() {
+            if (this.vueTableParams.trash == this.$root.trashFields.trashOff) {
                 this.vueTableParams.trash = this.$root.trashFields.trashOn;
-            }else{
+            } else {
                 this.vueTableParams.trash = this.$root.trashFields.trashOff;
             }
             this.$refs.vuetable.reload();
@@ -258,11 +258,11 @@ Vue.component('manage-bag', {
         onFilter() {
             this.reloadDataTable(false);
         },
-        clearDataTable(){
-            this.vueTableParams.filter='';
+        clearDataTable() {
+            this.vueTableParams.filter = '';
             this.reloadDataTable(false);
         },
-        closeAdvanceFilter(){
+        closeAdvanceFilter() {
             console.log("close");
             this.is_advance_search = true;
             this.employee = null;
@@ -270,26 +270,26 @@ Vue.component('manage-bag', {
 
             this.onFilterSearch();
         },
-        onFilterSearch(){
+        onFilterSearch() {
             this.isLoading = true;
             this.reference_options = [];
 
             this.vueTableParams.advanceFilter.employee_id = null;
-            if( this.employee != null )
+            if (this.employee != null)
                 this.vueTableParams.advanceFilter.employee_id = this.employee.id;
             this.vueTableParams.advanceFilter.department_id = null;
-            if( this.department != null )
+            if (this.department != null)
                 this.vueTableParams.advanceFilter.department_id = this.department.id;
 
             this.reloadDataTable(false);
             this.isLoading = false;
         },
-        showAdvanceFilterBlock(){
+        showAdvanceFilterBlock() {
             this.is_advance_search = false;
         },
-        generateOTP(id){
+        generateOTP(id) {
             this.isLoading = true;
-            axios.get('/api/bag/generate-otp/'+id)
+            axios.get('/api/bag/generate-otp/' + id)
                 .then(response => {
                     console.log(response);
                     this.cancel_bag.id = id;
@@ -298,30 +298,30 @@ Vue.component('manage-bag', {
                 .catch(reason => {
                     let message = "Given data is invalid";
                     if (reason.response) {
-                        if(reason.response.data.errors)
+                        if (reason.response.data.errors)
                             message = reason.response.data.errors;
                     }
                     this.$snotify.error(message);
-                }).finally(() => {this.isLoading = false;});
+                }).finally(() => { this.isLoading = false; });
         },
-        onCancelBag(){
+        onCancelBag() {
             this.isLoading = true;
-            axios.post('/api/bag/cancel',this.cancel_bag)
-                .then(response=> {
+            axios.post('/api/bag/cancel', this.cancel_bag)
+                .then(response => {
                     this.bagCancelOtpModel = false;
                     this.$snotify.success('Bag status updated successfully!');
                     this.reloadDataTable();
                 })
-                .catch(reason=> {
+                .catch(reason => {
                     let message = "Given data is invalid";
                     if (reason.response) {
-                        if(reason.response.data.errors)
+                        if (reason.response.data.errors)
                             message = reason.response.data.errors;
                     }
                     this.$snotify.error(message);
                 }).finally(() => {
-                this.isLoading = false;
-            });
+                    this.isLoading = false;
+                });
         }
 
     }

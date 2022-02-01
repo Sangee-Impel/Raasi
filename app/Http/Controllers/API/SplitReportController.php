@@ -33,12 +33,12 @@ class SplitReportController extends Controller
     $query = Transaction::query()->select(
       "transaction.*",
       DB::raw("(select bag_number from bag b1 where b1.id = bag.parent_bag_id) as from_bag"),
-     "bag.bag_number as to_bag",
+      "bag.bag_number as to_bag",
       //DB::raw("(select bag_number from bag b2 where b2.id = transaction.bag_id LIMIT 1) as to_bag"),
-     // "from_bag.bag_number as from_bag",
+      // "from_bag.bag_number as from_bag",
       "department.name as department",
       "employee.name as employee",
-      DB::raw("DATE_FORMAT(transaction.updated_at, '%r') as time"),
+      DB::raw("DATE_FORMAT(transaction.updated_at, '%d/%c/%Y %r') as time"),
       DB::raw("(select GROUP_CONCAT(distinct(s.sku)) from style s left join bag_styles bs on bs.bag_id = transaction.bag_id where bs.style_id = s.id) as sku")
     );
 

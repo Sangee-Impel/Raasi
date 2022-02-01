@@ -34,6 +34,13 @@ export default [
         dataClass: 'left aligned'
     },
     {
+        name: 'casting',
+        title: 'Accessories Name',
+        sortField: 'casting',
+        titleClass: 'center aligned',
+        dataClass: 'left aligned'
+    },
+    {
         name: 'quantity',
         title: 'Qty',
         sortField: 'quantity',
@@ -42,7 +49,7 @@ export default [
     },
     {
         name: 'weight',
-        title: 'Loss Weight',
+        title: 'Weight',
         sortField: 'weight',
         titleClass: 'center aligned',
         dataClass: 'left aligned'
