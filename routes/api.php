@@ -98,6 +98,7 @@ Route::group([
     Route::apiResource('emploss-report', 'API\EmplossReportController');
     Route::apiResource('castinginword-report', 'API\CastinginwordReportController');
     Route::apiResource('accessoriesinword-report', 'API\AccessoriesinwordReportController');
+    Route::apiResource('closing-report', 'API\ClosingReportController');
 });
 
 

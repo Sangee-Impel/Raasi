@@ -147,6 +147,13 @@ export default [
                 has_permission: false,
                 dataClass: '',
                 href: "/emploss-report"
+            },
+            {
+                title: 'Closing Loss Report',
+                permission_slug: "index.closingreport",
+                has_permission: false,
+                dataClass: '',
+                href: "/closing-report"
             }
         ]
     },
