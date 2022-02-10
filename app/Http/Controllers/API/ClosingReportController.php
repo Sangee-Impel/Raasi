@@ -56,7 +56,7 @@ class ClosingReportController extends Controller
     $query .= "ROUND(SUM(b3.channam_outward),3) as channam, ";
     $query .= "ROUND(SUM(b3.loss),3) as loss, ";
     $query .= "ROUND(SUM(b3.fcdelivery_outward),3) as fc_delivery, ";
-    $query .= "(ROUND(SUM(b3.opening),3) - (ROUND(SUM(b3.scrap_outward),3) + ROUND(SUM(b3.channam_outward),3) + ROUND(SUM(b3.loss),3) + ROUND(SUM(b3.fcdelivery_outward),3))) as closing ";
+    $query .= "ROUND(SUM(b3.opening) - (SUM(b3.scrap_outward) + SUM(b3.channam_outward) + SUM(b3.loss) + SUM(b3.fcdelivery_outward)), 3) as closing ";
     $query .= "FROM ( ";
     $query .= "SELECT (SELECT IFNULL(sum(bs1.weight), 0) FROM bag_styles bs1 JOIN bag b1 on bs1.bag_id=b1.id WHERE b1.id=b.id AND b1.department_id<>9) as opening, ";
     $query .= "(SELECT IFNULL(sum(cw1.weight), 0) FROM casting_weights cw1 WHERE cw1.bag_id=b.id AND cw1.adjustment='Lot_Deduct' AND cw1.casting_id = 1) as casting_inward, ";

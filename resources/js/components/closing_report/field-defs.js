@@ -56,7 +56,7 @@ export default [
     },
     {
         name: 'closing',
-        title: 'FC delivery out word',
+        title: 'Closing',
         sortField: 'closing',
         titleClass: 'center aligned',
         dataClass: 'left aligned'
