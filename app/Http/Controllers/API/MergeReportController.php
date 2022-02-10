@@ -32,19 +32,17 @@ class MergeReportController extends Controller
 
     $query = Transaction::query()->select(
       "transaction.*",
-      "from_bag.bag_number as from_bag",
-      "to_bag.bag_number as to_bag",
+      "frombag.bag_number as from_bag",
+      "tobag.bag_number as to_bag",
       "department.name as department",
       "employee.name as employee",
       DB::raw("DATE_FORMAT(transaction.updated_at, '%d/%c/%Y %r') as time"),
-      DB::raw("(select GROUP_CONCAT(distinct(s.sku)) from style s left join bag_styles bs on bs.bag_id = `to_bag`.`id` where bs.style_id = s.id) as sku")
+      DB::raw("(select GROUP_CONCAT(distinct(s.sku)) from style s where style.id = s.id) as sku")
     );
 
-    $query->leftJoin('bag as from_bag', 'from_bag.id', '=', 'transaction.bag_id');
-
-    $query->leftJoin('bag as to_bag', 'to_bag.id', '=', 'transaction.to_bag_id');
-
-    $query->leftJoin('bag_styles', 'bag_styles.bag_id', '=', 'to_bag.id');
+    $query->leftJoin('bag as frombag', 'frombag.id', '=', 'transaction.bag_id');
+    $query->leftJoin('bag as tobag', 'tobag.id', '=', 'transaction.to_bag_id');
+    $query->leftJoin('bag_styles', 'bag_styles.bag_id', '=', 'tobag.id');
     $query->leftJoin('style', 'bag_styles.style_id', '=', 'style.id');
 
     $query->leftJoin('department', 'department.id', '=', 'transaction.to_department_id');

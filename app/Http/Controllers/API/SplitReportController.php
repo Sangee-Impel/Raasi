@@ -39,14 +39,15 @@ class SplitReportController extends Controller
       "department.name as department",
       "employee.name as employee",
       DB::raw("DATE_FORMAT(transaction.updated_at, '%d/%c/%Y %r') as time"),
-      DB::raw("(select GROUP_CONCAT(distinct(s.sku)) from style s left join bag_styles bs on bs.bag_id = transaction.bag_id where bs.style_id = s.id) as sku")
+      //DB::raw("(select GROUP_CONCAT(distinct(s.sku)) from style s left join bag_styles bs on bs.bag_id = transaction.bag_id where bs.style_id = s.id) as sku"),
+      DB::raw("(select GROUP_CONCAT(distinct(s.sku)) from style s where style.id = s.id) as sku")
     );
 
     $query->leftJoin('bag', 'bag.id', '=', 'transaction.bag_id');
     //$query->leftJoin('bag as from_bag', 'from_bag.id', '=', 'bag.parent_bag_id');
 
-    //$query->leftJoin('bag_styles', 'bag_styles.bag_id', '=', 'transaction.bag_id');
-    //$query->leftJoin('style', 'bag_styles.style_id', '=', 'style.id');
+    $query->leftJoin('bag_styles', 'bag_styles.bag_id', '=', 'transaction.bag_id');
+    $query->leftJoin('style', 'bag_styles.style_id', '=', 'style.id');
 
     $query->leftJoin('department', 'department.id', '=', 'transaction.to_department_id');
     $query->leftJoin('employee', 'employee.id', '=', 'transaction.to_employee_id');

@@ -58,13 +58,13 @@ class ClosingReportController extends Controller
     $query .= "ROUND(SUM(b3.fcdelivery_outward),3) as fc_delivery, ";
     $query .= "(ROUND(SUM(b3.opening),3) - (ROUND(SUM(b3.scrap_outward),3) + ROUND(SUM(b3.channam_outward),3) + ROUND(SUM(b3.loss),3) + ROUND(SUM(b3.fcdelivery_outward),3))) as closing ";
     $query .= "FROM ( ";
-    $query .= "SELECT (SELECT IFNULL(sum(bs1.weight), 0) FROM bag_styles bs1 JOIN bag b1 on bs1.bag_id=b1.id WHERE b1.id=b.id AND b1.department_id<>8) as opening, ";
+    $query .= "SELECT (SELECT IFNULL(sum(bs1.weight), 0) FROM bag_styles bs1 JOIN bag b1 on bs1.bag_id=b1.id WHERE b1.id=b.id AND b1.department_id<>9) as opening, ";
     $query .= "(SELECT IFNULL(sum(cw1.weight), 0) FROM casting_weights cw1 WHERE cw1.bag_id=b.id AND cw1.adjustment='Lot_Deduct' AND cw1.casting_id = 1) as casting_inward, ";
     $query .= "(SELECT IFNULL(sum(cw2.weight), 0) FROM casting_weights cw2 JOIN transaction t2 on t2.id=cw2.transaction_id WHERE t2.bag_id=b.id AND cw2.adjustment='Transaction_Deduct' AND cw2.casting_id <> 1) as accessories_inward, ";
     $query .= "(SELECT IFNULL(sum(til3.weight), 0) FROM transaction_item_loss_details til3 JOIN transaction t3 on t3.id=til3.transaction_id WHERE t3.bag_id=b.id AND til3.type=1) as scrap_outward, ";
     $query .= "(SELECT IFNULL(sum(til3.weight), 0) FROM transaction_item_loss_details til3 JOIN transaction t3 on t3.id=til3.transaction_id WHERE t3.bag_id=b.id AND til3.type=2) as channam_outward, ";
     $query .= "(SELECT IFNULL(sum(til4.weight), 0) FROM transaction_item_loss_details til4 JOIN transaction t4 on t4.id=til4.transaction_id WHERE t4.bag_id=b.id AND til4.type=0) as loss, ";
-    $query .= "(select IFNULL(sum(bs2.weight), 0) from bag_styles bs2 JOIN bag b2 on bs2.bag_id=b2.id WHERE b2.id=b.id AND b2.department_id=8) as fcdelivery_outward ";
+    $query .= "(select IFNULL(sum(bs2.weight), 0) from bag_styles bs2 JOIN bag b2 on bs2.bag_id=b2.id WHERE b2.id=b.id AND b2.department_id=9) as fcdelivery_outward ";
     $query .= "FROM bag b ";
     $query .= "WHERE 1=1 ";
     if (trim($from_date) != '') {
