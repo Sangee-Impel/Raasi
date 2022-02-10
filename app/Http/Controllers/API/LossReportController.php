@@ -34,7 +34,7 @@ class LossReportController extends Controller
       "bag.id",
       "bag.bag_number",
       "bag.order_number",
-      "transaction_item_loss_details.weight",
+      DB::raw("ROUND(transaction_item_loss_details.weight, 3) as weight"),
       DB::raw("DATE_FORMAT(transaction_item_loss_details.updated_at, '%d/%c/%Y %r') as time"),
       DB::raw("1 as quantity"),
       DB::raw("GROUP_CONCAT(style.sku) sku"),

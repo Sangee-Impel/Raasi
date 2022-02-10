@@ -27,9 +27,16 @@ export default [
         dataClass: 'left aligned'
     },
     {
-        name: 'scrap_channam',
-        title: 'Scrap & channam out word',
-        sortField: 'scrap_channam',
+        name: 'scrap',
+        title: 'Scrap out word',
+        sortField: 'scrap',
+        titleClass: 'center aligned',
+        dataClass: 'left aligned'
+    },
+    {
+        name: 'channam',
+        title: 'Channam out word',
+        sortField: 'channam',
         titleClass: 'center aligned',
         dataClass: 'left aligned'
     },
@@ -43,7 +50,14 @@ export default [
     {
         name: 'fc_delivery',
         title: 'FC delivery out word',
-        sortField: 'type',
+        sortField: 'fc_delivery',
+        titleClass: 'center aligned',
+        dataClass: 'left aligned'
+    },
+    {
+        name: 'closing',
+        title: 'FC delivery out word',
+        sortField: 'closing',
         titleClass: 'center aligned',
         dataClass: 'left aligned'
     },

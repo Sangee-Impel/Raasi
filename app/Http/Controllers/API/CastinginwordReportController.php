@@ -33,7 +33,7 @@ class CastinginwordReportController extends Controller
       "bag.id",
       "bag.bag_number",
       "bag.order_number",
-      "casting_weights.weight",
+      DB::raw("ROUND(casting_weights.weight, 3) as weight"),
       DB::raw("DATE_FORMAT(casting_weights.updated_at, '%d/%c/%Y %r') as time"),
       DB::raw("sum(bag_styles.quantity) as quantity"),
       DB::raw("GROUP_CONCAT(style.sku) sku")

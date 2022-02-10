@@ -38,7 +38,7 @@ class PendingReportController extends Controller
       "department.name as department",
       DB::raw("DATE_FORMAT(bag.updated_at, '%d/%c/%Y %r') as time"),
       DB::raw("SUM(bag_styles.quantity) as quantity"),
-      DB::raw("SUM(bag_styles.weight) as weight"),
+      DB::raw("ROUND(SUM(bag_styles.weight), 3) as weight"),
       DB::raw("GROUP_CONCAT(bag_styles.style_id) as style"),
       DB::raw("GROUP_CONCAT(style.sku) sku"),
       "employee.name as employee",
@@ -74,6 +74,7 @@ class PendingReportController extends Controller
     }
 
     $query->where("bag.status", "!=", "1");
+    $query->where("bag.department_id", "!=", "8");
     $query->groupBy('bag.id', 'bag.parent_bag_id', 'bag.bag_number', 'bag.order_number');
     $query->orderBy('bag.id', 'DESC');
 
