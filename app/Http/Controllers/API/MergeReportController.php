@@ -32,8 +32,8 @@ class MergeReportController extends Controller
 
     $query = Transaction::query()->select(
       "transaction.*",
-      "frombag.bag_number as from_bag",
-      "tobag.bag_number as to_bag",
+      "tobag.bag_number as from_bag",
+      "frombag.bag_number as to_bag",
       "department.name as department",
       "employee.name as employee",
       DB::raw("DATE_FORMAT(transaction.updated_at, '%d/%c/%Y %r') as time"),
@@ -47,6 +47,24 @@ class MergeReportController extends Controller
 
     $query->leftJoin('department', 'department.id', '=', 'transaction.to_department_id');
     $query->leftJoin('employee', 'employee.id', '=', 'transaction.to_employee_id');
+
+    if ($request->has('advanceFilter')) {
+      $params = json_decode($request->get('advanceFilter'), true);
+      if (!is_null($params)) {
+        foreach ($params  as $column => $value) {
+          if (!is_null($value)) {
+            switch ($column) {
+              case 'from_date':
+                $query->where("transaction.updated_at", '>=', $value . ' 00:00:00');
+                break;
+              case 'to_date':
+                $query->where("transaction.updated_at", '<=', $value . ' 23:59:59');
+                break;
+            }
+          }
+        }
+      }
+    }
 
     $query->where("transaction.transaction_mode", 2);
     $query->orderBy('transaction.id', 'DESC');

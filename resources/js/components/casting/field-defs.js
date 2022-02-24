@@ -7,7 +7,7 @@ export default [
     },
     {
         name: 'name',
-        title: 'Casting Name',
+        title: 'Stock Name',
         sortField: 'name',
         titleClass: 'center aligned',
         dataClass: 'center aligned'

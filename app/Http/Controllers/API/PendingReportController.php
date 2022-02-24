@@ -40,6 +40,7 @@ class PendingReportController extends Controller
       DB::raw("SUM(bag_styles.quantity) as quantity"),
       DB::raw("ROUND(SUM(bag_styles.weight), 3) as weight"),
       DB::raw("GROUP_CONCAT(bag_styles.style_id) as style"),
+      DB::raw("GROUP_CONCAT(bag_styles.instructions) instruction"),
       DB::raw("GROUP_CONCAT(style.sku) sku"),
       "employee.name as employee",
     );
@@ -75,6 +76,7 @@ class PendingReportController extends Controller
 
     $query->where("bag.status", "!=", "1");
     $query->where("bag.department_id", "!=", "9");
+    $query->whereNotIn("bag.status", array(2, 4));
     $query->groupBy('bag.id', 'bag.parent_bag_id', 'bag.bag_number', 'bag.order_number');
     $query->orderBy('bag.id', 'DESC');
 

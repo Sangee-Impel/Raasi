@@ -27,6 +27,13 @@ export default [
         dataClass: 'left aligned'
     },
     {
+        name: 'instruction',
+        title: 'Instruction',
+        sortField: 'instruction',
+        titleClass: 'center aligned',
+        dataClass: 'left aligned'
+    },
+    {
         name: 'quantity',
         title: 'Qty',
         sortField: 'quantity',

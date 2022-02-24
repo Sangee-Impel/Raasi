@@ -38,17 +38,22 @@ class LossApprovalController extends Controller
     {
         self::hasPermission('index.lossapproval');
         $query = TransactionItemLossDetails::query()->select(
+            "bag.id as bag_id",
+            "bag.bag_number",
+            "bag.order_number",
             'transaction_item_loss_details.*',
             'bag.bag_number as bag_number',
             'bag.order_number as order_number',
-            'style.sku as style_sku',
+            //'style.sku as style_sku',
+            DB::raw("GROUP_CONCAT(style.sku) style_sku"),
             'users.name as user_name'
         )
-            ->leftJoin('transaction_item', 'transaction_item.id', '=', 'transaction_item_loss_details.transaction_item_id')
-            ->leftJoin('bag_styles', 'bag_styles.id', '=', 'transaction_item.bag_style_id')
-            ->leftJoin('style', 'style.id', '=', 'bag_styles.style_id')
-            ->leftJoin('transaction', 'transaction.id', '=', 'transaction_item.transaction_id')
+            //->leftJoin('transaction_item', 'transaction_item.id', '=', 'transaction_item_loss_details.transaction_item_id')
+            //->leftJoin('bag_styles', 'bag_styles.id', '=', 'transaction_item.bag_style_id')
+            ->leftJoin('transaction', 'transaction.id', '=', 'transaction_item_loss_details.transaction_id')
             ->leftJoin('bag', 'bag.id', '=', 'transaction.bag_id')
+            ->leftJoin('bag_styles', 'bag_styles.bag_id', '=', 'bag.id')
+            ->leftJoin('style', 'style.id', '=', 'bag_styles.style_id')
             ->leftJoin('users', 'users.id', '=', 'transaction_item_loss_details.user_id')
             ->where('transaction_item_loss_details.admin_approval_loss_weight', '>', 0)
             ->where('transaction_item_loss_details.type', XModel::getConfigType("loss", "transaction_item_loss_type", "value")['id'])
@@ -71,6 +76,7 @@ class LossApprovalController extends Controller
                 }
             }
         }
+        $query->groupBy('bag.id', 'bag.bag_number', 'bag.order_number', 'transaction_item_loss_details.weight');
         return XModel::preparePagination($query, $request, ['bag.bag_number', 'bag.order_number', 'style.sku', 'users.name']);
     }
     public function statusUpdate(Request $request)

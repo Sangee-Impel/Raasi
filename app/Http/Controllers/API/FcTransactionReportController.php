@@ -20,6 +20,26 @@ class FcTransactionReportController extends Controller
     {
         self::hasPermission('index.openingreport');
 
+        $from_date = date('Y-m-d') . ' 00:00:00';
+        $to_date = date('Y-m-d') . ' 23:59:59';
+        if ($request->has('advanceFilter')) {
+            $params = json_decode($request->get('advanceFilter'), true);
+            if (!is_null($params)) {
+                foreach ($params  as $column => $value) {
+                    if (!is_null($value)) {
+                        switch ($column) {
+                            case 'from_date':
+                                $from_date = $value . ' 00:00:00';
+                                break;
+                            case 'to_date':
+                                $to_date = $value . ' 23:59:59';
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+
         $query = Bag::query()->select(
             "bag.*",
             "bag.parent_bag_id",
@@ -28,7 +48,8 @@ class FcTransactionReportController extends Controller
             "department.name as department",
             DB::raw("DATE_FORMAT(bag.updated_at, '%d/%c/%Y %r') as time"),
             DB::raw("ROUND(SUM(bag_styles.quantity),3) as quantity"),
-            DB::raw("ROUND(SUM(bag_styles.weight),3) as weight"),
+            //DB::raw("ROUND(SUM(bag_styles.weight),3) as weight"),
+            DB::raw("(SELECT IFNULL(sum(t1.total_receive_weight), 0) FROM transaction t1 WHERE t1.bag_id = bag.id AND t1.transaction_date >= '" . $from_date . "' AND t1.transaction_date <= '" . $to_date . "' AND t1.to_department_id=9 order by t1.id desc limit 1) as weight"),
             DB::raw("GROUP_CONCAT(bag_styles.style_id) as style"),
             DB::raw("GROUP_CONCAT(style.sku) sku")
         );
@@ -56,6 +77,7 @@ class FcTransactionReportController extends Controller
         }
 
         $query->where("bag.department_id", 9);
+        $query->whereNotIn("bag.status", array(2, 4));
         $query->groupBy('bag.id', 'bag.parent_bag_id', 'bag.bag_number', 'bag.order_number');
         $query->orderBy('bag.id', 'DESC');
 

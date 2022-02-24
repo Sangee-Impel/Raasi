@@ -33,16 +33,16 @@ export default [
         dataClass: 'left aligned'
     },
     {
-        name: 'total_transfer_quantity',
+        name: 'quantity',
         title:'Qty',
-        sortField: 'total_transfer_quantity',
+        sortField: 'quantity',
         titleClass: 'center aligned',
         dataClass: 'left aligned'
     },
     {
-        name: 'total_transfer_weight',
+        name: 'weight',
         title:'Weight',
-        sortField: 'total_transfer_weight',
+        sortField: 'weight',
         titleClass: 'center aligned',
         dataClass: 'left aligned'
     },
