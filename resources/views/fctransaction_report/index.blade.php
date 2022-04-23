@@ -25,11 +25,11 @@
                                                 <div class="three fields">
                                                     <div class="field">
                                                         <label>From Date</label>
-                                                        <input type="date" name="from_date"  v-model="from_date" >
+                                                        <input type="date" name="from_date" v-model="from_date">
                                                     </div>
                                                     <div class="field">
                                                         <label>To Date</label>
-                                                        <input type="date" name="to_date"  v-model="to_date" >
+                                                        <input type="date" name="to_date" v-model="to_date">
                                                     </div>
                                                     <div class="field pt-4 mt-2">
                                                         <button class="btn btn-fw info" @click="onFilterSearch">Filter</button>
@@ -40,9 +40,7 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <!--Advance filtter search-->
-
                                 </div>
                             </div>
                         </div>
@@ -53,6 +51,16 @@
                             <div class="col-sm-12 col-md-12 col-lg-12 center">
                                 <vue-table ref="vuetable" api-url="{{ URL::route('fctransaction-report.index') }}" :fields="fields" pagination-path="" :http-fetch="vueTableFetch" @vuetable:pagination-data="onPaginationData" :append-params="vueTableParams">
                                 </vue-table>
+                                <table class="ui blue selectable celled stackable attached table">
+                                    <tfoot class="vuetable-body">
+                                        <tr>
+                                            <td style="text-align: right; width: 48.4%;">Total</td>
+                                            <td style="width: 6%;">
+                                                <div v-html="totalWeight"></div>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
                                 <div class="vuetable-pagination ui basic segment grid">
                                     <vuetable-pagination-info ref="paginationInfo"></vuetable-pagination-info>
                                     <vuetable-pagination ref="pagination" @vuetable-pagination:change-page="onChangePage"></vuetable-pagination>
@@ -65,5 +73,5 @@
             </div>
         </div>
     </div>
-    </manage-fctransaction-report>
-    @endsection
+</manage-fctransaction-report>
+@endsection

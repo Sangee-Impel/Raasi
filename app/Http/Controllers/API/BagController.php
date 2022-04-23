@@ -41,6 +41,7 @@ class BagController extends Controller
         self::hasPermission('index.bag');
         $query = Bag::query()->select(
             'bag.*',
+            DB::raw("CASE WHEN bag.department_id = 9 THEN 1 ELSE bag.status END as status"),
             'parent_bag.bag_number as parent_bag_number',
             'department.name as department_name',
             DB::raw("CONCAT(employee.code,'-',employee.name) as employee_name")

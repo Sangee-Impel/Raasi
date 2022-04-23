@@ -5,19 +5,13 @@ export default [{
         dataClass: 'center aligned'
     },
     {
-        name: 'from_bag',
-        title: 'From Lot',
-        sortField: 'from_bag',
+        name: 'bag_number',
+        title: 'Lot Number',
+        sortField: 'bag_number',
         titleClass: 'center aligned',
         dataClass: 'left aligned'
     },
     {
-        name: 'to_bag',
-        title: 'To Lot',
-        sortField: 'to_bag',
-        titleClass: 'center aligned',
-        dataClass: 'left aligned'
-    }, {
         name: 'time',
         title: 'Time',
         sortField: 'time',
@@ -32,30 +26,51 @@ export default [{
         dataClass: 'left aligned'
     },
     {
-        name: 'transferred_qty',
-        title: 'Transfer Qty',
-        sortField: 'transferred_qty',
+        name: 'instruction',
+        title: 'Instruction',
+        sortField: 'instruction',
         titleClass: 'center aligned',
         dataClass: 'left aligned'
     },
     {
-        name: 'transferred_weight',
-        title: 'Transfer Weight',
-        sortField: 'transferred_weight',
-        titleClass: 'center aligned',
-        dataClass: 'left aligned'
-    },
-    {
-        name: 'total_transfer_quantity',
+        name: 'quantity',
         title: 'Qty',
-        sortField: 'total_transfer_quantity',
+        sortField: 'quantity',
         titleClass: 'center aligned',
         dataClass: 'left aligned'
     },
     {
-        name: 'total_transfer_weight',
+        name: 'weight',
         title: 'Weight',
-        sortField: 'total_transfer_weight',
+        sortField: 'weight',
+        titleClass: 'center aligned',
+        dataClass: 'left aligned'
+    },
+    {
+        name: 'scrap',
+        title: 'Scrap Weight',
+        sortField: 'scrap',
+        titleClass: 'center aligned',
+        dataClass: 'left aligned'
+    },
+    {
+        name: 'channam',
+        title: 'Channam Weight',
+        sortField: 'channam',
+        titleClass: 'center aligned',
+        dataClass: 'left aligned'
+    },
+    {
+        name: 'loss',
+        title: 'Loss Weight',
+        sortField: 'loss',
+        titleClass: 'center aligned',
+        dataClass: 'left aligned'
+    },
+    {
+        name: 'cross_weight',
+        title: 'Cross Weight',
+        sortField: 'cross_weight',
         titleClass: 'center aligned',
         dataClass: 'left aligned'
     },

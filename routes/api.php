@@ -99,6 +99,7 @@ Route::group([
     Route::apiResource('castinginword-report', 'API\CastinginwordReportController');
     Route::apiResource('accessoriesinword-report', 'API\AccessoriesinwordReportController');
     Route::apiResource('closing-report', 'API\ClosingReportController');
+    Route::apiResource('eod-report', 'API\EodReportController');
 });
 
 

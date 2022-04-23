@@ -36,6 +36,8 @@ class MergeReportController extends Controller
       "frombag.bag_number as to_bag",
       "department.name as department",
       "employee.name as employee",
+      DB::raw("(transaction.total_transfer_quantity - IFNULL((SELECT t3.total_transfer_quantity FROM transaction t3 JOIN bag as oldbag ON t3.bag_id=oldbag.id WHERE oldbag.bag_number=frombag.bag_number AND oldbag.status=4 ORDER BY t3.ID DESC LIMIT 1), 0) - IFNULL((SELECT sum(bs1.quantity) FROM bag_styles bs1 JOIN bag as oldbag1 ON bs1.bag_id=oldbag1.id WHERE oldbag1.bag_number=frombag.bag_number AND bs1.other_accessories_id IS NOT NULL AND bs1.style_id IS NULL AND oldbag1.status=4),0)) as transferred_qty"),
+      DB::raw("(transaction.total_receive_weight - IFNULL((SELECT t3.total_receive_weight FROM transaction t3 JOIN bag as oldbag ON t3.bag_id=oldbag.id WHERE oldbag.bag_number=frombag.bag_number AND oldbag.status=4 ORDER BY t3.ID DESC LIMIT 1), 0) - IFNULL((SELECT sum(bs1.weight) FROM bag_styles bs1 JOIN bag as oldbag1 ON bs1.bag_id=oldbag1.id WHERE oldbag1.bag_number=frombag.bag_number AND bs1.other_accessories_id IS NOT NULL AND bs1.style_id IS NULL AND oldbag1.status=4),0)) as transferred_weight"),
       DB::raw("DATE_FORMAT(transaction.updated_at, '%d/%c/%Y %r') as time"),
       DB::raw("(select GROUP_CONCAT(distinct(s.sku)) from style s where style.id = s.id) as sku")
     );
@@ -67,6 +69,7 @@ class MergeReportController extends Controller
     }
 
     $query->where("transaction.transaction_mode", 2);
+    $query->groupBy('transaction.id');
     $query->orderBy('transaction.id', 'DESC');
     return XModel::preparePagination($query, $request, ['bag.bag_number', 'bag.order_number']);
   }

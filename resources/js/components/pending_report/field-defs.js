@@ -1,5 +1,4 @@
-export default [
-    {
+export default [{
         name: '__sequence',
         title: '#',
         titleClass: 'center aligned',
@@ -48,6 +47,34 @@ export default [
         dataClass: 'left aligned'
     },
     {
+        name: 'scrap',
+        title: 'Scrap Weight',
+        sortField: 'scrap',
+        titleClass: 'center aligned',
+        dataClass: 'left aligned'
+    },
+    {
+        name: 'channam',
+        title: 'Channam Weight',
+        sortField: 'channam',
+        titleClass: 'center aligned',
+        dataClass: 'left aligned'
+    },
+    {
+        name: 'loss',
+        title: 'Loss Weight',
+        sortField: 'loss',
+        titleClass: 'center aligned',
+        dataClass: 'left aligned'
+    },
+    {
+        name: 'cross_weight',
+        title: 'Cross Weight',
+        sortField: 'cross_weight',
+        titleClass: 'center aligned',
+        dataClass: 'left aligned'
+    },
+    {
         name: 'employee',
         title: 'Emp Name',
         sortField: 'employee',
@@ -60,6 +87,5 @@ export default [
         sortField: 'department',
         titleClass: 'center aligned',
         dataClass: 'left aligned'
-    }
+    },
 ]
-

@@ -26,6 +26,7 @@ Vue.component('manage-fctransaction-report', {
             is_advance_search: true,
             from_date: null,
             to_date: null,
+            totalWeight: 0,
         };
     },
     created() {
@@ -35,8 +36,8 @@ Vue.component('manage-fctransaction-report', {
 
     },
     mounted() {
+        this.totalCalc();
     },
-
     computed: {
         vueTableFetch: function () {
             return axios.get;
@@ -52,7 +53,15 @@ Vue.component('manage-fctransaction-report', {
                 this.$refs.vuetable.refresh();
             }
         },
-
+        totalCalc() {
+            axios.get('/api/fctransaction-report').then(response => {
+                let data = response.data.data;
+                this.totalWeight = data.reduce((a, b) => a + b.weight, 0);
+            }).catch(reason => {
+            }).finally(() => {
+                this.isLoading = false;
+            });
+        },
         onPaginationData(paginationData) {
             this.$refs.pagination.setPaginationData(paginationData)
             this.$refs.paginationInfo.setPaginationData(paginationData)

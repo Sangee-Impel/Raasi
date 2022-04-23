@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use App\GenXCommon\XModel;
 use Illuminate\Support\Facades\DB;
 
-class PendingReportController extends Controller
+class EodReportController extends Controller
 {
   /**
    * Getting grid data
@@ -18,8 +18,8 @@ class PendingReportController extends Controller
 
   public function getIndex()
   {
-    self::hasPermission('index.pendingreport');
-    return view("pending_report.index");
+    self::hasPermission('index.eodreport');
+    return view("eod_report.index");
   }
   /**
    * Display a listing of the resource.
@@ -28,7 +28,7 @@ class PendingReportController extends Controller
    */
   public function index(Request $request)
   {
-    self::hasPermission('index.pendingreport');
+    self::hasPermission('index.eodreport');
 
     $query = Bag::query()->select(
       "bag.*",
@@ -54,32 +54,9 @@ class PendingReportController extends Controller
     $query->leftJoin('department', 'department.id', '=', 'bag.department_id');
     $query->leftJoin('employee', 'employee.id', '=', 'bag.employee_id');
 
-    if ($request->has('advanceFilter')) {
-      $params = json_decode($request->get('advanceFilter'), true);
-      if (!is_null($params)) {
-        foreach ($params  as $column => $value) {
-          if (!is_null($value)) {
-            switch ($column) {
-              case 'from_date':
-                $query->where("bag.updated_at", '>=', $value . ' 00:00:00');
-                break;
-              case 'to_date':
-                $query->where("bag.updated_at", '<=', $value . ' 23:59:59');
-                break;
-              case 'employee_id':
-                $query->where("employee.id", '=', $value);
-                break;
-              case 'department_id':
-                $query->where("department.id", '=', $value);
-                break;
-            }
-          }
-        }
-      }
-    }
-
     $query->where("bag.status", "!=", "1");
-    $query->where("bag.department_id", "=", "1");
+    $query->where("bag.department_id", "!=", "9");
+    $query->where("bag.department_id", "!=", "1");
     $query->whereNotIn("bag.status", array(2, 4));
     $query->groupBy('bag.id', 'bag.parent_bag_id', 'bag.bag_number', 'bag.order_number');
     $query->orderBy('bag.id', 'DESC');

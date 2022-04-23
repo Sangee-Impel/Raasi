@@ -88,6 +88,7 @@ require('./emploss_report/manage-emploss-report');
 require('./castinginword_report/manage-castinginword-report');
 require('./accessoriesinword_report/manage-accessoriesinword-report');
 require('./closing_report/manage-closing-report');
+require('./eod_report/manage-eod-report');
 
 /*casting*/
 require('./casting/manage-casting');

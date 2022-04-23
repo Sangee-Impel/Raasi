@@ -31,6 +31,7 @@ class AccessoriesinwordReportController extends Controller
     self::hasPermission('index.pendingreport');
 
     $query = Bag::query()->select(
+      "bag_styles.id as bag_style_id",
       "bag.*",
       "bag.parent_bag_id",
       "bag.bag_number",
@@ -43,12 +44,16 @@ class AccessoriesinwordReportController extends Controller
       DB::raw("GROUP_CONCAT(bag_styles.instructions) instruction"),
       DB::raw("GROUP_CONCAT(style.sku) sku"),
       "employee.name as employee",
+      "other_accessories.name as casting",
     );
 
     $query->leftJoin('bag_styles', 'bag_styles.bag_id', '=', 'bag.id');
     $query->leftJoin('style', 'bag_styles.style_id', '=', 'style.id');
-    $query->leftJoin('department', 'department.id', '=', 'bag.department_id');
-    $query->leftJoin('employee', 'employee.id', '=', 'bag.employee_id');
+    $query->leftJoin('transaction_item', 'transaction_item.bag_style_id', '=', 'bag_styles.id');
+    $query->leftJoin('transaction', 'transaction.id', '=', 'transaction_item.transaction_id');
+    $query->leftJoin('department', 'department.id', '=', 'transaction.from_department_id');
+    $query->leftJoin('employee', 'employee.id', '=', 'transaction.from_employee_id');
+    $query->leftJoin('other_accessories', 'other_accessories.id', '=', 'bag_styles.other_accessories_id');
 
     if ($request->has('advanceFilter')) {
       $params = json_decode($request->get('advanceFilter'), true);
@@ -75,8 +80,9 @@ class AccessoriesinwordReportController extends Controller
     }
 
     $query->where("bag_styles.other_accessories_id", "!=", '');
+    //$query->where("transaction_item.type", 1);
     $query->whereNotIn("bag.status", array(2, 4));
-    $query->groupBy('bag.id', 'bag.parent_bag_id', 'bag.bag_number', 'bag.order_number');
+    $query->groupBy('bag_styles.id', 'bag.id', 'bag.parent_bag_id', 'bag.bag_number', 'bag.order_number');
     $query->orderBy('bag.id', 'DESC');
 
     return XModel::preparePagination($query, $request, ['bag.bag_number', 'bag.order_number']);

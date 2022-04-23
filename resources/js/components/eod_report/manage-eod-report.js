@@ -4,7 +4,8 @@ import VuetablePaginationInfo from 'vuetable-2/src/components/VuetablePagination
 import FieldDefs from './field-defs';
 import VueSelect from 'vue-multiselect';
 
-Vue.component('manage-merge-report', {
+Vue.component('manage-eod-report', {
+
     components: {
         'v-select': VueSelect,
         'vue-table': Vuetable,
@@ -18,18 +19,27 @@ Vue.component('manage-merge-report', {
                 trash: 0,
                 advanceFilter: {
                     from_date: null,
-                    to_date: null
+                    to_date: null,
+                    department_id: null,
+                    employee_id: null
                 }
             },
+            department: null,
+            employee: null,
             isLoading: false,
             is_advance_search: true,
             from_date: null,
             to_date: null,
-            totalTransferWeight: 0,
-            totalWeight: 0
+            department_options: [],
+            employee_options: [],
+            all_employee_options: [],
+            totalWeight: 0,
+            totalScarpWeight: 0,
+            totalChanamWeight: 0,
+            totalLossWeight: 0,
+            totalCrossWeight: 0
         };
     },
-
     created() {
 
     },
@@ -37,17 +47,17 @@ Vue.component('manage-merge-report', {
 
     },
     mounted() {
+        this.loadDropDown();
         this.totalCalc();
     },
 
     computed: {
-        vueTableFetch: function () {
+        vueTableFetch: function() {
             return axios.get;
         },
     },
 
     methods: {
-
         reloadDataTable(dontResetPageNumber) {
             console.log("Dont Reset Page Number => " + (dontResetPageNumber ? "TRUE" : "FALSE"));
             if (dontResetPageNumber) {
@@ -56,18 +66,8 @@ Vue.component('manage-merge-report', {
                 this.$refs.vuetable.refresh();
             }
         },
-        totalCalc() {
-            axios.get('/api/merge-report').then(response => {
-                let data = response.data.data;
-                this.totalWeight = data.reduce((a, b) => a + b.total_receive_weight, 0);
-                this.totalTransferWeight = data.reduce((a, b) => a + b.total_transfer_weight, 0);
-            }).catch(reason => {
-            }).finally(() => {
-                this.isLoading = false;
-            });
-        },
+
         onPaginationData(paginationData) {
-            console.log(this.tableData);
             this.$refs.pagination.setPaginationData(paginationData)
             this.$refs.paginationInfo.setPaginationData(paginationData)
         },
@@ -85,8 +85,57 @@ Vue.component('manage-merge-report', {
             this.vueTableParams.filter = '';
             this.reloadDataTable(false);
         },
+        bindEmployee() {
+            if (this.department != null) {
+                this.employee = null;
+                this.employee_options = this.department.employees;
+            } else {
+                this.employee_options = this.all_employee_options;
+            }
+        },
+        loadDropDown() {
+            this.isLoading = true;
+            axios.post('/api/get-dropdown-data')
+                .then(response => {
+                    let dropDownData = response.data;
+                    this.department_options = dropDownData.department;
+                    this.employee_options = dropDownData.employee;
+                    this.all_employee_options = dropDownData.employee;
+                    //
+                })
+                .catch(reason => {
+                    console.log(reason.message);
+                }).finally(() => {
+                    this.isLoading = false;
+                });
+        },
+        totalCalc() {
+            axios.get('/api/eod-report')
+                .then(response => {
+                    let data = response.data.data;
+                    console.log(data);
+                    this.totalWeight = data.reduce((a, b) => a + b.weight, 0);
+                    this.totalScarpWeight = data.reduce((a, b) => a + b.scrap, 0);
+                    this.totalChanamWeight = data.reduce((a, b) => a + b.channam, 0);
+                    this.totalLossWeight = data.reduce((a, b) => a + b.loss, 0);
+                    this.totalCrossWeight = data.reduce((a, b) => a + b.cross_weight, 0);
+                }).catch(reason => {}).finally(() => {
+                    this.isLoading = false;
+                });
+        },
         onFilterSearch() {
             this.isLoading = true;
+
+            this.vueTableParams.advanceFilter.employee_id = null;
+            if (this.employee != null) {
+                this.vueTableParams.advanceFilter.employee_id = this.employee.id;
+            }
+
+            this.vueTableParams.advanceFilter.department_id = null;
+            if (this.department != null) {
+                this.vueTableParams.advanceFilter.department_id = this.department.id;
+            }
+
 
             this.vueTableParams.advanceFilter.from_date = null;
             if (this.from_date != null)
@@ -104,6 +153,8 @@ Vue.component('manage-merge-report', {
             this.is_advance_search = true;
             this.from_date = null;
             this.to_date = null;
+            this.employee = null;
+            this.department = null;
             this.isLoading = true;
             this.onFilterSearch();
             this.isLoading = false;

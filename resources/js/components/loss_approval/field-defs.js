@@ -3,7 +3,8 @@ export default [
         name: '__sequence',
         title: '#',
         titleClass: 'center aligned',
-        dataClass: 'center aligned'
+        dataClass: 'center aligned',
+        fTitle: '#',
     },
     {
         name: 'bag_number',

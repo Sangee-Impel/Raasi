@@ -14,14 +14,13 @@ Vue.component('manage-opening-report', {
     },
     data() {
         return {
-
             fields: FieldDefs,
             vueTableParams: {
                 trash: 0
             },
             isLoading: false,
-            is_advance_search: true
-
+            is_advance_search: true,
+            totalWeight: 0
         };
     },
 
@@ -32,8 +31,8 @@ Vue.component('manage-opening-report', {
 
     },
     mounted() {
+        this.totalCalc();
     },
-
     computed: {
         vueTableFetch: function () {
             return axios.get;
@@ -41,7 +40,6 @@ Vue.component('manage-opening-report', {
     },
 
     methods: {
-
         reloadDataTable(dontResetPageNumber) {
             console.log("Dont Reset Page Number => " + (dontResetPageNumber ? "TRUE" : "FALSE"));
             if (dontResetPageNumber) {
@@ -50,7 +48,15 @@ Vue.component('manage-opening-report', {
                 this.$refs.vuetable.refresh();
             }
         },
-
+        totalCalc() {
+            axios.get('/api/opening-report').then(response => {
+                let data = response.data.data;
+                this.totalWeight = data.reduce((a, b) => a + b.weight, 0);
+            }).catch(reason => {
+            }).finally(() => {
+                this.isLoading = false;
+            });
+        },
         onPaginationData(paginationData) {
             console.log(this.tableData);
             this.$refs.pagination.setPaginationData(paginationData)
@@ -59,7 +65,6 @@ Vue.component('manage-opening-report', {
         onChangePage(page) {
             this.$refs.vuetable.changePage(page)
         },
-
         onAction(action, data, index) {
 
         },
@@ -72,9 +77,7 @@ Vue.component('manage-opening-report', {
         },
         onFilterSearch() {
             this.isLoading = true;
-
             this.vueTableParams.advanceFilter.user_id = null;
-
             this.reloadDataTable(false);
             this.isLoading = false;
         },

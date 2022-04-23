@@ -154,6 +154,13 @@ export default [
                 has_permission: false,
                 dataClass: '',
                 href: "/closing-report"
+            },
+            {
+                title: 'EOD Report',
+                permission_slug: "index.eodreport",
+                has_permission: false,
+                dataClass: '',
+                href: "/eod-report"
             }
         ]
     },

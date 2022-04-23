@@ -11,10 +11,10 @@
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="row p-3">
-                                    <div class="col-lg-2 ">
-                                        <h2 class="pt-3">Pending Lot Report</h2>
+                                    <div class="col-lg-6 ">
+                                        <h2 class="pt-3">Pending Lot Report (Issue Department Lots)</h2>
                                     </div>
-                                    <div class="col-lg-10">
+                                    <div class="col-lg-6">
                                         @include('__global.search_bar')
                                     </div>
                                 </div>

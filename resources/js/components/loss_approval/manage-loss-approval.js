@@ -6,171 +6,166 @@ import TypeDefs from '../transaction/type-defs'
 import VueSelect from 'vue-multiselect';
 
 Vue.component('manage-loss-approval', {
-
-    components : {
-        'v-select'                  :   VueSelect,
-        'vue-table':Vuetable,
-        'vuetable-pagination':VuetablePagination,
-         VuetablePaginationInfo,
+    components: {
+        'v-select': VueSelect,
+        'vue-table': Vuetable,
+        'vuetable-pagination': VuetablePagination,
+        VuetablePaginationInfo,
     },
     data() {
         return {
-
-            fields          : FieldDefs,
-            types          : TypeDefs,
-            vueTableParams : {
-                trash     : 0,
-                advanceFilter:{
-                    user_id:null,
-                    status:null
+            fields: FieldDefs,
+            types: TypeDefs,
+            vueTableParams: {
+                trash: 0,
+                advanceFilter: {
+                    user_id: null,
+                    status: null
                 }
             },
-            isLoading       : false,
-            is_advance_search:true,
-            user      :  null,
-            status      :  null,
-            user_options:[],
+            isLoading: false,
+            is_advance_search: true,
+            user: null,
+            status: null,
+            user_options: [],
             lossReasonModel: false,
-            form:this.getFormData(),
-
-
-
+            form: this.getFormData(),
+            totalWeight: 0,
+            totalAdminWeight: 0
         };
     },
-
-    created(){
-
-    },
-    beforeDestroy(){
+    created() {
 
     },
-    mounted(){
+    beforeDestroy() {
+
+    },
+    mounted() {
         this.loadDropDown();
-        console.log("list");
-
+        this.totalCalc();
         // this.isLoading = false;
     },
-
-    computed:{
-        vueTableFetch: function() {
+    computed: {
+        vueTableFetch: function () {
             return axios.get;
         },
-        checkReasonStatus(){
-            if(this.form.reason_type != null){
-                if(this.form.reason_type.id == this.types.findTransactionType("others",'value','loss_reason_type')['id']){
+        checkReasonStatus() {
+            if (this.form.reason_type != null) {
+                if (this.form.reason_type.id == this.types.findTransactionType("others", 'value', 'loss_reason_type')['id']) {
                     return true;
                 }
             }
             return false;
         }
     },
-
-    methods : {
-        loadDropDown(){
+    methods: {
+        loadDropDown() {
             this.isLoading = true;
             axios.post('/api/loss-approval/drop-down')
-                .then(response=> {
+                .then(response => {
                     let dropDownData = response.data;
                     this.user_options = dropDownData.user;
-                    //
-                })
-                .catch(reason=> {
+                }).catch(reason => {
                     console.log(reason.message);
                 }).finally(() => {
-                this.isLoading = false;
-            });
+                    this.isLoading = false;
+                });
         },
-        checkLossStatus(status){
-            if(status == this.types.findTransactionType("waiting_admin_approval",'value','transaction_item_loss_status')['id']){
+        totalCalc() {
+            axios.get('/api/loss-approval')
+                .then(response => {
+                    let data = response.data.data;
+                    this.totalWeight = data.reduce((a, b) => a + b.weight, 0);
+                    this.totalAdminWeight = data.reduce((a, b) => a + b.admin_approval_loss_weight, 0);
+                }).catch(reason => {
+                }).finally(() => {
+                    this.isLoading = false;
+                });
+        },
+        checkLossStatus(status) {
+            if (status == this.types.findTransactionType("waiting_admin_approval", 'value', 'transaction_item_loss_status')['id']) {
                 return true;
             }
             return false;
         },
-        changeBagStatus(value){
-            return this.types.findTransactionType(value,"id","transaction_item_loss_status")["name"];
+        changeBagStatus(value) {
+            return this.types.findTransactionType(value, "id", "transaction_item_loss_status")["name"];
         },
-        getFormData(){
+        getFormData() {
             return new SparkForm({
-                id : null,
-                reason_type     : null,
-                reason_type_id  : null,
-                loss_description : ''
+                id: null,
+                reason_type: null,
+                reason_type_id: null,
+                loss_description: ''
             });
         },
         openReasonModelPopup(data) {
             this.form.id = data.id;
             this.lossReasonModel = true;
         },
-
-        reloadDataTable(dontResetPageNumber){
-            console.log("Dont Reset Page Number => "+ (dontResetPageNumber ? "TRUE":"FALSE"));
-            if(dontResetPageNumber){
+        reloadDataTable(dontResetPageNumber) {
+            console.log("Dont Reset Page Number => " + (dontResetPageNumber ? "TRUE" : "FALSE"));
+            if (dontResetPageNumber) {
                 this.$refs.vuetable.reload();
-            }else{
+            } else {
                 this.$refs.vuetable.refresh();
             }
         },
-
-        onPaginationData (paginationData) {
-            console.log(this.tableData);
+        onPaginationData(paginationData) {
             this.$refs.pagination.setPaginationData(paginationData)
             this.$refs.paginationInfo.setPaginationData(paginationData)
         },
-        onChangePage (page) {
+        onChangePage(page) {
             this.$refs.vuetable.changePage(page)
         },
-
-        onAction (action, data, index) {
-
+        onAction(action, data, index) {
+            consoel.log(data);
         },
-        assignForm(){
+        assignForm() {
             this.form.reason_type_id = null;
-            if( this.form.reason_type != null){
+            if (this.form.reason_type != null) {
                 this.form.reason_type_id = this.form.reason_type.id;
             }
         },
-        onSubmit(){
+        onSubmit() {
             this.assignForm();
             this.isLoading = true;
-            Spark.post('/api/loss-approval/status-update',this.form).then(response => {
-                console.log(response);
+            Spark.post('/api/loss-approval/status-update', this.form).then(response => {
                 this.$snotify.success('Status Updated!');
                 this.onCancel();
-
-            })
-                .catch(reason => {
-                    console.log(reason);
-                    this.$snotify.error(reason);
-
-                }).finally(() => {this.isLoading = false;});
+            }).catch(reason => {
+                console.log(reason);
+                this.$snotify.error(reason);
+            }).finally(() => {
+                this.isLoading = false;
+            });
         },
-        onCancel(){
+        onCancel() {
             this.lossReasonModel = false;
-            this.form  = this.getFormData();
+            this.form = this.getFormData();
             this.onFilter();
         },
         onFilter() {
             this.reloadDataTable(false);
         },
-        clearDataTable(){
-            this.vueTableParams.filter='';
+        clearDataTable() {
+            this.vueTableParams.filter = '';
             this.reloadDataTable(false);
         },
-        onFilterSearch(){
+        onFilterSearch() {
             this.isLoading = true;
-            
             this.vueTableParams.advanceFilter.user_id = null;
-            if( this.user != null )
+            if (this.user != null)
                 this.vueTableParams.advanceFilter.user_id = this.user.id;
 
             this.vueTableParams.advanceFilter.status = null;
-            if( this.status != null )
+            if (this.status != null) {
                 this.vueTableParams.advanceFilter.status = this.status.id;
-            
+            }
             this.reloadDataTable(false);
             this.isLoading = false;
         },
-        closeAdvanceFilter(){
+        closeAdvanceFilter() {
             this.is_advance_search = true;
             this.user = null;
             this.status = null;
@@ -178,7 +173,7 @@ Vue.component('manage-loss-approval', {
             this.onFilterSearch();
             this.isLoading = false;
         },
-        showAdvanceFilterBlock(){
+        showAdvanceFilterBlock() {
             this.is_advance_search = false;
         },
     }

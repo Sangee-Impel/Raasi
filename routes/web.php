@@ -59,7 +59,7 @@ Route::group([
     Route::get('/accessoriesinword-report', 'API\AccessoriesinwordReportController@getIndex');
     Route::get('/tally-report', 'API\TransactionHistoryController@viewTallyReport');
     Route::get('/closing-report', 'API\ClosingReportController@getIndex');
-
+    Route::get('/eod-report', 'API\EodReportController@getIndex');
     Route::get('/casting', 'API\CastingController@getIndex');
 });
 
