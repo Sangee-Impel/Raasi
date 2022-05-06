@@ -25,7 +25,11 @@ Vue.component('manage-closing-report', {
             isLoading: false,
             is_advance_search: true,
             from_date: null,
-            to_date: null
+            to_date: null,
+            opening: 0,
+            closing: 0,
+            kambi: 0,
+            casting: 0,
         };
     },
     created() {
@@ -36,10 +40,11 @@ Vue.component('manage-closing-report', {
     },
     mounted() {
         this.loadDropDown();
+        this.toalCalc();
     },
 
     computed: {
-        vueTableFetch: function () {
+        vueTableFetch: function() {
             return axios.get;
         },
     },
@@ -53,7 +58,17 @@ Vue.component('manage-closing-report', {
                 this.$refs.vuetable.refresh();
             }
         },
-
+        toalCalc() {
+            axios.get('/api/closing-report').then(response => {
+                let data = response.data.data;
+                this.opening = data.reduce((a, b) => a + b.opening, 0);
+                this.closing = data.reduce((a, b) => a + b.closing, 0);
+                this.kambi = data.reduce((a, b) => a + b.closing, 0);
+                this.casting = data.reduce((a, b) => a + b.casting_inward, 0);
+            }).catch(reason => {}).finally(() => {
+                this.isLoading = false;
+            });
+        },
         onPaginationData(paginationData) {
             this.$refs.pagination.setPaginationData(paginationData)
             this.$refs.paginationInfo.setPaginationData(paginationData)

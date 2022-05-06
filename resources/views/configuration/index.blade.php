@@ -44,6 +44,30 @@
                                                         @{{ form.errors.get('bag_cancel_number.config_value') }}
                                                     </div>
                                                 </div>
+                                                <div class="field ">
+                                                    <label>OTP Number*</label>
+                                                    <div class="ui labeled input">
+                                                        <div class="ui label">
+                                                           +91
+                                                        </div>
+                                                        <input type="text" name="otp_number_1" v-model="form.otp_number_1.config_value" placeholder="Mobile Number">
+                                                    </div>
+                                                    <div class="ui pointing red basic label" v-show="form.errors.has('otp_number_1.config_value')">
+                                                        @{{ form.errors.get('otp_number_1.config_value') }}
+                                                    </div>
+                                                </div>
+                                                <div class="field ">
+                                                    <label>OTP Number*</label>
+                                                    <div class="ui labeled input">
+                                                        <div class="ui label">
+                                                           +91
+                                                        </div>
+                                                        <input type="text" name="otp_number_2" v-model="form.otp_number_2.config_value" placeholder="Mobile Number">
+                                                    </div>
+                                                    <div class="ui pointing red basic label" v-show="form.errors.has('otp_number_2.config_value')">
+                                                        @{{ form.errors.get('otp_number_2.config_value') }}
+                                                    </div>
+                                                </div>
                                                 <div class="field">
                                                     <label class="text-black">Bag Starting Department</label>
                                                     <v-select

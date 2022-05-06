@@ -56,7 +56,7 @@
                                 <table class="ui blue selectable celled stackable attached table">
                                     <tfoot class="vuetable-body">
                                         <tr>
-                                            <td style="text-align: right; width: 16.5%;">Total</td>
+                                            <td style="text-align: right; width: 17.3%;">Total</td>
                                             <td style="width: 6%;">
                                                 <div v-html="totalWeight"></div>
                                             </td>

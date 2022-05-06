@@ -16,7 +16,7 @@ Vue.component('manage-eod-report', {
         return {
             fields: FieldDefs,
             vueTableParams: {
-                trash: 0,
+                trash: 0, per_page: 100,
                 advanceFilter: {
                     from_date: null,
                     to_date: null,
@@ -52,7 +52,7 @@ Vue.component('manage-eod-report', {
     },
 
     computed: {
-        vueTableFetch: function() {
+        vueTableFetch: function () {
             return axios.get;
         },
     },
@@ -80,10 +80,12 @@ Vue.component('manage-eod-report', {
         },
         onFilter() {
             this.reloadDataTable(false);
+            this.totalCalc();
         },
         clearDataTable() {
             this.vueTableParams.filter = '';
             this.reloadDataTable(false);
+            this.totalCalc();
         },
         bindEmployee() {
             if (this.department != null) {
@@ -110,18 +112,18 @@ Vue.component('manage-eod-report', {
                 });
         },
         totalCalc() {
-            axios.get('/api/eod-report')
-                .then(response => {
-                    let data = response.data.data;
-                    console.log(data);
-                    this.totalWeight = data.reduce((a, b) => a + b.weight, 0);
-                    this.totalScarpWeight = data.reduce((a, b) => a + b.scrap, 0);
-                    this.totalChanamWeight = data.reduce((a, b) => a + b.channam, 0);
-                    this.totalLossWeight = data.reduce((a, b) => a + b.loss, 0);
-                    this.totalCrossWeight = data.reduce((a, b) => a + b.cross_weight, 0);
-                }).catch(reason => {}).finally(() => {
-                    this.isLoading = false;
-                });
+            axios.get('/api/eod-report', {
+                params: this.vueTableParams
+            }).then(response => {
+                let data = response.data.data;
+                this.totalWeight = data.reduce((a, b) => a + b.weight, 0);
+                this.totalScarpWeight = data.reduce((a, b) => a + b.scrap, 0);
+                this.totalChanamWeight = data.reduce((a, b) => a + b.channam, 0);
+                this.totalLossWeight = data.reduce((a, b) => a + b.loss, 0);
+                this.totalCrossWeight = data.reduce((a, b) => a + b.cross_weight, 0);
+            }).catch(reason => { }).finally(() => {
+                this.isLoading = false;
+            });
         },
         onFilterSearch() {
             this.isLoading = true;
@@ -147,6 +149,7 @@ Vue.component('manage-eod-report', {
             }
 
             this.reloadDataTable(false);
+            this.totalCalc();
             this.isLoading = false;
         },
         closeAdvanceFilter() {

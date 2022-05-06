@@ -16,7 +16,8 @@ Vue.component('manage-opening-report', {
         return {
             fields: FieldDefs,
             vueTableParams: {
-                trash: 0
+                trash: 0,
+                per_page: 100
             },
             isLoading: false,
             is_advance_search: true,
@@ -49,7 +50,9 @@ Vue.component('manage-opening-report', {
             }
         },
         totalCalc() {
-            axios.get('/api/opening-report').then(response => {
+            axios.get('/api/opening-report', {
+                params: this.vueTableParams
+            }).then(response => {
                 let data = response.data.data;
                 this.totalWeight = data.reduce((a, b) => a + b.weight, 0);
             }).catch(reason => {
@@ -70,15 +73,18 @@ Vue.component('manage-opening-report', {
         },
         onFilter() {
             this.reloadDataTable(false);
+            this.totalCalc();
         },
         clearDataTable() {
             this.vueTableParams.filter = '';
             this.reloadDataTable(false);
+            totalCalc();
         },
         onFilterSearch() {
             this.isLoading = true;
             this.vueTableParams.advanceFilter.user_id = null;
             this.reloadDataTable(false);
+            this.totalCalc();
             this.isLoading = false;
         },
     }

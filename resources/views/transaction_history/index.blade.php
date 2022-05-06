@@ -233,6 +233,7 @@
                                                                                 <th>Total Receive Weight</th>
                                                                                 <th>Total Loss</th>
                                                                                 <th>Total Scrab</th>
+                                                                                <th>Total Channam</th>
                                                                             </tr>
                                                                             </thead>
                                                                             <tbody>
@@ -245,6 +246,7 @@
                                                                                 <td>@{{view_transaction_history.total_receive_weight|bindPrecisionRound}}</td>
                                                                                 <td>@{{view_transaction_history.total_loss|bindPrecisionRound}}</td>
                                                                                 <td>@{{view_transaction_history.total_scrab|bindPrecisionRound}}</td>
+                                                                                <td>@{{view_transaction_history.total_channam|bindPrecisionRound}}</td>
                                                                             </tr>
                                                                             </tbody>
                                                                         </table>

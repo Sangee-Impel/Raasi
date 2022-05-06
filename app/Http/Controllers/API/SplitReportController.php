@@ -71,6 +71,7 @@ class SplitReportController extends Controller
 
     $query->whereNotIn("bag.status", array(2, 4));
     $query->where("parent.status", "=", '2');
+    $query->where("bag_styles.style_id", "!=", '');
     $query->groupBy('bag.id', 'bag.bag_number', 'bag.order_number');
     $query->orderBy('bag.id', 'ASC');
     return XModel::preparePagination($query, $request, ['parent.bag_number', 'bag.bag_number', 'bag.order_number']);

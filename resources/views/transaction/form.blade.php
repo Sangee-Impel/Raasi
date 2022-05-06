@@ -66,6 +66,7 @@
                                             label=" "
                                             only-date
                                             auto-close
+                                            
                                             title="Payment date">
                                         </v-date-picker>
                                         <div class="ui pointing red basic label"

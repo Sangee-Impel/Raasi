@@ -16,6 +16,7 @@ Vue.component('manage-merge-report', {
             fields: FieldDefs,
             vueTableParams: {
                 trash: 0,
+                per_page: 100,
                 advanceFilter: {
                     from_date: null,
                     to_date: null
@@ -47,7 +48,6 @@ Vue.component('manage-merge-report', {
     },
 
     methods: {
-
         reloadDataTable(dontResetPageNumber) {
             console.log("Dont Reset Page Number => " + (dontResetPageNumber ? "TRUE" : "FALSE"));
             if (dontResetPageNumber) {
@@ -57,7 +57,9 @@ Vue.component('manage-merge-report', {
             }
         },
         totalCalc() {
-            axios.get('/api/merge-report').then(response => {
+            axios.get('/api/merge-report', {
+                params: this.vueTableParams
+            }).then(response => {
                 let data = response.data.data;
                 this.totalWeight = data.reduce((a, b) => a + b.total_receive_weight, 0);
                 this.totalTransferWeight = data.reduce((a, b) => a + b.total_transfer_weight, 0);
@@ -80,10 +82,12 @@ Vue.component('manage-merge-report', {
         },
         onFilter() {
             this.reloadDataTable(false);
+            this.totalCalc();
         },
         clearDataTable() {
             this.vueTableParams.filter = '';
             this.reloadDataTable(false);
+            this.totalCalc();
         },
         onFilterSearch() {
             this.isLoading = true;
@@ -98,6 +102,7 @@ Vue.component('manage-merge-report', {
             }
 
             this.reloadDataTable(false);
+            this.totalCalc();
             this.isLoading = false;
         },
         closeAdvanceFilter() {

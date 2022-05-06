@@ -53,6 +53,27 @@
                             <div class="col-sm-12 col-md-12 col-lg-12 center">
                                 <vue-table ref="vuetable" api-url="{{ URL::route('closing-report.index') }}" :fields="fields" pagination-path="" :http-fetch="vueTableFetch" @vuetable:pagination-data="onPaginationData" :append-params="vueTableParams">
                                 </vue-table>
+                                <?php /*
+                                <table class="ui blue selectable celled stackable attached table">
+                                    <tr>
+                                        <td>Opening</td>
+                                        <td>
+                                            <div v-html="opening"></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Casting</td>
+                                        <td>
+                                            <div v-html="casting"></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Kambi</td>
+                                        <td>
+                                            <div v-html="kambi"></div>
+                                        </td>
+                                    </tr>
+                                </table> */ ?>
                                 <div class="vuetable-pagination ui basic segment grid">
                                     <vuetable-pagination-info ref="paginationInfo"></vuetable-pagination-info>
                                     <vuetable-pagination ref="pagination" @vuetable-pagination:change-page="onChangePage"></vuetable-pagination>

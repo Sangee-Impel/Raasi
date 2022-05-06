@@ -18,6 +18,7 @@ Vue.component('manage-loss-approval', {
             types: TypeDefs,
             vueTableParams: {
                 trash: 0,
+                per_page: 100,
                 advanceFilter: {
                     user_id: null,
                     status: null
@@ -72,7 +73,9 @@ Vue.component('manage-loss-approval', {
                 });
         },
         totalCalc() {
-            axios.get('/api/loss-approval')
+            axios.get('/api/loss-approval', {
+                params: this.vueTableParams
+            })
                 .then(response => {
                     let data = response.data.data;
                     this.totalWeight = data.reduce((a, b) => a + b.weight, 0);
@@ -147,10 +150,12 @@ Vue.component('manage-loss-approval', {
         },
         onFilter() {
             this.reloadDataTable(false);
+            this.totalCalc();
         },
         clearDataTable() {
             this.vueTableParams.filter = '';
             this.reloadDataTable(false);
+            this.totalCalc();
         },
         onFilterSearch() {
             this.isLoading = true;
@@ -163,6 +168,7 @@ Vue.component('manage-loss-approval', {
                 this.vueTableParams.advanceFilter.status = this.status.id;
             }
             this.reloadDataTable(false);
+            this.totalCalc();
             this.isLoading = false;
         },
         closeAdvanceFilter() {

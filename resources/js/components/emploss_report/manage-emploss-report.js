@@ -16,7 +16,7 @@ Vue.component('manage-emploss-report', {
         return {
             fields: FieldDefs,
             vueTableParams: {
-                trash: 0,
+                trash: 0, per_page: 100,
                 advanceFilter: {
                     from_date: null,
                     to_date: null,
@@ -33,6 +33,7 @@ Vue.component('manage-emploss-report', {
             department_options: [],
             employee_options: [],
             all_employee_options: [],
+            totalWeight: 0,
         };
     },
     created() {
@@ -43,6 +44,7 @@ Vue.component('manage-emploss-report', {
     },
     mounted() {
         this.loadDropDown();
+        this.totalCalc();
     },
 
     computed: {
@@ -68,16 +70,30 @@ Vue.component('manage-emploss-report', {
         onChangePage(page) {
             this.$refs.vuetable.changePage(page)
         },
+        totalCalc() {
+            axios.get('/api/emploss-report', {
+                params: this.vueTableParams
+            }).then(response => {
+                let data = response.data.data;
+                this.totalWeight = data.reduce((a, b) => a + b.weight, 0);
+                this.totalAdminWeight = data.reduce((a, b) => a + b.admin_approval_loss_weight, 0);
+            }).catch(reason => {
+            }).finally(() => {
+                this.isLoading = false;
+            });
+        },
 
         onAction(action, data, index) {
 
         },
         onFilter() {
             this.reloadDataTable(false);
+            this.totalCalc();
         },
         clearDataTable() {
             this.vueTableParams.filter = '';
             this.reloadDataTable(false);
+            this.totalCalc();
         },
         bindEmployee() {
             if (this.department != null) {
@@ -109,7 +125,7 @@ Vue.component('manage-emploss-report', {
             this.vueTableParams.advanceFilter.employee_id = null;
             if (this.employee != null) {
                 this.vueTableParams.advanceFilter.employee_id = this.employee.id;
-            }               
+            }
 
             this.vueTableParams.advanceFilter.department_id = null;
             if (this.department != null) {
@@ -127,6 +143,7 @@ Vue.component('manage-emploss-report', {
             }
 
             this.reloadDataTable(false);
+            this.totalCalc();
             this.isLoading = false;
         },
         closeAdvanceFilter() {

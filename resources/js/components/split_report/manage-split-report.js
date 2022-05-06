@@ -16,6 +16,7 @@ Vue.component('manage-split-report', {
             fields: FieldDefs,
             vueTableParams: {
                 trash: 0,
+                per_page: 100,
                 advanceFilter: {
                     from_date: null,
                     to_date: null
@@ -25,7 +26,7 @@ Vue.component('manage-split-report', {
             is_advance_search: true,
             from_date: null,
             to_date: null,
-
+            totalWeight: 0
         };
     },
 
@@ -36,6 +37,7 @@ Vue.component('manage-split-report', {
 
     },
     mounted() {
+        this.totalCalc();
     },
 
     computed: {
@@ -45,7 +47,6 @@ Vue.component('manage-split-report', {
     },
 
     methods: {
-
         reloadDataTable(dontResetPageNumber) {
             console.log("Dont Reset Page Number => " + (dontResetPageNumber ? "TRUE" : "FALSE"));
             if (dontResetPageNumber) {
@@ -54,7 +55,17 @@ Vue.component('manage-split-report', {
                 this.$refs.vuetable.refresh();
             }
         },
-
+        totalCalc() {
+            axios.get('/api/split-report', {
+                params: this.vueTableParams
+            }).then(response => {
+                let data = response.data.data;
+                this.totalWeight = data.reduce((a, b) => a + b.weight, 0);
+            }).catch(reason => {
+            }).finally(() => {
+                this.isLoading = false;
+            });
+        },
         onPaginationData(paginationData) {
             console.log(this.tableData);
             this.$refs.pagination.setPaginationData(paginationData)
@@ -69,10 +80,12 @@ Vue.component('manage-split-report', {
         },
         onFilter() {
             this.reloadDataTable(false);
+            this.totalCalc();
         },
         clearDataTable() {
             this.vueTableParams.filter = '';
             this.reloadDataTable(false);
+            this.totalCalc();
         },
         onFilterSearch() {
             this.isLoading = true;
@@ -87,6 +100,7 @@ Vue.component('manage-split-report', {
             }
 
             this.reloadDataTable(false);
+            this.totalCalc();
             this.isLoading = false;
         },
         closeAdvanceFilter() {

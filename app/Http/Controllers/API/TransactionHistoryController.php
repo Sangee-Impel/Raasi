@@ -196,6 +196,7 @@ class TransactionHistoryController extends Controller
         $this->buildCriteria($transactionQuery,$post_data);
         $transactionQuery->addSelect(DB::raw("IFNULL((SELECT SUM(transaction_item_loss_details.weight) FROM transaction_item_loss_details WHERE transaction_item_loss_details.transaction_id = transaction.id AND transaction_item_loss_details.type = ".XModel::getConfigType("scrap","transaction_item_loss_type","value")['id']."),0) as total_scrab"));
         $transactionQuery->addSelect(DB::raw("IFNULL((SELECT SUM(transaction_item_loss_details.weight) FROM transaction_item_loss_details WHERE transaction_item_loss_details.transaction_id = transaction.id AND transaction_item_loss_details.type = ".XModel::getConfigType("loss","transaction_item_loss_type","value")['id']."),0) as total_loss"));
+        $transactionQuery->addSelect(DB::raw("IFNULL((SELECT SUM(transaction_item_loss_details.weight) FROM transaction_item_loss_details WHERE transaction_item_loss_details.transaction_id = transaction.id AND transaction_item_loss_details.type = ".XModel::getConfigType("channam","transaction_item_loss_type","value")['id']."),0) as total_channam"));
         $transaction = $transactionQuery->get();
         return ["transaction"=>$transaction,"bag"=>$bag];
     }
@@ -212,14 +213,23 @@ class TransactionHistoryController extends Controller
         $employeeColumn = "transaction.to_employee_id";
         $departmentColumn = "transaction.to_department_id";
         if( $post_data['tab_status'] != "issue" ){
-            $criteria->leftJoin('department', 'department.id', '=', 'transaction.from_department_id');
-            $criteria->leftJoin('employee', 'employee.id', '=', 'transaction.from_employee_id');
+            $criteria->leftJoin('department', 'department.id', '=', $departmentColumn);
+            $criteria->leftJoin('employee', 'employee.id', '=',  $employeeColumn);
         }else{
             $employeeColumn = "transaction.from_employee_id";
             $departmentColumn = "transaction.from_department_id";
-            $criteria->leftJoin('department', 'department.id', '=', 'transaction.to_department_id');
-            $criteria->leftJoin('employee', 'employee.id', '=', 'transaction.to_employee_id');
+            $criteria->leftJoin('department', 'department.id', '=', $departmentColumn);
+            $criteria->leftJoin('employee', 'employee.id', '=',  $employeeColumn);
         }
+        // if( $post_data['tab_status'] != "issue" ){
+        //     $criteria->leftJoin('department', 'department.id', '=', 'transaction.from_department_id');
+        //     $criteria->leftJoin('employee', 'employee.id', '=', 'transaction.from_employee_id');
+        // }else{
+        //     $employeeColumn = "transaction.from_employee_id";
+        //     $departmentColumn = "transaction.from_department_id";
+        //     $criteria->leftJoin('department', 'department.id', '=', 'transaction.to_department_id');
+        //     $criteria->leftJoin('employee', 'employee.id', '=', 'transaction.to_employee_id');
+        // }
         if( isset($post_data['department_id']) )
             $criteria->where($departmentColumn,$post_data['department_id']);
         if( isset($post_data['employee_id']) )

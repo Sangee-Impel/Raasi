@@ -1,5 +1,4 @@
-export default [
-    {
+export default [{
         name: '__sequence',
         title: '#',
         titleClass: 'center aligned',
@@ -19,10 +18,31 @@ export default [
         titleClass: 'center aligned',
         dataClass: 'left aligned'
     },
+    // {
+    //     name: 'accessories_inward',
+    //     title: 'Accessories Inword',
+    //     sortField: 'accessories_inward',
+    //     titleClass: 'center aligned',
+    //     dataClass: 'left aligned'
+    // },
     {
-        name: 'accessories_inward',
-        title: 'Accessories Inword',
-        sortField: 'accessories_inward',
+        name: 'kambi_inward',
+        title: 'Kambi Inword',
+        sortField: 'kambi_inward',
+        titleClass: 'center aligned',
+        dataClass: 'left aligned'
+    },
+    {
+        name: 'fancy_inward',
+        title: 'Fancy Inword',
+        sortField: 'fancy_inward',
+        titleClass: 'center aligned',
+        dataClass: 'left aligned'
+    },
+    {
+        name: 'others_inward',
+        title: 'Others Inword',
+        sortField: 'others_inward',
         titleClass: 'center aligned',
         dataClass: 'left aligned'
     },
@@ -62,4 +82,3 @@ export default [
         dataClass: 'left aligned'
     },
 ]
-

@@ -17,6 +17,7 @@ Vue.component('manage-scrap-report', {
             fields: FieldDefs,
             vueTableParams: {
                 trash: 0,
+                per_page: 100,
                 advanceFilter: {
                     from_date: null,
                     to_date: null,
@@ -33,6 +34,7 @@ Vue.component('manage-scrap-report', {
             department_options: [],
             employee_options: [],
             all_employee_options: [],
+            totalWeight: 0
         };
     },
     created() {
@@ -43,6 +45,7 @@ Vue.component('manage-scrap-report', {
     },
     mounted() {
         this.loadDropDown();
+        this.totalCalc();
     },
 
     computed: {
@@ -60,7 +63,17 @@ Vue.component('manage-scrap-report', {
                 this.$refs.vuetable.refresh();
             }
         },
-
+        totalCalc() {
+            axios.get('/api/scrap-report', {
+                params: this.vueTableParams
+            }).then(response => {
+                let data = response.data.data;
+                this.totalWeight = data.reduce((a, b) => a + b.weight, 0);
+            }).catch(reason => {
+            }).finally(() => {
+                this.isLoading = false;
+            });
+        },
         onPaginationData(paginationData) {
             this.$refs.pagination.setPaginationData(paginationData)
             this.$refs.paginationInfo.setPaginationData(paginationData)
@@ -74,10 +87,12 @@ Vue.component('manage-scrap-report', {
         },
         onFilter() {
             this.reloadDataTable(false);
+            this.totalCalc();
         },
         clearDataTable() {
             this.vueTableParams.filter = '';
             this.reloadDataTable(false);
+            this.totalCalc();
         },
         bindEmployee() {
             if (this.department != null) {
@@ -109,7 +124,7 @@ Vue.component('manage-scrap-report', {
             this.vueTableParams.advanceFilter.employee_id = null;
             if (this.employee != null) {
                 this.vueTableParams.advanceFilter.employee_id = this.employee.id;
-            }               
+            }
 
             this.vueTableParams.advanceFilter.department_id = null;
             if (this.department != null) {
@@ -127,6 +142,7 @@ Vue.component('manage-scrap-report', {
             }
 
             this.reloadDataTable(false);
+            this.totalCalc();
             this.isLoading = false;
         },
         closeAdvanceFilter() {

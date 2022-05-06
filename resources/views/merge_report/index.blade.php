@@ -56,11 +56,12 @@
                                 <table class="ui blue selectable celled stackable attached table">
                                     <tfoot class="vuetable-body">
                                         <tr>
-                                            <td style="text-align: right; width: 48.4%;">Total</td>
-                                            <td style="width: 4.9%;">
+                                            <td style="text-align: right; width: 57.8%;">Total</td>
+                                            <td style="width: 12.5%;">
                                                 <div v-html="totalTransferWeight"></div>
                                             </td>
-                                            <td style="width: 4.9%;">
+                                            <td></td>
+                                            <td style="width: 25.2%;">
                                                 <div v-html="totalWeight"></div>
                                             </td>
                                         </tr>

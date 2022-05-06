@@ -23,7 +23,8 @@ class ConfigurationController extends Controller
      *
      */
 
-    public function getIndex() {
+    public function getIndex()
+    {
         self::hasPermission('index.configuration');
         return view("configuration.index");
     }
@@ -34,7 +35,6 @@ class ConfigurationController extends Controller
      */
     public function index(Request $request)
     {
-
     }
 
     /**
@@ -49,13 +49,14 @@ class ConfigurationController extends Controller
         $validatedData = $request->validate([
             'precision.config_value' => 'required|integer|between:1,6',
             'bag_cancel_number.config_value' => 'required|integer|digits:10',
+            
             'bag_starting_department.bag_starting_department_id' => 'required|integer',
         ]);
-        DB::transaction(function() use ($request) {
+        DB::transaction(function () use ($request) {
             $postDate = $request->all();
-            if( count($postDate) > 0 ){
-                foreach( $postDate as $item => $value ){
-                    if( ( $item != "errors" ) && ( $item != "busy" ) && ($item != "successful") ){
+            if (count($postDate) > 0) {
+                foreach ($postDate as $item => $value) {
+                    if (($item != "errors") && ($item != "busy") && ($item != "successful")) {
                         $value['config_key'] = $item;
                         /*$configurationValue = [
                             "config_key"    =>  $item,
@@ -63,7 +64,7 @@ class ConfigurationController extends Controller
                         ];*/
                         $defaultConfiguration = Configuration::getConfigurationRowByConfigKey($item);
                         $configSetModel = new Configuration();
-                        if(!is_null($defaultConfiguration) ){
+                        if (!is_null($defaultConfiguration)) {
                             $configSetModel = Configuration::findOrFail($defaultConfiguration['id']);
                         }
                         $configSetModel->fill($value);
@@ -74,8 +75,8 @@ class ConfigurationController extends Controller
         });
         return response()->json([], 201);
     }
-    public function getConfigurationData(Request $request){
-
+    public function getConfigurationData(Request $request)
+    {
         return [
             "configration" => Configuration::with('bagStartingDepartment')->get(),
             "departments" => Department::get()
@@ -106,7 +107,7 @@ class ConfigurationController extends Controller
         $validatedData = $request->validate([
             'name' => "required|unique:unit,name,$unit->id",
         ]);
-        DB::transaction(function() use ($request,$unit) {
+        DB::transaction(function () use ($request, $unit) {
             $unit->update($request->all());
         });
         return response()->json($unit, 201);
@@ -118,26 +119,23 @@ class ConfigurationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request,$unit)
+    public function destroy(Request $request, $unit)
     {
         self::hasPermission('destroy.unit');
-        if ($request->filled('trash') && $request->get('trash') == 0)
-        {
-            $model= Unit::findOrFail($unit);
+        if ($request->filled('trash') && $request->get('trash') == 0) {
+            $model = Unit::findOrFail($unit);
             $model->delete();
         } else {
-            $model= Unit::withTrashed()->find($unit);
+            $model = Unit::withTrashed()->find($unit);
             $model->forceDelete();
         }
         return response()->json(null);
     }
-    public function restore($id){
+    public function restore($id)
+    {
         self::hasPermission('restore.unit');
         $model            = Unit::withTrashed()->find($id);
         $model->restore();
         return response()->json(null);
     }
-
-
-
 }

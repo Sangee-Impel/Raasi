@@ -60,6 +60,16 @@
                             <div class="col-sm-12 col-md-12 col-lg-12 center">
                                 <vue-table ref="vuetable" api-url="{{ URL::route('emploss-report.index') }}" :fields="fields" pagination-path="" :http-fetch="vueTableFetch" @vuetable:pagination-data="onPaginationData" :append-params="vueTableParams">
                                 </vue-table>
+                                <table class="ui blue selectable celled stackable attached table">
+                                    <tfoot class="vuetable-body">
+                                        <tr>
+                                            <td style="text-align: right; width: 7.3%;">Total</td>
+                                            <td style="width: 5.6%;">
+                                                <div v-html="totalWeight"></div>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
                                 <div class="vuetable-pagination ui basic segment grid">
                                     <vuetable-pagination-info ref="paginationInfo"></vuetable-pagination-info>
                                     <vuetable-pagination ref="pagination" @vuetable-pagination:change-page="onChangePage"></vuetable-pagination>

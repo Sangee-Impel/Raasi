@@ -79,10 +79,10 @@ class AccessoriesinwordReportController extends Controller
       }
     }
 
-    $query->where("bag_styles.other_accessories_id", "!=", '');
-    //$query->where("transaction_item.type", 1);
+    $query->where("bag_styles.other_accessories_id", ">", '0');
+    $query->where("transaction_item.type", 1);
     $query->whereNotIn("bag.status", array(2, 4));
-    $query->groupBy('bag_styles.id', 'bag.id', 'bag.parent_bag_id', 'bag.bag_number', 'bag.order_number');
+    $query->groupBy('bag_styles.id', 'bag.id', 'bag.parent_bag_id', 'bag.bag_number', 'bag.order_number', 'bag_styles.other_accessories_id');
     $query->orderBy('bag.id', 'DESC');
 
     return XModel::preparePagination($query, $request, ['bag.bag_number', 'bag.order_number']);

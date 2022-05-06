@@ -17,6 +17,7 @@ Vue.component('manage-fctransaction-report', {
             fields: FieldDefs,
             vueTableParams: {
                 trash: 0,
+                per_page: 100,
                 advanceFilter: {
                     from_date: null,
                     to_date: null
@@ -54,7 +55,9 @@ Vue.component('manage-fctransaction-report', {
             }
         },
         totalCalc() {
-            axios.get('/api/fctransaction-report').then(response => {
+            axios.get('/api/fctransaction-report', {
+                params: this.vueTableParams
+            }).then(response => {
                 let data = response.data.data;
                 this.totalWeight = data.reduce((a, b) => a + b.weight, 0);
             }).catch(reason => {
@@ -75,10 +78,12 @@ Vue.component('manage-fctransaction-report', {
         },
         onFilter() {
             this.reloadDataTable(false);
+            this.totalCalc();
         },
         clearDataTable() {
             this.vueTableParams.filter = '';
             this.reloadDataTable(false);
+            this.totalCalc();
         },
         onFilterSearch() {
             this.isLoading = true;
@@ -93,6 +98,7 @@ Vue.component('manage-fctransaction-report', {
             }
 
             this.reloadDataTable(false);
+            this.totalCalc();
             this.isLoading = false;
         },
         closeAdvanceFilter() {

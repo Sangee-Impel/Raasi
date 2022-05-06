@@ -343,11 +343,63 @@ class BagController extends Controller
             $response = $client->request('GET', "https://2factor.in/API/V1/09524649-4166-11e8-a895-0200cd936042/SMS/+91$mobile_number/$cancelOtp");
             $statusCode = $response->getStatusCode();
             $content = $response->getBody();
-            return response()->json([]);
-        } else {
-            //throw error...!
-            return response()->json(["errors" => "Please assign otp number in the configration", "message" => "The given data was invalid."], 422);
+           // return response()->json([]);
         }
+
+        $bag_otp_number  = Configuration::getConfigurationRowByConfigKey("otp_number_1");
+        if (!is_null($bag_otp_number)) {
+            $mobile_number = $bag_otp_number['config_value'];
+            $cancelOtp = str_pad(mt_rand(0, 999999), 6, '0', STR_PAD_LEFT); //str_random(6);
+            $bag          = Bag::findOrFail($id);
+            if (!is_null($bag->cancel_otp))
+                $cancelOtp = $bag->cancel_otp;
+            else {
+                $bag->cancel_otp  = $cancelOtp;
+                $bag->save();
+            }
+            $client = new \GuzzleHttp\Client();
+            $response = $client->request('GET', "https://2factor.in/API/V1/09524649-4166-11e8-a895-0200cd936042/SMS/+91$mobile_number/$cancelOtp");
+            $statusCode = $response->getStatusCode();
+            $content = $response->getBody();
+            // return response()->json([]);
+        }
+
+        $bag_otp_number  = Configuration::getConfigurationRowByConfigKey("otp_number_2");
+        if (!is_null($bag_otp_number)) {
+            $mobile_number = $bag_otp_number['config_value'];
+            $cancelOtp = str_pad(mt_rand(0, 999999), 6, '0', STR_PAD_LEFT); //str_random(6);
+            $bag          = Bag::findOrFail($id);
+            if (!is_null($bag->cancel_otp))
+                $cancelOtp = $bag->cancel_otp;
+            else {
+                $bag->cancel_otp  = $cancelOtp;
+                $bag->save();
+            }
+            $client = new \GuzzleHttp\Client();
+            $response = $client->request('GET', "https://2factor.in/API/V1/09524649-4166-11e8-a895-0200cd936042/SMS/+91$mobile_number/$cancelOtp");
+            $statusCode = $response->getStatusCode();
+            $content = $response->getBody();
+            // return response()->json([]);
+        }
+
+        $bag_otp_number  = Configuration::getConfigurationRowByConfigKey("otp_number_3");
+        if (!is_null($bag_otp_number)) {
+            $mobile_number = $bag_otp_number['config_value'];
+            $cancelOtp = str_pad(mt_rand(0, 999999), 6, '0', STR_PAD_LEFT); //str_random(6);
+            $bag          = Bag::findOrFail($id);
+            if (!is_null($bag->cancel_otp))
+                $cancelOtp = $bag->cancel_otp;
+            else {
+                $bag->cancel_otp  = $cancelOtp;
+                $bag->save();
+            }
+            $client = new \GuzzleHttp\Client();
+            $response = $client->request('GET', "https://2factor.in/API/V1/09524649-4166-11e8-a895-0200cd936042/SMS/+91$mobile_number/$cancelOtp");
+            $statusCode = $response->getStatusCode();
+            $content = $response->getBody();
+        }
+
+        return response()->json([]);
         /*
 
         */
