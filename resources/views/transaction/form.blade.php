@@ -78,7 +78,7 @@
                                 <div class="two fields">
                                     <div class="field">
                                         <div class=" ui slider checkbox mt-2">
-                                            <input v-model="is_eod_reporting" type="checkbox">
+                                            <input v-model="is_eod_reporting"  v-bind:id="1555" @change="changeEod($event)" type="checkbox">
                                             <label>IS EOD Reporting</label>
                                         </div>
                                     </div>

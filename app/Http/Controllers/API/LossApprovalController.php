@@ -93,6 +93,7 @@ class LossApprovalController extends Controller
             $data['admin_id'] = Auth::id();
             $data['approval_date'] = Date("Y-m-d");
             $transactionItemLossDetails = TransactionItemLossDetails::findOrFail($data['id']);
+            $loss_status = (int)$transactionItemLossDetails['status'];
             $transactionItemLossDetails->fill($data);
             if ($transactionItemLossDetails->save()) {
                 //#block to make transaction approval...!
@@ -102,7 +103,7 @@ class LossApprovalController extends Controller
                 if ($transactionItem->save()) {
                     //#check the transaction has any loss approval...!
                     $lossApproval = TransactionItemLossDetails::where('status', XModel::getConfigType("admin_loss_approval", "transaction_type", "value")['id'])->count();
-                    if ($lossApproval != 0) {
+                    if ($loss_status != 0) {
                         //#transcation approved...!
                         $transaction = Transaction::findOrFail($transactionItem->transaction_id);
                         $transaction->status = XModel::getConfigType("completed", "transaction", "value")['id'];

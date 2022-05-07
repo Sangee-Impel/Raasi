@@ -62,7 +62,7 @@ Vue.component('manage-bag', {
     },
 
     computed: {
-        vueTableFetch: function () {
+        vueTableFetch: function() {
             return axios.get;
         }
     },
@@ -303,6 +303,9 @@ Vue.component('manage-bag', {
                     }
                     this.$snotify.error(message);
                 }).finally(() => { this.isLoading = false; });
+            // this.cancel_bag.id = id;
+            // this.bagCancelOtpModel = true;
+            // this.isLoading = false;
         },
         onCancelBag() {
             this.isLoading = true;

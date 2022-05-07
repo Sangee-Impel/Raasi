@@ -351,8 +351,7 @@ Vue.component('transaction', {
                             if (CommonMethods.CheckDifference(max_loss_weight, user_loss_scrap_weight) != 0) {
                                 error += " Item didn't tally, please add weight loss/scrap weight";
                                 isValid = false;
-                            }
-                            else {
+                            } else {
                                 if (transaction_item_loss_details.length > 0) {
                                     for (var lossDetailIndex in transaction_item_loss_details) {
                                         if (isValid) {
@@ -448,10 +447,6 @@ Vue.component('transaction', {
             if (this.from_employee != null)
                 this.form.from_employee_id = this.from_employee.id;
 
-            this.form.to_department_id = null;
-            if (this.to_department != null)
-                this.form.to_department_id = this.to_department.id;
-
             this.form.to_employee_id = null;
             if (this.to_employee != null) {
                 this.form.to_employee_id = this.to_employee.id;
@@ -471,8 +466,15 @@ Vue.component('transaction', {
             this.form.is_eod_reporting = 0;
             if (this.is_eod_reporting) {
                 this.form.is_eod_reporting = 1;
+                this.form.to_department_id = 1;
             }
 
+            if (this.to_department != null) {
+                this.form.to_department_id = this.to_department.id;
+                if (this.form.to_department_id == 1) {
+                    this.form.is_eod_reporting = 1;
+                }
+            }
         },
         checkChangeStatus(index) {
             let isValidUser = true;
@@ -497,7 +499,9 @@ Vue.component('transaction', {
             }
             return false;
         },
-
+        changeEod(e) {
+            console.log(e);
+        },
         loadBags(query) {
             if ((query.length) >= 2) {
                 this.multiLoading = true;
@@ -590,28 +594,27 @@ Vue.component('transaction', {
                 uom_name: "",
                 max_loss_weight: 0,
                 transaction_item_loss_detail_status: false,
-                transaction_item_loss_details: [
-                    {
-                        id: 0,
-                        type: this.types.findTransactionType('scrap', 'value', 'transaction_item_loss_type')['id'],
-                        type_drop_down: this.types.findTransactionType('scrap', 'value', 'transaction_item_loss_type'),
-                        weight: 0,
-                        admin_approval_loss_weight: 0,
-                    },
-                    {
-                        id: 0,
-                        type: this.types.findTransactionType('loss', 'value', 'transaction_item_loss_type')['id'],
-                        type_drop_down: this.types.findTransactionType('loss', 'value', 'transaction_item_loss_type'),
-                        weight: 0,
-                        admin_approval_loss_weight: 0,
-                    },
-                    {
-                        id: 0,
-                        type: this.types.findTransactionType('channam', 'value', 'transaction_item_loss_type')['id'],
-                        type_drop_down: this.types.findTransactionType('channam', 'value', 'transaction_item_loss_type'),
-                        weight: 0,
-                        admin_approval_loss_weight: 0,
-                    }
+                transaction_item_loss_details: [{
+                    id: 0,
+                    type: this.types.findTransactionType('scrap', 'value', 'transaction_item_loss_type')['id'],
+                    type_drop_down: this.types.findTransactionType('scrap', 'value', 'transaction_item_loss_type'),
+                    weight: 0,
+                    admin_approval_loss_weight: 0,
+                },
+                {
+                    id: 0,
+                    type: this.types.findTransactionType('loss', 'value', 'transaction_item_loss_type')['id'],
+                    type_drop_down: this.types.findTransactionType('loss', 'value', 'transaction_item_loss_type'),
+                    weight: 0,
+                    admin_approval_loss_weight: 0,
+                },
+                {
+                    id: 0,
+                    type: this.types.findTransactionType('channam', 'value', 'transaction_item_loss_type')['id'],
+                    type_drop_down: this.types.findTransactionType('channam', 'value', 'transaction_item_loss_type'),
+                    weight: 0,
+                    admin_approval_loss_weight: 0,
+                }
                 ],
                 user_loss_scrap_weight: 0,
                 user_scrap_weight: 0,
@@ -769,28 +772,27 @@ Vue.component('transaction', {
                         uom_name: uom.name,
                         max_loss_weight: 0,
                         transaction_item_loss_detail_status: false,
-                        transaction_item_loss_details: [
-                            {
-                                id: 0,
-                                type: this.types.findTransactionType('scrap', 'value', 'transaction_item_loss_type')['id'],
-                                type_drop_down: this.types.findTransactionType('scrap', 'value', 'transaction_item_loss_type'),
-                                weight: 0,
-                                admin_approval_loss_weight: 0,
-                            },
-                            {
-                                id: 0,
-                                type: this.types.findTransactionType('loss', 'value', 'transaction_item_loss_type')['id'],
-                                type_drop_down: this.types.findTransactionType('loss', 'value', 'transaction_item_loss_type'),
-                                weight: 0,
-                                admin_approval_loss_weight: 0,
-                            },
-                            {
-                                id: 0,
-                                type: this.types.findTransactionType('channam', 'value', 'transaction_item_loss_type')['id'],
-                                type_drop_down: this.types.findTransactionType('channam', 'value', 'transaction_item_loss_type'),
-                                weight: 0,
-                                admin_approval_loss_weight: 0,
-                            }
+                        transaction_item_loss_details: [{
+                            id: 0,
+                            type: this.types.findTransactionType('scrap', 'value', 'transaction_item_loss_type')['id'],
+                            type_drop_down: this.types.findTransactionType('scrap', 'value', 'transaction_item_loss_type'),
+                            weight: 0,
+                            admin_approval_loss_weight: 0,
+                        },
+                        {
+                            id: 0,
+                            type: this.types.findTransactionType('loss', 'value', 'transaction_item_loss_type')['id'],
+                            type_drop_down: this.types.findTransactionType('loss', 'value', 'transaction_item_loss_type'),
+                            weight: 0,
+                            admin_approval_loss_weight: 0,
+                        },
+                        {
+                            id: 0,
+                            type: this.types.findTransactionType('channam', 'value', 'transaction_item_loss_type')['id'],
+                            type_drop_down: this.types.findTransactionType('channam', 'value', 'transaction_item_loss_type'),
+                            weight: 0,
+                            admin_approval_loss_weight: 0,
+                        }
                         ],
                         old_transaction_item_loss_details: selectedBagStyle.transaction_item_loss_details,
                         user_loss_scrap_weight: 0,
@@ -900,8 +902,8 @@ Vue.component('transaction', {
                 transaction_mode: 0,
                 status: TypeDefs.findTransactionType('completed', 'value', 'transaction_status')['id'],
                 merge: {
-                    transfer: null,//#selected bag to transfer...!
-                    receive: null,//#merge bag to receive...!
+                    transfer: null, //#selected bag to transfer...!
+                    receive: null, //#merge bag to receive...!
                 }
             });
         },
@@ -1007,28 +1009,27 @@ Vue.component('transaction', {
         showLossDetailModel() {
             this.transferItemIndex = 0;
             this.selectedTransferItem = {
-                transaction_item_loss_details: [
-                    {
-                        id: 0,
-                        type: this.types.findTransactionType('scrap', 'value', 'transaction_item_loss_type')['id'],
-                        type_drop_down: this.types.findTransactionType('scrap', 'value', 'transaction_item_loss_type'),
-                        weight: 0,
-                        admin_approval_loss_weight: 0,
-                    },
-                    {
-                        id: 0,
-                        type: this.types.findTransactionType('loss', 'value', 'transaction_item_loss_type')['id'],
-                        type_drop_down: this.types.findTransactionType('loss', 'value', 'transaction_item_loss_type'),
-                        weight: 0,
-                        admin_approval_loss_weight: 0,
-                    },
-                    {
-                        id: 0,
-                        type: this.types.findTransactionType('channam', 'value', 'transaction_item_loss_type')['id'],
-                        type_drop_down: this.types.findTransactionType('channam', 'value', 'transaction_item_loss_type'),
-                        weight: 0,
-                        admin_approval_loss_weight: 0,
-                    }
+                transaction_item_loss_details: [{
+                    id: 0,
+                    type: this.types.findTransactionType('scrap', 'value', 'transaction_item_loss_type')['id'],
+                    type_drop_down: this.types.findTransactionType('scrap', 'value', 'transaction_item_loss_type'),
+                    weight: 0,
+                    admin_approval_loss_weight: 0,
+                },
+                {
+                    id: 0,
+                    type: this.types.findTransactionType('loss', 'value', 'transaction_item_loss_type')['id'],
+                    type_drop_down: this.types.findTransactionType('loss', 'value', 'transaction_item_loss_type'),
+                    weight: 0,
+                    admin_approval_loss_weight: 0,
+                },
+                {
+                    id: 0,
+                    type: this.types.findTransactionType('channam', 'value', 'transaction_item_loss_type')['id'],
+                    type_drop_down: this.types.findTransactionType('channam', 'value', 'transaction_item_loss_type'),
+                    weight: 0,
+                    admin_approval_loss_weight: 0,
+                }
                 ],
             }
             // console.log(this.selectedTransferItem);
