@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by IntelliJ IDEA.
  * User: baskar
@@ -28,10 +29,11 @@ abstract class XModel extends Model implements Auditable
      * @param array $filterColumns
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public static function preparePagination($builder, Request $request, $filterColumns = []){
-        if(get_class($builder) == Builder::class){
+    public static function preparePagination($builder, Request $request, $filterColumns = [])
+    {
+        if (get_class($builder) == Builder::class) {
             $query = $builder;
-        }elseif(is_string($builder)){
+        } elseif (is_string($builder)) {
             $query = $builder::query();
         }
         // handle sort option
@@ -47,18 +49,18 @@ abstract class XModel extends Model implements Auditable
         }
 
         if ($request->exists('filter')) {
-            $query->where(function($q) use($request, $filterColumns) {
+            $query->where(function ($q) use ($request, $filterColumns) {
                 $value = "%{$request->filter}%";
-
-                foreach ($filterColumns as $inx => $column){
-                    if($inx == 0){
+                foreach ($filterColumns as $inx => $column) {
+                    if ($inx == 0) {
                         $q->where($column, 'like', $value);
-                    }else{
+                    } else {
                         $q->orWhere($column, 'like', $value);
                     }
                 }
             });
         }
+        
 
         $perPage = request()->has('per_page') ? (int) request()->per_page : null;
         $pagination = $query->paginate($perPage);
@@ -73,9 +75,10 @@ abstract class XModel extends Model implements Auditable
     }
 
 
-    public static function getConfigType($name = null,$type = "transaction_type",$searchKey  = "value") {
+    public static function getConfigType($name = null, $type = "transaction_type", $searchKey  = "value")
+    {
         $data = [];
-        switch ($type){
+        switch ($type) {
             case "transaction":
                 $reference_type = Config::get('constants.transaction');
                 break;
@@ -106,8 +109,8 @@ abstract class XModel extends Model implements Auditable
             default:
                 $reference_type = Config::get('constants.transaction_type');
         }
-        if( !is_null($name) ){
-            $data = $reference_type[array_search($name,array_column($reference_type, $searchKey))];
+        if (!is_null($name)) {
+            $data = $reference_type[array_search($name, array_column($reference_type, $searchKey))];
         }
         return $data;
     }

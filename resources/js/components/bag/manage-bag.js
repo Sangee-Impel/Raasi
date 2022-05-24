@@ -36,6 +36,7 @@ Vue.component('manage-bag', {
             employee_options: [],
             all_employee_options: [],
             isViewMode: false,
+            isEditMode: false,
             props: ['props'],
             bagCancelOtpModel: false,
             cancel_bag: {
@@ -62,7 +63,7 @@ Vue.component('manage-bag', {
     },
 
     computed: {
-        vueTableFetch: function() {
+        vueTableFetch: function () {
             return axios.get;
         }
     },
@@ -130,15 +131,13 @@ Vue.component('manage-bag', {
                     axios.get('/api/bag/' + data.id)
                         .then(response => {
                             //console.log(response);
+                            this.isEditMode = true;
+                            this.isViewMode = true;
                             this.currentRecord = response.data;
                             this.showForm();
-
-
-                        })
-                        .catch(reason => {
+                        }).catch(reason => {
                             console.log(reason);
                             this.$snotify.error(reason);
-
                         })
                     break;
                 case 'cancel-item':
@@ -161,16 +160,13 @@ Vue.component('manage-bag', {
                     axios.get('/api/bag/' + data.id)
                         .then(response => {
                             this.isViewMode = true;
+                            this.isEditMode = false;
                             //console.log(response);
                             this.currentRecord = response.data;
                             this.showForm();
-
-
-                        })
-                        .catch(reason => {
+                        }).catch(reason => {
                             console.log(reason);
                             this.$snotify.error(reason);
-
                         })
                     break;
                 case 'restore-item':
@@ -189,9 +185,7 @@ Vue.component('manage-bag', {
                                     self.showGrid();
                                     self.actionTrash();
                                     self.isLoading = false;
-
-                                })
-                                .catch(reason => {
+                                }).catch(reason => {
                                     console.log(reason);
                                     self.$snotify.error(reason);
 

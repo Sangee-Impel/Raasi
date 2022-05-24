@@ -49,7 +49,8 @@ class FcTransactionReportController extends Controller
             DB::raw("DATE_FORMAT(bag.updated_at, '%d/%c/%Y %r') as time"),
             DB::raw("ROUND(SUM(bag_styles.quantity),3) as quantity"),
             //DB::raw("ROUND(SUM(bag_styles.weight),3) as weight"),
-            DB::raw("(SELECT IFNULL(sum(t1.total_receive_weight), 0) FROM transaction t1 WHERE t1.bag_id = bag.id AND t1.transaction_date >= '" . $from_date . "' AND t1.transaction_date <= '" . $to_date . "' AND t1.to_department_id=9 order by t1.id desc limit 1) as weight"),
+            //DB::raw("(SELECT IFNULL(sum(t1.total_receive_weight), 0) FROM transaction t1 WHERE t1.bag_id = bag.id AND t1.to_department_id=9 order by t1.id desc limit 1) as weight"),
+            DB::raw("CASE WHEN (SELECT IFNULL(sum(t1.total_receive_weight), 0) FROM transaction t1 WHERE t1.bag_id = bag.id AND t1.transaction_date >= '" . $from_date . "' AND t1.transaction_date <= '" . $to_date . "' AND t1.to_department_id=9 order by t1.id desc limit 1) > 0 THEN (SELECT IFNULL(sum(t1.total_receive_weight), 0) FROM transaction t1 WHERE t1.bag_id = bag.id AND t1.transaction_date >= '" . $from_date . "' AND t1.transaction_date <= '" . $to_date . "' AND t1.to_department_id=9 order by t1.id desc limit 1) ELSE ROUND(SUM(bag_styles.weight),3) END as weight"),
             DB::raw("GROUP_CONCAT(bag_styles.style_id) as style"),
             DB::raw("GROUP_CONCAT(style.sku) sku")
         );
@@ -77,7 +78,7 @@ class FcTransactionReportController extends Controller
         }
 
         $query->where("bag.department_id", 9);
-        $query->whereNotIn("bag.status", array(2, 4));
+        $query->whereNotIn("bag.status", array(2, 4, 5));
         $query->groupBy('bag.id', 'bag.parent_bag_id', 'bag.bag_number', 'bag.order_number');
         $query->orderBy('bag.id', 'DESC');
 

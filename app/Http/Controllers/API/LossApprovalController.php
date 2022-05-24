@@ -103,7 +103,7 @@ class LossApprovalController extends Controller
                 if ($transactionItem->save()) {
                     //#check the transaction has any loss approval...!
                     $lossApproval = TransactionItemLossDetails::where('status', XModel::getConfigType("admin_loss_approval", "transaction_type", "value")['id'])->count();
-                    if ($loss_status != 0) {
+                    //if ($loss_status != 0) {
                         //#transcation approved...!
                         $transaction = Transaction::findOrFail($transactionItem->transaction_id);
                         $transaction->status = XModel::getConfigType("completed", "transaction", "value")['id'];
@@ -150,7 +150,7 @@ class LossApprovalController extends Controller
                                 }
                             }
                         }
-                    }
+                    //}
                 }
                 //$transactionItemLossDetails
             }

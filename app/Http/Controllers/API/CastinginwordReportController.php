@@ -75,7 +75,7 @@ class CastinginwordReportController extends Controller
     }
 
     $query->where("bag_styles.style_id", "!=", '');
-    $query->whereNotIn("bag.status", array(2, 4));
+    $query->whereNotIn("bag.status", array(2, 4, 5));
     $query->groupBy('bag.id', 'bag.parent_bag_id', 'bag.bag_number', 'bag.order_number');
     $query->orderBy('bag.id', 'DESC');
 

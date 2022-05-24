@@ -75,7 +75,7 @@ class EmplossReportController extends Controller
     }
 
     $query->groupBy('bag.id', 'bag.bag_number', 'bag.order_number', 'transaction_item_loss_details.weight');
-    $query->whereNotIn("bag.status", array(2, 4));
+    $query->whereNotIn("bag.status", array(2, 4, 5));
     $query->orderBy('bag.id', 'DESC');
 
     return XModel::preparePagination($query, $request, ['bag.bag_number', 'bag.order_number']);

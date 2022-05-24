@@ -94,13 +94,21 @@ Vue.component('transaction', {
         isAllowedToSplitOrMerge() {
             let isValid = false;
             let transaction_items = this.transaction_items;
+            let qty = 0;
             if (transaction_items.length > 0) {
                 isValid = true;
-                for (var index in transaction_items) {
-                    if ((transaction_items[index].quantity <= 1 && transaction_items[index].other_accessories.id === undefined) || this.form.transaction_item_loss_detail_status)
-                        isValid = false;
+                for (var index in transaction_items) {                   
+                    //if ((transaction_items[index].quantity <= 1 && transaction_items[index].other_accessories.id === undefined) || this.form.transaction_item_loss_detail_status)
+                    if ((transaction_items[index].other_accessories.id === undefined) || this.form.transaction_item_loss_detail_status) {
+                        qty += transaction_items[index].quantity;
+                    }
+                    // isValid = false;
                 }
             }
+            if (qty <= 1) {
+                isValid = false;
+            }
+
             if (isValid && !this.form.transaction_item_loss_detail_status) {
                 isValid = true;
             }

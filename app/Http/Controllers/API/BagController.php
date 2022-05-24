@@ -72,7 +72,7 @@ class BagController extends Controller
         $query->leftJoin('employee', 'employee.id', '=', 'bag.employee_id');
         $query->groupBy('bag.bag_number')
             ->whereNotIn('bag.status', [XModel::getConfigType("splitted", "bag_status", "value")['id'], XModel::getConfigType("merge", "bag_status", "value")['id']]);
-        return XModel::preparePagination($query, $request, ['bag.bag_number', 'department.name', 'parent_bag.bag_number']);
+        return XModel::preparePagination($query, $request, ['bag.bag_number', 'department.name', 'parent_bag.bag_number', 'bag.instructions']);
     }
 
     /**
@@ -328,10 +328,11 @@ class BagController extends Controller
         self::hasPermission('cancel.bag');
         $post_data = $request->all();
 
+        $cancelOtp = str_pad(mt_rand(0, 999999), 6, '0', STR_PAD_LEFT); //str_random(6);
+
         $bag_otp_number  = Configuration::getConfigurationRowByConfigKey("bag_cancel_number");
-        if (!is_null($bag_otp_number)) {
+        if (!is_null($bag_otp_number) && isset($bag_otp_number['config_value']) && trim($bag_otp_number['config_value']) != '') {
             $mobile_number = $bag_otp_number['config_value'];
-            $cancelOtp = str_pad(mt_rand(0, 999999), 6, '0', STR_PAD_LEFT); //str_random(6);
             $bag          = Bag::findOrFail($id);
             if (!is_null($bag->cancel_otp))
                 $cancelOtp = $bag->cancel_otp;
@@ -347,9 +348,8 @@ class BagController extends Controller
         }
 
         $bag_otp_number  = Configuration::getConfigurationRowByConfigKey("otp_number_1");
-        if (!is_null($bag_otp_number)) {
+        if (!is_null($bag_otp_number) && isset($bag_otp_number['config_value']) && trim($bag_otp_number['config_value']) != '') {
             $mobile_number = $bag_otp_number['config_value'];
-            $cancelOtp = str_pad(mt_rand(0, 999999), 6, '0', STR_PAD_LEFT); //str_random(6);
             $bag          = Bag::findOrFail($id);
             if (!is_null($bag->cancel_otp))
                 $cancelOtp = $bag->cancel_otp;
@@ -365,9 +365,8 @@ class BagController extends Controller
         }
 
         $bag_otp_number  = Configuration::getConfigurationRowByConfigKey("otp_number_2");
-        if (!is_null($bag_otp_number)) {
+        if (!is_null($bag_otp_number) && isset($bag_otp_number['config_value']) && trim($bag_otp_number['config_value']) != '') {
             $mobile_number = $bag_otp_number['config_value'];
-            $cancelOtp = str_pad(mt_rand(0, 999999), 6, '0', STR_PAD_LEFT); //str_random(6);
             $bag          = Bag::findOrFail($id);
             if (!is_null($bag->cancel_otp))
                 $cancelOtp = $bag->cancel_otp;
@@ -383,7 +382,7 @@ class BagController extends Controller
         }
 
         $bag_otp_number  = Configuration::getConfigurationRowByConfigKey("otp_number_3");
-        if (!is_null($bag_otp_number)) {
+        if (!is_null($bag_otp_number) && isset($bag_otp_number['config_value']) && trim($bag_otp_number['config_value']) != '') {
             $mobile_number = $bag_otp_number['config_value'];
             $cancelOtp = str_pad(mt_rand(0, 999999), 6, '0', STR_PAD_LEFT); //str_random(6);
             $bag          = Bag::findOrFail($id);

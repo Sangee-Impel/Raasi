@@ -57,7 +57,7 @@ class EodReportController extends Controller
     $query->where("bag.status", "!=", "1");
     $query->where("bag.department_id", "!=", "9");
     $query->where("bag.department_id", "!=", "1");
-    $query->whereNotIn("bag.status", array(2, 4));
+    $query->whereNotIn("bag.status", array(2, 4, 5));
     $query->groupBy('bag.id', 'bag.parent_bag_id', 'bag.bag_number', 'bag.order_number');
     $query->orderBy('bag.id', 'DESC');
 

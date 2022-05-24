@@ -81,4 +81,18 @@ export default [{
         titleClass: 'center aligned',
         dataClass: 'left aligned'
     },
+    {
+        name: 'pending_bag',
+        title: 'Current Processing Weight',
+        sortField: 'pending_bag',
+        titleClass: 'center aligned',
+        dataClass: 'left aligned'
+    },
+    {
+        name: 'eod_bag',
+        title: 'Current EOD Weight',
+        sortField: 'eod_bag',
+        titleClass: 'center aligned',
+        dataClass: 'left aligned'
+    },
 ]

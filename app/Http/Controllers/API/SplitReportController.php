@@ -69,7 +69,7 @@ class SplitReportController extends Controller
       }
     }
 
-    $query->whereNotIn("bag.status", array(2, 4));
+    $query->whereNotIn("bag.status", array(2, 4, 5));
     $query->where("parent.status", "=", '2');
     $query->where("bag_styles.style_id", "!=", '');
     $query->groupBy('bag.id', 'bag.bag_number', 'bag.order_number');
@@ -105,7 +105,7 @@ class SplitReportController extends Controller
     $query->leftJoin('employee', 'employee.id', '=', 'transaction.to_employee_id');
 
     //$query->where("transaction.transaction_mode", 1);
-    $query->whereNotIn("bag.status", array(2, 4));
+    $query->whereNotIn("bag.status", array(2, 4, 5));
     $query->where("bag.parent_bag_id in (select b1.id from bag b1 where b1.status=2)");
     $query->orderBy('transaction.bag_id', 'ASC');
     return XModel::preparePagination($query, $request, ['bag.bag_number', 'bag.order_number']);

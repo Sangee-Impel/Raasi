@@ -120,7 +120,7 @@
                                                 <tbody>
                                                     <tr v-for="(transaction_history,index) in transaction_histories">
                                                         <td>@{{index+1}}</td>
-                                                        <td>@{{transaction_history.transaction_date | formatDate('DD-MM-YYYY')}}</td>
+                                                        <td>@{{transaction_history.created_at | formatDate('DD-MM-YYYY hh:mm:ss')}}</td>
                                                         <td>@{{transaction_history.bag_number}}</td>
                                                         <td>@{{transaction_history.order_number}}</td>
                                                         <td>@{{transaction_history.department_name}}</td>
