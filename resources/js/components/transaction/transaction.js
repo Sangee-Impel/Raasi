@@ -94,15 +94,16 @@ Vue.component('transaction', {
         isAllowedToSplitOrMerge() {
             let isValid = false;
             let transaction_items = this.transaction_items;
-            let qty = 0;
+           let qty = 0;
             if (transaction_items.length > 0) {
                 isValid = true;
-                for (var index in transaction_items) {                   
-                    //if ((transaction_items[index].quantity <= 1 && transaction_items[index].other_accessories.id === undefined) || this.form.transaction_item_loss_detail_status)
+                for (var index in transaction_items) {
+                    // if ((transaction_items[index].quantity <= 1 && transaction_items[index].other_accessories.id === undefined) || this.form.transaction_item_loss_detail_status)
+                    //     isValid = false;
                     if ((transaction_items[index].other_accessories.id === undefined) || this.form.transaction_item_loss_detail_status) {
                         qty += transaction_items[index].quantity;
                     }
-                    // isValid = false;
+
                 }
             }
             if (qty <= 1) {
@@ -1110,10 +1111,10 @@ Vue.component('transaction', {
                             }
                             transfer_weight = CommonMethods.precisionRound(transfer_weight) - CommonMethods.precisionRound(this.last_transaction_items.total_loss_weight);
                             for (var index in transaction_items) {
-                                if (transaction_items[index].other_accessories.id === undefined) {
+                                //if (transaction_items[index].other_accessories.id === undefined) {
                                     transaction_items[index].split.transfer = {
-                                        weight: parseFloat(transfer_weight).toFixed(3),
-                                        quantity: transfer_quantity,
+                                        weight: parseFloat(transfer_transaction_item["receive_weight"]).toFixed(3),
+                                        quantity: transfer_transaction_item["quantity"],
                                         transfer_quantity: 0,
                                         transfer_weight: 0,
                                         class: ""
@@ -1125,7 +1126,7 @@ Vue.component('transaction', {
                                         transfer_weight: 0,
                                         class: ""
                                     };
-                                }
+                               // }
 
                             }
                         }
