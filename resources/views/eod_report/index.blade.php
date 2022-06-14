@@ -14,33 +14,9 @@
                                     <div class="col-lg-6 ">
                                         <h2 class="pt-3">EOD Report (Processing Lots)</h2>
                                     </div>
-                                    <div class="col-lg-6"></div>
-                                </div>
-                                <div class="ui centered grid" v-show="!is_advance_search">
-                                    <div class="sixteen wide column">
-                                        <div class="ui form ">
-                                            <div class="field">
-                                                <div class="three fields">
-                                                    <div class="field">
-                                                        <label>From Date</label>
-                                                        <input type="date" name="from_date" v-model="from_date">
-                                                    </div>
-                                                    <div class="field">
-                                                        <label>To Date</label>
-                                                        <input type="date" name="to_date" v-model="to_date">
-                                                    </div>
-                                                    <div class="field pt-4 mt-2">
-                                                        <button class="btn btn-fw info" @click="onFilterSearch">Filter</button>
-                                                        <button class="btn btn-fw " @click="closeAdvanceFilter">Close</button>
-                                                    </div>
-
-                                                </div>
-                                            </div>
-                                        </div>
+                                    <div class="col-lg-6">
+                                        @include('__global.search_bar')
                                     </div>
-
-                                    <!--Advance filtter search-->
-
                                 </div>
                             </div>
                         </div>
@@ -54,7 +30,7 @@
                                 <table class="ui blue selectable celled stackable attached table">
                                     <tfoot class="vuetable-body">
                                         <tr>
-                                            <td style="text-align: right; width: 48.4%;">Total</td>
+                                            <td style="text-align: right; width: 51.4%;">Total</td>
                                             <td style="width: 4.9%;">
                                                 <div v-html="totalWeight"></div>
                                             </td>

@@ -44,7 +44,7 @@ class EodReportController extends Controller
       DB::raw("(SELECT IFNULL(sum(til3.weight), 0) FROM transaction_item_loss_details til3 JOIN transaction t3 on t3.id=til3.transaction_id WHERE t3.bag_id=bag.id AND til3.type=0) as loss"),
       DB::raw("IFNULL((SELECT t3.total_receive_weight FROM transaction t3 WHERE t3.bag_id=bag.id ORDER BY ID DESC LIMIT 1), ROUND(SUM(bag_styles.weight), 3))  as cross_weight"),
       DB::raw("GROUP_CONCAT(bag_styles.style_id) as style"),
-      DB::raw("GROUP_CONCAT(bag_styles.instructions) instruction"),
+      //DB::raw("GROUP_CONCAT(bag_styles.instructions) instruction"),
       DB::raw("GROUP_CONCAT(style.sku) sku"),
       "employee.name as employee",
     );
@@ -54,6 +54,8 @@ class EodReportController extends Controller
     $query->leftJoin('department', 'department.id', '=', 'bag.department_id');
     $query->leftJoin('employee', 'employee.id', '=', 'bag.employee_id');
 
+    
+
     $query->where("bag.status", "!=", "1");
     $query->where("bag.department_id", "!=", "9");
     $query->where("bag.department_id", "!=", "1");
@@ -61,6 +63,6 @@ class EodReportController extends Controller
     $query->groupBy('bag.id', 'bag.parent_bag_id', 'bag.bag_number', 'bag.order_number');
     $query->orderBy('bag.id', 'DESC');
 
-    return XModel::preparePagination($query, $request, ['bag.bag_number', 'bag.order_number']);
+    return XModel::preparePagination($query, $request, ['bag.bag_number', 'bag.order_number', 'bag.instructions']);
   }
 }
