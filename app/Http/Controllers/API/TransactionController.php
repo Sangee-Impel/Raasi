@@ -472,8 +472,8 @@ class TransactionController extends Controller
                             $transaction_item_loss_detail_value['transaction_id'] = $transaction['id'];
                             //$transaction_item_loss_detail_value['bag_style_id'] = $transaction_item_value['bag_style_id'];
                             $transaction_item_loss_detail_value['date'] = $transaction['transaction_date'];
-                            $transaction_item_loss_detail_value['user_id'] = $bagEmployee['user_id'];
-                            $transaction_item_loss_detail_value['admin_approval_loss_weight'] = $admin_approval_loss_weight;
+                            //$transaction_item_loss_detail_value['user_id'] = $bagEmployee['user_id'];
+                            $transaction_item_loss_detail_value['admin_approval_loss_weight'] = (float) $admin_approval_loss_weight;
                             $transaction_item_loss_detail_value['status'] = XModel::getConfigType("approved", "transaction_item_loss_status", "value")['id'];
                             if ($transaction_item_loss_detail_value['type'] == XModel::getConfigType("loss", "transaction_item_loss_type", "value")['id']) {
                                 if ($admin_approval_loss_weight < $transaction_item_loss_detail_value['weight']) {

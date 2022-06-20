@@ -207,3 +207,10 @@
 .custom_date{
   pointer-events: none;
 }
+.scrap_custom_table tbody tr {
+  display: none;
+}
+
+.scrap_custom_table tbody tr:first-child {
+  display: table-row;
+}

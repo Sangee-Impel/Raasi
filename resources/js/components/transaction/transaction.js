@@ -63,6 +63,7 @@ Vue.component('transaction', {
             viewedStyle: {},
             display_style: false,
             display_loss_details: false,
+            display_scrap_details: false,
             display_loss_details_report: false,
             uom_options: [],
             other_accessories_options: [],
@@ -89,7 +90,7 @@ Vue.component('transaction', {
     created() {
         this.form.errors.forget(); //to reset validation errors
     },
-    beforeDestroy() {},
+    beforeDestroy() { },
     computed: {
         isAllowedToSplitOrMerge() {
             let isValid = false;
@@ -323,7 +324,7 @@ Vue.component('transaction', {
                     .then(response => {
                         this.$snotify.success(response.name, 'saved!');
                         this.showGrid();
-                        window.location.reload();
+                        //window.location.reload();
                     })
                     .catch(reason => {
                         this.$snotify.error(reason.message);
@@ -604,26 +605,26 @@ Vue.component('transaction', {
                 max_loss_weight: 0,
                 transaction_item_loss_detail_status: false,
                 transaction_item_loss_details: [{
-                        id: 0,
-                        type: this.types.findTransactionType('scrap', 'value', 'transaction_item_loss_type')['id'],
-                        type_drop_down: this.types.findTransactionType('scrap', 'value', 'transaction_item_loss_type'),
-                        weight: 0,
-                        admin_approval_loss_weight: 0,
-                    },
-                    {
-                        id: 0,
-                        type: this.types.findTransactionType('loss', 'value', 'transaction_item_loss_type')['id'],
-                        type_drop_down: this.types.findTransactionType('loss', 'value', 'transaction_item_loss_type'),
-                        weight: 0,
-                        admin_approval_loss_weight: 0,
-                    },
-                    {
-                        id: 0,
-                        type: this.types.findTransactionType('channam', 'value', 'transaction_item_loss_type')['id'],
-                        type_drop_down: this.types.findTransactionType('channam', 'value', 'transaction_item_loss_type'),
-                        weight: 0,
-                        admin_approval_loss_weight: 0,
-                    }
+                    id: 0,
+                    type: this.types.findTransactionType('scrap', 'value', 'transaction_item_loss_type')['id'],
+                    type_drop_down: this.types.findTransactionType('scrap', 'value', 'transaction_item_loss_type'),
+                    weight: 0,
+                    admin_approval_loss_weight: 0,
+                },
+                {
+                    id: 0,
+                    type: this.types.findTransactionType('loss', 'value', 'transaction_item_loss_type')['id'],
+                    type_drop_down: this.types.findTransactionType('loss', 'value', 'transaction_item_loss_type'),
+                    weight: 0,
+                    admin_approval_loss_weight: 0,
+                },
+                {
+                    id: 0,
+                    type: this.types.findTransactionType('channam', 'value', 'transaction_item_loss_type')['id'],
+                    type_drop_down: this.types.findTransactionType('channam', 'value', 'transaction_item_loss_type'),
+                    weight: 0,
+                    admin_approval_loss_weight: 0,
+                }
                 ],
                 user_loss_scrap_weight: 0,
                 user_scrap_weight: 0,
@@ -782,26 +783,26 @@ Vue.component('transaction', {
                         max_loss_weight: 0,
                         transaction_item_loss_detail_status: false,
                         transaction_item_loss_details: [{
-                                id: 0,
-                                type: this.types.findTransactionType('scrap', 'value', 'transaction_item_loss_type')['id'],
-                                type_drop_down: this.types.findTransactionType('scrap', 'value', 'transaction_item_loss_type'),
-                                weight: 0,
-                                admin_approval_loss_weight: 0,
-                            },
-                            {
-                                id: 0,
-                                type: this.types.findTransactionType('loss', 'value', 'transaction_item_loss_type')['id'],
-                                type_drop_down: this.types.findTransactionType('loss', 'value', 'transaction_item_loss_type'),
-                                weight: 0,
-                                admin_approval_loss_weight: 0,
-                            },
-                            {
-                                id: 0,
-                                type: this.types.findTransactionType('channam', 'value', 'transaction_item_loss_type')['id'],
-                                type_drop_down: this.types.findTransactionType('channam', 'value', 'transaction_item_loss_type'),
-                                weight: 0,
-                                admin_approval_loss_weight: 0,
-                            }
+                            id: 0,
+                            type: this.types.findTransactionType('scrap', 'value', 'transaction_item_loss_type')['id'],
+                            type_drop_down: this.types.findTransactionType('scrap', 'value', 'transaction_item_loss_type'),
+                            weight: 0,
+                            admin_approval_loss_weight: 0,
+                        },
+                        {
+                            id: 0,
+                            type: this.types.findTransactionType('loss', 'value', 'transaction_item_loss_type')['id'],
+                            type_drop_down: this.types.findTransactionType('loss', 'value', 'transaction_item_loss_type'),
+                            weight: 0,
+                            admin_approval_loss_weight: 0,
+                        },
+                        {
+                            id: 0,
+                            type: this.types.findTransactionType('channam', 'value', 'transaction_item_loss_type')['id'],
+                            type_drop_down: this.types.findTransactionType('channam', 'value', 'transaction_item_loss_type'),
+                            weight: 0,
+                            admin_approval_loss_weight: 0,
+                        }
                         ],
                         old_transaction_item_loss_details: selectedBagStyle.transaction_item_loss_details,
                         user_loss_scrap_weight: 0,
@@ -1017,37 +1018,44 @@ Vue.component('transaction', {
         closeStyleModel() {
             this.display_style = false;
         },
-        showLossDetailModel() {
+        showLossDetailModel(index = 0) {
             this.transferItemIndex = 0;
             this.selectedTransferItem = {
-                    transaction_item_loss_details: [{
-                            id: 0,
-                            type: this.types.findTransactionType('scrap', 'value', 'transaction_item_loss_type')['id'],
-                            type_drop_down: this.types.findTransactionType('scrap', 'value', 'transaction_item_loss_type'),
-                            weight: 0,
-                            admin_approval_loss_weight: 0,
-                        },
-                        {
-                            id: 0,
-                            type: this.types.findTransactionType('loss', 'value', 'transaction_item_loss_type')['id'],
-                            type_drop_down: this.types.findTransactionType('loss', 'value', 'transaction_item_loss_type'),
-                            weight: 0,
-                            admin_approval_loss_weight: 0,
-                        },
-                        {
-                            id: 0,
-                            type: this.types.findTransactionType('channam', 'value', 'transaction_item_loss_type')['id'],
-                            type_drop_down: this.types.findTransactionType('channam', 'value', 'transaction_item_loss_type'),
-                            weight: 0,
-                            admin_approval_loss_weight: 0,
-                        }
-                    ],
+                transaction_item_loss_details: [{
+                    id: 0,
+                    type: this.types.findTransactionType('scrap', 'value', 'transaction_item_loss_type')['id'],
+                    type_drop_down: this.types.findTransactionType('scrap', 'value', 'transaction_item_loss_type'),
+                    weight: 0,
+                    admin_approval_loss_weight: 0,
+                },
+                {
+                    id: 0,
+                    type: this.types.findTransactionType('loss', 'value', 'transaction_item_loss_type')['id'],
+                    type_drop_down: this.types.findTransactionType('loss', 'value', 'transaction_item_loss_type'),
+                    weight: 0,
+                    admin_approval_loss_weight: 0,
+                },
+                {
+                    id: 0,
+                    type: this.types.findTransactionType('channam', 'value', 'transaction_item_loss_type')['id'],
+                    type_drop_down: this.types.findTransactionType('channam', 'value', 'transaction_item_loss_type'),
+                    weight: 0,
+                    admin_approval_loss_weight: 0,
                 }
-                // console.log(this.selectedTransferItem);
-                //this.selectedMaxLossWeight = this.transaction_items[transferItemIndex].max_loss_weight;
-                //this.selectedTransferItemLossDetails = this.transaction_items[transferItemIndex].transaction_item_loss_details;
-            this.display_loss_details = true;
+                ],
+            }
+            // console.log(this.selectedTransferItem);
+            //this.selectedMaxLossWeight = this.transaction_items[transferItemIndex].max_loss_weight;
+            //this.selectedTransferItemLossDetails = this.transaction_items[transferItemIndex].transaction_item_loss_details;
+            if (index === 0) {
+                this.display_loss_details = true;
+            } else {
+                this.display_scrap_details = true;
+            }
 
+        },
+        closeScrapDetailModel() {
+            this.display_scrap_details = false;
         },
         closeLossDetailModel() {
             this.display_loss_details = false;
@@ -1064,6 +1072,50 @@ Vue.component('transaction', {
             }
             this.showStyleModel(selectedIndex);
             this.closeLossDetailModel();
+        },
+        onToEmployee(event) {
+            console.log(event);
+        },
+        saveScrapDetailModel() {
+            this.form.from_department_id = null;
+            if (this.from_department != null)
+                this.form.from_department_id = this.from_department.id;
+
+            this.form.from_employee_id = null;
+            if (this.from_employee != null)
+                this.form.from_employee_id = this.from_employee.id;
+
+            this.form.to_employee_id = null;
+            if (this.to_employee != null) {
+                this.form.to_employee_id = this.to_employee.id;
+                if (this.form.to_department_id == null) {
+                    this.form.to_department_id = this.to_employee.department_id;
+                }
+            }
+
+            let employee_id = this.form.from_employee_id;
+            if(employee_id === null) {
+                employee_id = this.form.to_employee_id;
+            }
+
+            if(employee_id === null) {
+                swal("Please select from emplyee id after to do split the scrap");
+                return false;
+            }
+            let max_loss = this.form.total_receive_weight;
+            if (parseFloat(max_loss) < parseFloat(this.selectedTransferItem.user_loss_scrap_weight)) {
+                swal("Loss Weight should full fill then only it will save");
+                return false;
+            }
+            this.form.total_receive_weight = String(parseFloat(this.form.total_receive_weight) - parseFloat(this.selectedTransferItem.user_loss_scrap_weight));
+            
+            let selectedIndex = 0;
+            if (this.viewedStyleIndex != 0) {
+                selectedIndex = this.viewedStyleIndex - 1;
+            }
+            this.showStyleModel(selectedIndex);
+            this.closeScrapDetailModel();
+            this.submit();
         },
         addTransferItemLossAndScrapItem() {
             this.transaction_items[this.transferItemIndex].transaction_item_loss_details.push({
