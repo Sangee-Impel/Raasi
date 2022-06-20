@@ -70,8 +70,8 @@ class BagController extends Controller
         }
         $query->leftJoin('department', 'department.id', '=', 'bag.department_id');
         $query->leftJoin('employee', 'employee.id', '=', 'bag.employee_id');
-        $query->groupBy('bag.bag_number')
-            ->whereNotIn('bag.status', [XModel::getConfigType("splitted", "bag_status", "value")['id'], XModel::getConfigType("merge", "bag_status", "value")['id']]);
+       // $query->groupBy('bag.bag_number');
+            //->whereNotIn('bag.status', [XModel::getConfigType("splitted", "bag_status", "value")['id'], XModel::getConfigType("merge", "bag_status", "value")['id']]);
         return XModel::preparePagination($query, $request, ['bag.bag_number', 'department.name', 'parent_bag.bag_number', 'bag.instructions']);
     }
 
