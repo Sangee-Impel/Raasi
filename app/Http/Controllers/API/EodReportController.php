@@ -54,7 +54,29 @@ class EodReportController extends Controller
     $query->leftJoin('department', 'department.id', '=', 'bag.department_id');
     $query->leftJoin('employee', 'employee.id', '=', 'bag.employee_id');
 
-    
+    if ($request->has('advanceFilter')) {
+      $params = json_decode($request->get('advanceFilter'), true);
+      if (!is_null($params)) {
+        foreach ($params  as $column => $value) {
+          if (!is_null($value)) {
+            switch ($column) {
+              case 'from_date':
+                $query->where("transaction_item_loss_details.updated_at", '>=', $value . ' 00:00:00');
+                break;
+              case 'to_date':
+                $query->where("transaction_item_loss_details.updated_at", '<=', $value . ' 23:59:59');
+                break;
+              case 'employee_id':
+                $query->where("employee.id", '=', $value);
+                break;
+              case 'department_id':
+                $query->where("department.id", '=', $value);
+                break;
+            }
+          }
+        }
+      }
+    }
 
     $query->where("bag.status", "!=", "1");
     $query->where("bag.department_id", "!=", "9");

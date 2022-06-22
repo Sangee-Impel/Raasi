@@ -18,6 +18,40 @@
                                         @include('__global.search_bar')
                                     </div>
                                 </div>
+                                <div class="ui centered grid" v-show="!is_advance_search">
+                                    <div class="sixteen wide column">
+                                        <div class="ui form ">
+                                            <div class="field">
+                                                <div class="three fields">
+                                                    <div class="field">
+                                                        <label>From Date</label>
+                                                        <input type="date" name="from_date" v-model="from_date">
+                                                    </div>
+                                                    <div class="field">
+                                                        <label>To Date</label>
+                                                        <input type="date" name="to_date" v-model="to_date">
+                                                    </div>
+                                                    <div class="field">
+                                                        <label>Department Name</label>
+                                                        <v-select placeholder="Department" v-model="department" :options="department_options" :searchable="true" :multiple="false" label="name" track-by="id" :show-labels="true" @input="bindEmployee"></v-select>
+                                                    </div>
+                                                    <div class="field">
+                                                        <label>Employee Name</label>
+                                                        <v-select placeholder="Employee" v-model="employee" :options="employee_options" :searchable="true" :multiple="false" label="name" track-by="id" :show-labels="true"></v-select>
+                                                    </div>
+                                                    <div class="field pt-4 mt-2">
+                                                        <button class="btn btn-fw info" @click="onFilterSearch">Filter</button>
+                                                        <button class="btn btn-fw " @click="closeAdvanceFilter">Close</button>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!--Advance filtter search-->
+
+                                </div>
                             </div>
                         </div>
                     </div>
