@@ -89,9 +89,15 @@ class ClosingReportController extends Controller
     $query .= "(SELECT IFNULL(sum(til4.weight), 0) FROM transaction_item_loss_details til4 JOIN transaction t4 on t4.id=til4.transaction_id WHERE t4.bag_id=b.id AND til4.type=0 AND til4.created_at < '" . $from_date_raw . "') as pre_loss, ";
     // Previous Date Data
     $query .= "IFNULL(SUM(";
+    $query .= "(CASE WHEN (SELECT IFNULL(t1.total_receive_weight, 0) FROM transaction t1 WHERE t1.bag_id = b.id AND t1.transaction_date < '" . $from_date_raw . "' AND t1.to_department_id=9 order by t1.id desc limit 1) > 0 THEN ";
+    $query .= "(SELECT IFNULL(t1.total_receive_weight, 0) FROM transaction t1 WHERE t1.bag_id = b.id AND t1.transaction_date < '" . $from_date_raw . "' AND t1.to_department_id=9 order by t1.id desc limit 1) ";
+    $query .= "ELSE (select IFNULL(bs2.weight, 0) from bag_styles bs2 JOIN bag b2 on bs2.bag_id=b2.id WHERE b2.department_id=9 AND b2.id=b.id AND bs2.other_accessories_id IS NULL AND b2.updated_at < '" . $from_date_raw . "') END) ";
+    $query .= "), 0) as pre_fcdelivery_outward, ";
+
+    $query .= "IFNULL(SUM(";
     $query .= "(CASE WHEN (SELECT IFNULL(t1.total_receive_weight, 0) FROM transaction t1 WHERE t1.bag_id = b.id AND t1.transaction_date >= '" . $from_date . "' AND t1.transaction_date <= '" . $to_date . "' AND t1.to_department_id=9 order by t1.id desc limit 1) > 0 THEN ";
     $query .= "(SELECT IFNULL(t1.total_receive_weight, 0) FROM transaction t1 WHERE t1.bag_id = b.id AND t1.transaction_date >= '" . $from_date . "' AND t1.transaction_date <= '" . $to_date . "' AND t1.to_department_id=9 order by t1.id desc limit 1) ";
-    $query .= "ELSE (select IFNULL(bs2.weight, 0) from bag_styles bs2 JOIN bag b2 on bs2.bag_id=b2.id WHERE b2.department_id=9 AND b2.id=b.id AND bs2.other_accessories_id IS NULL AND b2.updated_at >= '" . $from_date . "' AND bs2.updated_at <= '" . $to_date . "') END) ";
+    $query .= "ELSE (select IFNULL(bs2.weight, 0) from bag_styles bs2 JOIN bag b2 on bs2.bag_id=b2.id WHERE b2.department_id=9 AND b2.id=b.id AND bs2.other_accessories_id IS NULL AND bs2.updated_at >= '" . $from_date . "' AND bs2.updated_at <= '" . $to_date . "') END) ";
     $query .= "), 0) as fcdelivery_outward, ";
 
     $query .= "IFNULL(SUM(";
