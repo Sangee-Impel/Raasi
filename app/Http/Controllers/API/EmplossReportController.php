@@ -34,7 +34,7 @@ class EmplossReportController extends Controller
       "bag.id",
       "bag.bag_number",
       "bag.order_number",
-      "transaction_item_loss_details.weight",
+      DB::raw("ROUND(transaction_item_loss_details.weight, 3) as weight"),
       DB::raw("DATE_FORMAT(transaction_item_loss_details.updated_at, '%d/%c/%Y %r') as time"),
       DB::raw("CASE WHEN transaction_item_loss_details.type = 0 THEN 'Loss' WHEN transaction_item_loss_details.type = 1 THEN 'Scrap' WHEN transaction_item_loss_details.type = 2 THEN 'Channam' ELSE '' END as type"),
       DB::raw("1 as quantity"),

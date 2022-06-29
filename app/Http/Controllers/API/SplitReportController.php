@@ -38,7 +38,7 @@ class SplitReportController extends Controller
       "bag.order_number",
       "department.name as department",
       "employee.name as employee",
-      DB::raw("IFNULL(sum(bag_styles.weight), 0) as weight"),
+      DB::raw("ROUND(IFNULL(sum(bag_styles.weight), 0), 3) as weight"),
       DB::raw("IFNULL(sum(bag_styles.quantity), 0) as quantity"),
       DB::raw("DATE_FORMAT(bag.updated_at, '%d/%c/%Y %r') as time"),
       DB::raw("(select GROUP_CONCAT(distinct(s.sku)) from style s where style.id = s.id) as sku")

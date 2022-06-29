@@ -61,8 +61,8 @@ Vue.component('manage-merge-report', {
                 params: this.vueTableParams
             }).then(response => {
                 let data = response.data.data;
-                this.totalWeight = data.reduce((a, b) => a + b.total_receive_weight, 0);
-                this.totalTransferWeight = data.reduce((a, b) => a + b.total_transfer_weight, 0);
+                this.totalWeight = parseFloat(data.reduce((a, b) => a + b.total_receive_weight, 0)).toFixed(2);
+                this.totalTransferWeight = parseFloat(data.reduce((a, b) => a + b.total_transfer_weight, 0)).toFixed(2);
             }).catch(reason => {
             }).finally(() => {
                 this.isLoading = false;

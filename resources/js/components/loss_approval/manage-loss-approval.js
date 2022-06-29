@@ -78,8 +78,8 @@ Vue.component('manage-loss-approval', {
             })
                 .then(response => {
                     let data = response.data.data;
-                    this.totalWeight = data.reduce((a, b) => a + b.weight, 0);
-                    this.totalAdminWeight = data.reduce((a, b) => a + b.admin_approval_loss_weight, 0);
+                    this.totalWeight = parseFloat(data.reduce((a, b) => a + b.weight, 0)).toFixed(2);
+                    this.totalAdminWeight = parseFloat(data.reduce((a, b) => a + b.admin_approval_loss_weight, 0)).toFixed(2);
                 }).catch(reason => {
                 }).finally(() => {
                     this.isLoading = false;

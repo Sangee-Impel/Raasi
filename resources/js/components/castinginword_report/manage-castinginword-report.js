@@ -58,7 +58,7 @@ Vue.component('manage-castinginword-report', {
                 params: this.vueTableParams
             }).then(response => {
                 let data = response.data.data;
-                this.totalWeight = data.reduce((a, b) => a + b.weight, 0);
+                this.totalWeight = parseFloat(data.reduce((a, b) => a + b.weight, 0)).toFixed(2);
             }).catch(reason => {
             }).finally(() => {
                 this.isLoading = false;

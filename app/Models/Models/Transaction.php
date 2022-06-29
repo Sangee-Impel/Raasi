@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 class Transaction extends XModel
 {
     protected $table = 'transaction';
-    protected $fillable = ['transaction_date','from_department_id','from_employee_id','to_department_id','to_employee_id','bag_id','description','status','is_eod_reporting','total_transfer_weight','total_transfer_quantity','total_receive_weight', 'total_loss_weight','transaction_mode','to_bag_id'];
+    protected $fillable = ['transaction_date','from_department_id','from_employee_id','to_department_id','to_employee_id','bag_id','description','status','is_eod_reporting','total_transfer_weight','total_transfer_quantity','total_receive_weight', 'total_loss_weight', 'total_loss_quantity', 'transaction_mode','to_bag_id'];
     public function bag(){
         return $this->hasOne(Bag::class,'id','bag_id')->with(['bagStyles']);
     }

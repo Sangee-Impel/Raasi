@@ -120,6 +120,8 @@ class TransactionController extends Controller
         // });
 
         $post_data  =   $request->all();
+        // echo '<pre>';
+        // print_r($post_data);echo '</pre>';exit;
         //#block for receive quantity validation...!
         $bag = Bag::findOrFail($post_data['bag_id']);
         $receiveWeightRule = ['transaction_items.*.receive_weight' => 'required|numeric|same:transaction_items.*.weight'];
@@ -368,7 +370,7 @@ class TransactionController extends Controller
                                 $oldReceiveBag->status    =   XModel::getConfigType("merge", "bag_status", "value")['id'];
                                 if ($oldReceiveBag->save()) {
                                     $receiveBag = [
-                                        //                                            "parent_bag_id" => $oldReceiveBag['id'],
+                                        // "parent_bag_id" => $oldReceiveBag['id'],
                                         "bag_number" => $oldReceiveBag['bag_number'],
                                         "order_number" => $oldReceiveBag['order_number'],
                                         "instructions" => $oldReceiveBag['instructions'],

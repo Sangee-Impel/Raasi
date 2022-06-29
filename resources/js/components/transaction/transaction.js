@@ -59,6 +59,7 @@ Vue.component('transaction', {
             total_weight: 0,
             total_receive_weight: 0,
             total_loss_weight: 0,
+            total_loss_quantity: 0,
             viewedStyleIndex: 0,
             viewedStyle: {},
             display_style: false,
@@ -140,9 +141,11 @@ Vue.component('transaction', {
             let totalQuantity = 0;
             let transaction_items = this.transaction_items;
             var pre_loss_weight = 0;
+            var pre_loss_quantity = 0;
             if (this.selected_bag != null) {
                 if (this.selected_bag.last_transaction != null) {
                     pre_loss_weight = this.selected_bag.last_transaction.total_loss_weight;
+                    pre_loss_quantity = this.selected_bag.last_transaction.total_loss_quantity;
                 }
             }
             let totalReceiveWeight = (this.form.total_receive_weight == undefined) ? 0 : this.form.total_receive_weight;
@@ -156,12 +159,13 @@ Vue.component('transaction', {
                         if (!isNaN(weight)) {
                             totalWeight = CommonMethods.BigDecimalFunction("add", totalWeight, weight);
                         }
-                        if (!isNaN(quantity) && transaction_items[index].other_accessories.id == null && transaction_items[index].bag_style_id != null) {
+                        if (!isNaN(quantity)) {
                             totalQuantity = CommonMethods.BigDecimalFunction("add", totalQuantity, quantity);
                         }
                     }
                 }
                 totalWeight = totalWeight - pre_loss_weight;
+                totalQuantity = totalQuantity - pre_loss_quantity;
             }
 
             // totalReceiveWeight  = CommonMethods.precisionRound( this.form.total_receive_weight - pre_loss_weight );
@@ -173,7 +177,8 @@ Vue.component('transaction', {
             this.form.total_transfer_quantity = parseInt(totalQuantity);
             this.form.total_receive_weight = totalReceiveWeight;
             this.form.total_loss_weight = CommonMethods.precisionRound(totalWeight - totalReceiveWeight);
-
+            this.form.total_loss_quantity = CommonMethods.precisionRound(pre_loss_quantity);
+            //console.log(totalQuantity);
             this.form.max_loss_weight = CommonMethods.precisionRound(totalWeight - totalReceiveWeight);
             // this.last_transaction_items.total_loss_weight   = CommonMethods.precisionRound( pre_loss_weight - this.form.total_loss_weight );
 
@@ -216,6 +221,7 @@ Vue.component('transaction', {
         checkTotalScrapLossWeight() {
             if (this.selectedTransferItem.transaction_item_loss_details != undefined) {
                 let totalScrapLossQuantityForSelectedItem = 0;
+                let totalScrapLossQuantity = 0;
                 let transaction_item_loss_details = this.selectedTransferItem.transaction_item_loss_details;
                 let user_scrap_weight = 0;
                 let user_loss_weight = 0;
@@ -225,7 +231,9 @@ Vue.component('transaction', {
                         let transaction_item_loss_detail = transaction_item_loss_details[index];
                         let type_drop_down = transaction_item_loss_detail.type_drop_down;
                         let weight = isNaN(parseFloat(transaction_item_loss_detail.weight)) ? 0 : parseFloat(transaction_item_loss_detail.weight);
+                        let quantity = isNaN(parseFloat(transaction_item_loss_detail.quantity)) ? 0 : parseFloat(transaction_item_loss_detail.quantity);
                         totalScrapLossQuantityForSelectedItem += weight;
+                        totalScrapLossQuantity += quantity;
                         if (type_drop_down != null) {
                             if (type_drop_down.id == this.types.findTransactionType('scrap', 'value', 'transaction_item_loss_type')['id']) {
                                 user_scrap_weight += weight;
@@ -243,6 +251,7 @@ Vue.component('transaction', {
                 this.viewedStyle.user_channam_weight = CommonMethods.precisionRound(user_channam_weight);
 
                 this.selectedTransferItem.user_loss_scrap_weight = CommonMethods.precisionRound(totalScrapLossQuantityForSelectedItem);
+                this.selectedTransferItem.user_loss_scrap_quantity = CommonMethods.precisionRound(totalScrapLossQuantity);
                 this.selectedTransferItem.user_scrap_weight = CommonMethods.precisionRound(user_scrap_weight);
                 this.selectedTransferItem.user_loss_weight = CommonMethods.precisionRound(user_loss_weight);
                 this.selectedTransferItem.user_channam_weight = CommonMethods.precisionRound(user_channam_weight);
@@ -626,6 +635,7 @@ Vue.component('transaction', {
                     admin_approval_loss_weight: 0,
                 }
                 ],
+                user_loss_scrap_quantity: 0,
                 user_loss_scrap_weight: 0,
                 user_scrap_weight: 0,
                 user_loss_weight: 0,
@@ -806,6 +816,7 @@ Vue.component('transaction', {
                         ],
                         old_transaction_item_loss_details: selectedBagStyle.transaction_item_loss_details,
                         user_loss_scrap_weight: 0,
+                        user_loss_scrap_quantity: 0,
                         user_scrap_weight: 0,
                         user_loss_weight: 0,
                         user_channam_weight: 0,
@@ -1025,6 +1036,7 @@ Vue.component('transaction', {
                     id: 0,
                     type: this.types.findTransactionType('scrap', 'value', 'transaction_item_loss_type')['id'],
                     type_drop_down: this.types.findTransactionType('scrap', 'value', 'transaction_item_loss_type'),
+                    quantity: 0,
                     weight: 0,
                     admin_approval_loss_weight: 0,
                 },
@@ -1033,6 +1045,7 @@ Vue.component('transaction', {
                     type: this.types.findTransactionType('loss', 'value', 'transaction_item_loss_type')['id'],
                     type_drop_down: this.types.findTransactionType('loss', 'value', 'transaction_item_loss_type'),
                     weight: 0,
+                    quantity: 0,
                     admin_approval_loss_weight: 0,
                 },
                 {
@@ -1040,6 +1053,7 @@ Vue.component('transaction', {
                     type: this.types.findTransactionType('channam', 'value', 'transaction_item_loss_type')['id'],
                     type_drop_down: this.types.findTransactionType('channam', 'value', 'transaction_item_loss_type'),
                     weight: 0,
+                    quantity: 0,
                     admin_approval_loss_weight: 0,
                 }
                 ],
@@ -1094,12 +1108,17 @@ Vue.component('transaction', {
             }
 
             let employee_id = this.form.from_employee_id;
-            if(employee_id === null) {
+            if (employee_id === null) {
                 employee_id = this.form.to_employee_id;
             }
 
-            if(employee_id === null) {
+            if (employee_id === null) {
                 swal("Please select from emplyee id after to do split the scrap");
+                return false;
+            }
+            let max_loss_quantity = this.form.total_transfer_quantity;
+            if (parseFloat(max_loss_quantity) < parseFloat(this.selectedTransferItem.user_loss_scrap_quantity)) {
+                swal("Loss Quantity should full fill then only it will save");
                 return false;
             }
             let max_loss = this.form.total_receive_weight;
@@ -1107,8 +1126,15 @@ Vue.component('transaction', {
                 swal("Loss Weight should full fill then only it will save");
                 return false;
             }
+
             this.form.total_receive_weight = String(parseFloat(this.form.total_receive_weight) - parseFloat(this.selectedTransferItem.user_loss_scrap_weight));
-            
+            if (this.selected_bag.last_transaction != undefined) {
+                this.form.total_loss_quantity = parseFloat(this.selected_bag.last_transaction.total_loss_quantity) + parseFloat(this.selectedTransferItem.user_loss_scrap_quantity);
+                console.log(this.form.total_loss_quantity);
+            } else {
+                this.form.total_loss_quantity = parseFloat(this.selectedTransferItem.user_loss_scrap_quantity);
+            }
+
             let selectedIndex = 0;
             if (this.viewedStyleIndex != 0) {
                 selectedIndex = this.viewedStyleIndex - 1;
@@ -1534,8 +1560,6 @@ Vue.component('transaction', {
                             item.class = "red";
                         }
                     }
-
-
                 }
                 if (ErrorData.status) {
                     swal(ErrorData.sting);

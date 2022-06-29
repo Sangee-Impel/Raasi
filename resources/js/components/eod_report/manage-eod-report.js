@@ -116,11 +116,11 @@ Vue.component('manage-eod-report', {
                 params: this.vueTableParams
             }).then(response => {
                 let data = response.data.data;
-                this.totalWeight = data.reduce((a, b) => a + b.weight, 0);
-                this.totalScarpWeight = data.reduce((a, b) => a + b.scrap, 0);
-                this.totalChanamWeight = data.reduce((a, b) => a + b.channam, 0);
-                this.totalLossWeight = data.reduce((a, b) => a + b.loss, 0);
-                this.totalCrossWeight = data.reduce((a, b) => a + b.cross_weight, 0);
+                this.totalWeight = parseFloat(data.reduce((a, b) => a + b.weight, 0)).toFixed(2);
+                this.totalScarpWeight = parseFloat(data.reduce((a, b) => a + b.scrap, 0)).toFixed(2);
+                this.totalChanamWeight = parseFloat(data.reduce((a, b) => a + b.channam, 0)).toFixed(2);
+                this.totalLossWeight = parseFloat(data.reduce((a, b) => a + b.loss, 0)).toFixed(2);
+                this.totalCrossWeight = parseFloat(data.reduce((a, b) => a + b.cross_weight, 0)).toFixed(2);
             }).catch(reason => { }).finally(() => {
                 this.isLoading = false;
             });

@@ -216,7 +216,9 @@
                                                                         <tr v-else>
 
                                                                             <td colspan="3">Total</td>
-                                                                            <td>@{{form.total_transfer_quantity}}
+                                                                            <td>
+                                                                                <p class="text-danger" v-if="last_transaction_items.total_loss_quantity > 0"> Total Loss Quantity( -@{{ last_transaction_items.total_loss_quantity  }} )</p>
+                                                                                @{{form.total_transfer_quantity}}
                                                                                 <div class="ui pointing red basic label wrap-normal" v-show="form.errors.has('total_transfer_quantity')">
                                                                                     @{{ form.errors.get('total_transfer_quantity') }}
                                                                                 </div>
@@ -228,6 +230,7 @@
                                                                             </td>
                                                                             <td>
                                                                                 <p class="text-danger" v-if="last_transaction_items.total_loss_weight > 0"> Total Loss( -@{{ last_transaction_items.total_loss_weight  }} )</p>
+                                                                                <input type="hidden" v-model="form.total_loss_quantity" placeholder="weight">
                                                                                 <input type="hidden" v-model="form.total_loss_weight" placeholder="weight">
                                                                                 <input type="text" v-model="form.total_receive_weight" placeholder="weight">
                                                                                 <div class="ui pointing red basic label wrap-normal" v-show="form.errors.has('total_receive_weight')">
@@ -820,7 +823,7 @@
                                                                     <thead>
                                                                         <tr>
                                                                             <td>Type</td>
-                                                                            <!--<td>User</td>-->
+                                                                            <td>Quantity</td>
                                                                             <td>Weight</td>
                                                                             <!--<td>Action</td>-->
                                                                         </tr>
@@ -844,6 +847,9 @@
                                                                     ></v-select>
                                                                 </td>-->
                                                                             <td>
+                                                                                <input type="text" v-model="transaction_item_loss_detail.quantity" placeholder="Quantity">
+                                                                            </td>
+                                                                            <td>
                                                                                 <input type="text" v-model="transaction_item_loss_detail.weight" placeholder="weight">
                                                                                 @{{checkAdminAllowedMaximumLossesString(lossDetailIndex)}}
                                                                             </td>
@@ -859,7 +865,6 @@
                                                                         </tr>
                                                                         <tr v-else>
                                                                             <td>Total Scrap And Loss Weight</td>
-
                                                                             <td>@{{selectedTransferItem.user_loss_scrap_weight}}</td>
                                                                         </tr>
                                                                     </tbody>
