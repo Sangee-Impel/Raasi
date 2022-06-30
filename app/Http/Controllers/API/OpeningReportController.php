@@ -37,7 +37,8 @@ class OpeningReportController extends Controller
       "bag.order_number",
       "department.name as department",
       DB::raw("DATE_FORMAT(bag.updated_at, '%d/%c/%Y %r') as time"),
-      DB::raw("SUM(bag_styles.quantity) as quantity"),
+      //DB::raw("SUM(bag_styles.quantity) as quantity"),
+      DB::raw("(SUM(bag_styles.quantity) - IFNULL((SELECT lst.total_loss_quantity FROM transaction lst WHERE lst.bag_id = bag.id ORDER BY lst.id DESC LIMIT 1), 0)) as quantity"),
       DB::raw("ROUND(SUM(bag_styles.weight),3) as weight"),
       DB::raw("GROUP_CONCAT(bag_styles.style_id) as style"),
       DB::raw("GROUP_CONCAT(style.sku) sku")

@@ -333,7 +333,7 @@ Vue.component('transaction', {
                     .then(response => {
                         this.$snotify.success(response.name, 'saved!');
                         this.showGrid();
-                        //window.location.reload();
+                        window.location.reload();
                     })
                     .catch(reason => {
                         this.$snotify.error(reason.message);

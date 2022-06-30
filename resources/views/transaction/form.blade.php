@@ -710,7 +710,7 @@
                                 <div class="row mt-3">
                                     <div class="col-lg-12 ">
                                         <div class="m-b btn-groups float-right">
-                                            <button class="btn btn-fw success " type="button" @click="submit">
+                                            <button class="btn btn-fw success" v-if="isLoading === false" type="button" @click="submit">
                                                 @{{tabStatus|nameToUpper}}
                                             </button>
                                         </div>
