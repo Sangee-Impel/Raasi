@@ -214,7 +214,6 @@
                                                                             <td col-span="8">No Data</td>
                                                                         </tr>
                                                                         <tr v-else>
-
                                                                             <td colspan="3">Total</td>
                                                                             <td>
                                                                                 <p class="text-danger" v-if="last_transaction_items.total_loss_quantity > 0"> Total Loss Quantity( -@{{ last_transaction_items.total_loss_quantity  }} )</p>

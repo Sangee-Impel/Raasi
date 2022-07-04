@@ -173,9 +173,9 @@ Vue.component('transaction', {
             if (totalWeight < totalReceiveWeight) {
                 totalReceiveWeight = totalWeight;
             }
-            this.form.total_transfer_weight = totalWeight;
+            this.form.total_transfer_weight = parseFloat(totalWeight).toFixed(3);
             this.form.total_transfer_quantity = parseInt(totalQuantity);
-            this.form.total_receive_weight = totalReceiveWeight;
+            this.form.total_receive_weight = parseFloat(totalReceiveWeight).toFixed(3);
             this.form.total_loss_weight = CommonMethods.precisionRound(totalWeight - totalReceiveWeight);
             this.form.total_loss_quantity = CommonMethods.precisionRound(pre_loss_quantity);
             //console.log(totalQuantity);
