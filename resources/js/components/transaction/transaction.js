@@ -149,7 +149,6 @@ Vue.component('transaction', {
                 }
             }
             let totalReceiveWeight = (this.form.total_receive_weight == undefined) ? 0 : this.form.total_receive_weight;
-
             if (transaction_items.length > 0) {
                 for (var index = 0; index <= transaction_items.length; index++) {
                     if (transaction_items[index] != undefined) {
@@ -169,13 +168,14 @@ Vue.component('transaction', {
             }
 
             // totalReceiveWeight  = CommonMethods.precisionRound( this.form.total_receive_weight - pre_loss_weight );
-            totalReceiveWeight = (this.form.total_transfer_weight != totalWeight) ? totalWeight : totalReceiveWeight;
+            totalReceiveWeight = (parseFloat(this.form.total_transfer_weight).toFixed(3) != parseFloat(totalWeight).toFixed(3)) ? totalWeight : totalReceiveWeight;
             if (totalWeight < totalReceiveWeight) {
                 totalReceiveWeight = totalWeight;
             }
+            //console.log(totalReceiveWeight);
             this.form.total_transfer_weight = parseFloat(totalWeight).toFixed(3);
             this.form.total_transfer_quantity = parseInt(totalQuantity);
-            this.form.total_receive_weight = parseFloat(totalReceiveWeight).toFixed(3);
+            this.form.total_receive_weight = this.isFloat(totalReceiveWeight) ? parseFloat(totalReceiveWeight).toFixed(3) : totalReceiveWeight;
             this.form.total_loss_weight = CommonMethods.precisionRound(totalWeight - totalReceiveWeight);
             this.form.total_loss_quantity = CommonMethods.precisionRound(pre_loss_quantity);
             //console.log(totalQuantity);
@@ -187,6 +187,7 @@ Vue.component('transaction', {
                 this.form.transaction_item_loss_detail_status = false;
             }
         },
+
         /*getSplitTransferItemTotal(){
             let totalWeight         = 0;
             let totalQuantity       = 0;
@@ -278,6 +279,9 @@ Vue.component('transaction', {
             this.is_job_card_search = !(this.is_job_card_search);
             //this.clearFromToDropDown();
             this.clearBagData();
+        },
+        isFloat(n) {
+            return Number(n) === n && n % 1 !== 0;
         },
         deleteOtherAccessories() {
             let selectedItem = this.transaction_items[this.viewedStyleIndex];

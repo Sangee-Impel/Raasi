@@ -35,6 +35,7 @@ class TransactionController extends Controller
     {
         return view("transaction.index");
     }
+
     public function getTransaction()
     {
         return view("transaction.form");
@@ -120,8 +121,7 @@ class TransactionController extends Controller
         // });
 
         $post_data  =   $request->all();
-        // echo '<pre>';
-        // print_r($post_data);echo '</pre>';exit;
+
         //#block for receive quantity validation...!
         $bag = Bag::findOrFail($post_data['bag_id']);
         $receiveWeightRule = ['transaction_items.*.receive_weight' => 'required|numeric|same:transaction_items.*.weight'];
@@ -198,8 +198,6 @@ class TransactionController extends Controller
                 case XModel::getConfigType("merge_mode", "transaction_mode", "value")['id']:
                     $isMergeMode = true;
                     //#todo need to validate...!
-
-
                     $request->validate([
                         'merge.receive' => 'required',
                         'merge.transfer' => 'required',
@@ -252,9 +250,10 @@ class TransactionController extends Controller
                     //#block for save split bag...!
                     if ($isSplitMode) {
                         $bag->status    =   XModel::getConfigType("splitted", "bag_status", "value")['id'];
-                        //#block to check the bag status...!
 
+                        //#block to check the bag status...!
                         if ($bag->save()) {
+                            $t = Transaction::where('bag_id', '=', $bag['id'])->get();
                             $transferBag = [
                                 "parent_bag_id" => $bag['id'],
                                 "bag_number" => $bag['bag_number'],
@@ -262,8 +261,9 @@ class TransactionController extends Controller
                                 "instructions" => $bag['instructions'],
                                 "department_id" => $bag['department_id'],
                                 "employee_id" => $bag['employee_id'],
+                                "created_at" => $bag['created_at'],
+                                "updated_at" => $bag['updated_at']
                             ];
-
                             $receiveBag = [
                                 "parent_bag_id" => $bag['id'],
                                 "bag_number" => $bag['bag_number'] . Config::get('constants.bag_split_string') . Bag::getBagIteration($bag['id']),
@@ -271,6 +271,8 @@ class TransactionController extends Controller
                                 "instructions" => $bag['instructions'],
                                 "department_id" => $transaction['to_department_id'],
                                 "employee_id" =>  $transaction['to_employee_id'],
+                                "created_at" => $bag['created_at'],
+                                "updated_at" => $bag['updated_at']
                             ];
                             $department = Department::findOrFail($transaction['to_department_id']);
                             if (Config::get('constants.department.final_process_status.is_final') == $department->is_last)
@@ -286,8 +288,16 @@ class TransactionController extends Controller
                                 return $value['quantity'] > 0 && $value['weight'] > 0;
                             });
                             if (count($transferArray) > 0) {
+                                //print_r($transferBag);exit;
                                 $transfer = Bag::create($transferBag);
                                 $transferBagID = $transfer['id'];
+
+                                if (!empty($t)) {
+                                    foreach ($t as $k => $tk) {
+                                        $tk->bag_id = $transferBagID;
+                                        $tk->save();
+                                    }
+                                }
                             }
                             if (count($receiveArray) > 0) {
                                 $receive = Bag::create($receiveBag);
@@ -311,11 +321,21 @@ class TransactionController extends Controller
                                 "instructions" => $bag['instructions'],
                                 "department_id" => $transaction['to_department_id'],
                                 "employee_id" =>  $transaction['to_employee_id'],
+                                "created_at" => $bag['created_at'],
+                                "updated_at" => $bag['updated_at']
                             ];
+                            $t = Transaction::where('bag_id', '=', $bag['id'])->get();
                             if (isset($mergeData['transfer'])) {
                                 $transfer = Bag::create($transferBag);
+
                                 if ($transfer) {
                                     $fromBagID = $transfer['id'];
+                                    if (!empty($t)) {
+                                        foreach ($t as $k => $tk) {
+                                            $tk->bag_id = $fromBagID;
+                                            $tk->save();
+                                        }
+                                    }
                                     $transferBagStyles = $mergeData['transfer'];
                                     if (count($transferBagStyles) > 0) {
                                         foreach ($transferBagStyles as $transferBagStyleKey => $transferBagStyleValue) {
@@ -378,8 +398,23 @@ class TransactionController extends Controller
                                         "employee_id" =>  $oldReceiveBag['employee_id'],
                                     ];
                                     $receive = Bag::create($receiveBag);
+                                    $t = Transaction::where('bag_id', '=', $oldReceiveBag['id'])->get();
+
+                                    if (!empty($t)) {
+                                        foreach ($t as $k => $tk) {
+                                            $tk->bag_id = $fromBagID;
+                                            $tk->save();
+                                        }
+                                    }
                                     if ($receive) {
                                         $toBagID = $receive['id'];
+                                        if (!empty($t)) {
+                                            foreach ($t as $k => $tk) {
+                                                $tk->bag_id = $toBagID;
+                                                $tk->save();
+                                            }
+                                        }
+
                                         $receiveBagStyles = $mergeData['receive']['bag_styles'];
                                         if (count($receiveBagStyles) > 0) {
                                             foreach ($receiveBagStyles as $receiveBagStyleKey => $receiveBagStyleValue) {
