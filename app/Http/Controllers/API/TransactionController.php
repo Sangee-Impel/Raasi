@@ -347,6 +347,9 @@ class TransactionController extends Controller
                                                     $totalTransferWeight += $transferBagStyleValue['weight'];
                                                     $bagStyleData['quantity'] = $transferBagStyleValue['quantity'];
                                                     $bagStyleData['weight'] = $transferBagStyleValue['weight'];
+                                                    $bagStyleData['weight'] = $transferBagStyleValue['weight'];
+                                                    $bagStyleData['created_at'] = $bagStyleData['created_at'];
+                                                    $bagStyleData['updated_at'] = $bagStyleData['updated_at'];
                                                 }
                                                 $bagStyleData['bag_id'] = $transfer['id'];
                                                 $bagStyle = BagStyle::create($bagStyleData);
@@ -396,6 +399,8 @@ class TransactionController extends Controller
                                         "instructions" => $oldReceiveBag['instructions'],
                                         "department_id" => $oldReceiveBag['department_id'],
                                         "employee_id" =>  $oldReceiveBag['employee_id'],
+                                        "created_at" => $oldReceiveBag['created_at'],
+                                        "updated_at" => $oldReceiveBag['updated_at']
                                     ];
                                     $receive = Bag::create($receiveBag);
                                     $t = Transaction::where('bag_id', '=', $oldReceiveBag['id'])->get();
@@ -420,6 +425,9 @@ class TransactionController extends Controller
                                             foreach ($receiveBagStyles as $receiveBagStyleKey => $receiveBagStyleValue) {
                                                 if ($receiveBagStyleValue['quantity'] > 0 && $receiveBagStyleValue['weight'] > 0) {
                                                     $receiveBagStyleValue['bag_id'] = $toBagID;
+                                                    $cBag =   Bag::findOrFail($toBagID);
+                                                    $receiveBagStyleValue['created_at'] = $cBag->created_at;
+                                                    $receiveBagStyleValue['updated_at'] = $cBag->updated_at;
                                                     BagStyle::create($receiveBagStyleValue);
                                                 }
                                             }
@@ -451,12 +459,16 @@ class TransactionController extends Controller
                                     $bagStyleData = $transaction_item_value;
                                     $bagStyleData['weight'] = $transaction_item_value['receive_weight'];
                                     $bagStyleData['bag_id'] = $transaction['bag_id'];
+                                    // $cBag =   Bag::findOrFail($transaction['bag_id']);
+                                    // $bagStyleData['created_at'] = $cBag->created_at;
+                                    // $bagStyleData['updated_at'] = $cBag->updated_at;
                                     $bagStyle = BagStyle::create($bagStyleData);
                                     $transaction_item_value['bag_style_id']  = $bagStyle['id'];
                                 }
                                 //#block to split the bag...!
                                 if (!is_null($transferBagID) && isset($transaction_item_value['split']['transfer'])) {
                                     if ($transaction_item_value['split']['transfer']['weight'] > 0 &&  $transaction_item_value['split']['transfer']['quantity'] > 0) {
+                                        $cBag =   Bag::findOrFail($transferBagID);
                                         $transferBagStyleData = [
                                             "bag_id"                =>  $transferBagID,
                                             "style_id"              =>  $bagStyle['style_id'],
@@ -466,12 +478,15 @@ class TransactionController extends Controller
                                             "weight"                =>  $transaction_item_value['split']['transfer']['weight'],
                                             "instructions"          =>  $bagStyle['instructions'],
                                             "parent_bag_style_id"   =>  $bagStyle['id'],
+                                            "created_at" => $bagStyle['created_at'],
+                                            "updated_at" => $bagStyle['updated_at']
                                         ];
                                         BagStyle::create($transferBagStyleData);
                                     }
                                 }
                                 if (!is_null($receiveBagID) && isset($transaction_item_value['split']['receive'])) {
                                     if ($transaction_item_value['split']['receive']['weight'] > 0 &&  $transaction_item_value['split']['receive']['quantity'] > 0) {
+                                        $cBag =   Bag::findOrFail($receiveBagID);
                                         $transferBagStyleData = [
                                             "bag_id"                =>  $receiveBagID,
                                             "style_id"              =>  $bagStyle['style_id'],
@@ -481,6 +496,8 @@ class TransactionController extends Controller
                                             "weight"                =>  $transaction_item_value['split']['receive']['weight'],
                                             "instructions"          =>  $bagStyle['instructions'],
                                             "parent_bag_style_id"          =>  $bagStyle['id'],
+                                            "created_at" => $bagStyle['created_at'],
+                                            "updated_at" => $bagStyle['updated_at']
                                         ];
                                         BagStyle::create($transferBagStyleData);
                                     }

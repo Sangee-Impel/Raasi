@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 class BagStyle extends XModel
 {
     protected $table = 'bag_styles';
-    protected $fillable = ['bag_id','style_id','other_accessories_id','upload_id','quantity','weight','instructions','parent_bag_style_id'];
+    protected $fillable = ['bag_id','style_id','other_accessories_id','upload_id','quantity','weight','instructions','parent_bag_style_id', 'created_at', 'updated_at'];
     public function bag()
     {
         return $this->belongsTo(Bag::class);
