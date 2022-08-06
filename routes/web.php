@@ -21,7 +21,7 @@ Route::group([
 
     Route::get('/home', 'HomeController@show');
     Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
-    
+
 
     Route::get('/roles', 'RoleController@index')->name('roles');
     Route::get('/user', 'UserController@index')->name('user');
@@ -37,11 +37,11 @@ Route::group([
     Route::get('/transactions', 'API\TransactionController@getTransaction');
     Route::get('/transactions-history', 'API\TransactionHistoryController@getIndex');
     Route::get('/uom', 'API\UomController@getIndex');
-    Route::get('/bag', 'API\BagController@getIndex');    
+    Route::get('/bag', 'API\BagController@getIndex');
     Route::get('/profile', 'UserController@getProfile');
     Route::get('/other-accessories', 'API\OtherAccessoriesController@getIndex');
-    Route::get('/resetPassword','API\UserController@getResetView');
-    Route::post('/reset/passwords','API\UserController@customizedResetPassword');
+    Route::get('/resetPassword', 'API\UserController@getResetView');
+    Route::post('/reset/passwords', 'API\UserController@customizedResetPassword');
 
     Route::get('/configuration', 'API\ConfigurationController@getIndex');
     Route::get('/loss-approval', 'API\LossApprovalController@getIndex');
@@ -61,6 +61,5 @@ Route::group([
     Route::get('/closing-report', 'API\ClosingReportController@getIndex');
     Route::get('/eod-report', 'API\EodReportController@getIndex');
     Route::get('/casting', 'API\CastingController@getIndex');
+    Route::get('/delete-data', 'API\DeleteDataController@getIndex');
 });
-
-

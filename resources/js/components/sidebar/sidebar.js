@@ -102,6 +102,7 @@ Vue.component('sidebar', {
                                 sideBarData[index].has_permission = this.checkPermission(sideBarData[index].permission_slug);
                         }
                     }
+                    console.log(sideBarData);
                 })
                 .catch(reason=> {
                     console.log(reason.message);
@@ -116,6 +117,7 @@ Vue.component('sidebar', {
         checkPermission(permission_slug){
             let hasPermission   =   false;
             let userPermissions = this.userPermissions;
+           
             if( permission_slug == "")
                 hasPermission = true;
             if( !hasPermission ){

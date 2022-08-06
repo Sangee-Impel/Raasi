@@ -25,9 +25,11 @@ Vue.component('manage-accessoriesinword-report', {
             },
             isLoading: false,
             is_advance_search: true,
+            accessories: null,
             from_date: null,
             to_date: null,
-            totalWeight: 0
+            totalWeight: 0,
+            accessories_options: [],
         };
     },
     created() {
@@ -37,6 +39,7 @@ Vue.component('manage-accessoriesinword-report', {
 
     },
     mounted() {
+        this.loadDropDown();
         this.totalCalc();
     },
     computed: {
@@ -46,6 +49,18 @@ Vue.component('manage-accessoriesinword-report', {
     },
 
     methods: {
+        loadDropDown() {
+            this.isLoading = true;
+            axios.post('/api/accessoriesinword-report/drop-down')
+                .then(response => {
+                    let dropDownData = response.data;
+                    this.accessories_options = dropDownData.accessories;
+                }).catch(reason => {
+                    console.log(reason.message);
+                }).finally(() => {
+                    this.isLoading = false;
+                });
+        },
         reloadDataTable(dontResetPageNumber) {
             console.log("Dont Reset Page Number => " + (dontResetPageNumber ? "TRUE" : "FALSE"));
             if (dontResetPageNumber) {
@@ -89,6 +104,10 @@ Vue.component('manage-accessoriesinword-report', {
             this.isLoading = true;
 
             this.vueTableParams.advanceFilter.from_date = null;
+
+            if (this.accessories != null)
+                this.vueTableParams.advanceFilter.accessories_id = this.accessories.id;
+
             if (this.from_date != null)
                 this.vueTableParams.advanceFilter.from_date = this.from_date;
 

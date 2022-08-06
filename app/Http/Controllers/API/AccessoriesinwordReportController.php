@@ -8,6 +8,7 @@ use App\Models\Bag;
 use Illuminate\Http\Request;
 use App\GenXCommon\XModel;
 use Illuminate\Support\Facades\DB;
+use App\Models\OtherAccessories;
 
 class AccessoriesinwordReportController extends Controller
 {
@@ -67,11 +68,8 @@ class AccessoriesinwordReportController extends Controller
               case 'to_date':
                 $query->where("bag_styles.created_at", '<=', $value . ' 23:59:59');
                 break;
-              case 'employee_id':
-                $query->where("employee.id", '=', $value);
-                break;
-              case 'department_id':
-                $query->where("department.id", '=', $value);
+              case 'accessories_id':
+                $query->where("bag_styles.other_accessories_id", '=', $value);
                 break;
             }
           }
@@ -137,5 +135,15 @@ class AccessoriesinwordReportController extends Controller
     $query->orderBy('bag.id', 'DESC');
 
     return XModel::preparePagination($query, $request, ['bag.bag_number', 'bag.order_number']);
+  }
+
+  public function dropDown(Request $request)
+  {
+    $post_all = $request->all();
+    $accessories = OtherAccessories::query()->select('other_accessories.*')->get();
+    $result         =   [
+      "accessories"      =>  $accessories
+    ];
+    return $result;
   }
 }

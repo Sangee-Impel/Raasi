@@ -93,3 +93,7 @@ require('./eod_report/manage-eod-report');
 /*casting*/
 require('./casting/manage-casting');
 require('./casting/form-casting');
+
+require('./delete-data/manage-delete-data');
+require('./delete-data/form-truncate');
+

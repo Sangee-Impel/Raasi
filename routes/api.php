@@ -98,8 +98,11 @@ Route::group([
     Route::apiResource('emploss-report', 'API\EmplossReportController');
     Route::apiResource('castinginword-report', 'API\CastinginwordReportController');
     Route::apiResource('accessoriesinword-report', 'API\AccessoriesinwordReportController');
+    Route::post('/accessoriesinword-report/drop-down','API\AccessoriesinwordReportController@dropDown');
     Route::apiResource('closing-report', 'API\ClosingReportController');
     Route::apiResource('eod-report', 'API\EodReportController');
+    Route::apiResource('delete-data', 'API\DeleteDataController');
+
 });
 
 

@@ -30,6 +30,12 @@ Vue.component('manage-closing-report', {
             closing: 0,
             kambi: 0,
             casting: 0,
+            scrap: 0,
+            chanam: 0,
+            loss: 0,
+            fancy_inward: 0,
+            fc_delivery: 0,
+            others_inward: 0,
         };
     },
     created() {
@@ -44,7 +50,7 @@ Vue.component('manage-closing-report', {
     },
 
     computed: {
-        vueTableFetch: function() {
+        vueTableFetch: function () {
             return axios.get;
         },
     },
@@ -60,12 +66,18 @@ Vue.component('manage-closing-report', {
         },
         toalCalc() {
             axios.get('/api/closing-report').then(response => {
-                let data = response.data.data;
-                this.opening = data.reduce((a, b) => a + b.opening, 0);
-                this.closing = data.reduce((a, b) => a + b.closing, 0);
-                this.kambi = data.reduce((a, b) => a + b.closing, 0);
-                this.casting = data.reduce((a, b) => a + b.casting_inward, 0);
-            }).catch(reason => {}).finally(() => {
+                let data = response.data.data[0];
+                this.opening = data.opening;
+                this.closing = data.closing;
+                this.kambi = data.kambi_inward;
+                this.casting = data.casting_inward;
+                this.scrap = data.scrap;
+                this.chanam = data.channam;
+                this.loss = data.loss;
+                this.fancy_inward = data.fancy_inward;
+                this.fc_delivery = data.fc_delivery;
+                this.others_inward = data.others_inward;
+            }).catch(reason => { }).finally(() => {
                 this.isLoading = false;
             });
         },

@@ -19,7 +19,6 @@
                                         <i class="eraser icon"></i>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                         <div class="row mt-3">
@@ -36,7 +35,6 @@
                                         <div class="ui pointing red basic label" v-show="form.errors.has('bag_id')">
                                             @{{ form.errors.get('bag_id') }}
                                         </div>
-
                                     </div>
                                     <div class="field custom_date">
                                         <label>Transfer Date</label>

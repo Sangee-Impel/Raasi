@@ -31,6 +31,10 @@
                                                         <label>To Date</label>
                                                         <input type="date" name="to_date" v-model="to_date">
                                                     </div>
+                                                    <div class="field">
+                                                        <label>Accessories Name</label>
+                                                        <v-select placeholder="Accessories Name" v-model="accessories" :options="accessories_options" :searchable="true" :multiple="false" label="name" track-by="id" :show-labels="true"></v-select>
+                                                    </div>
                                                     <div class="field pt-4 mt-2">
                                                         <button class="btn btn-fw info" @click="onFilterSearch">Filter</button>
                                                         <button class="btn btn-fw " @click="closeAdvanceFilter">Close</button>

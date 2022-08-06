@@ -44,6 +44,15 @@ export default [
         href: "/transactions-history",
         childrens: []
     },
+    {
+        title: 'Delete Data',
+        icon: 'delete',
+        permission_slug: "index.deletedata",
+        has_permission: false,
+        dataClass: '',
+        href: "/delete-data",
+        childrens: []
+    },
 
     {
         title: "Reports",
