@@ -5,7 +5,6 @@ import FieldDefs from './field-defs';
 import VueSelect from 'vue-multiselect';
 
 Vue.component('manage-closing-report', {
-
     components: {
         'v-select': VueSelect,
         'vue-table': Vuetable,
@@ -57,15 +56,12 @@ Vue.component('manage-closing-report', {
 
     methods: {
         reloadDataTable(dontResetPageNumber) {
-            console.log("Dont Reset Page Number => " + (dontResetPageNumber ? "TRUE" : "FALSE"));
-            if (dontResetPageNumber) {
-                this.$refs.vuetable.reload();
-            } else {
-                this.$refs.vuetable.refresh();
-            }
+            this.toalCalc();
         },
         toalCalc() {
-            axios.get('/api/closing-report').then(response => {
+            axios.get('/api/closing-report', {
+                params: this.vueTableParams
+            }).then(response => {
                 let data = response.data.data[0];
                 this.opening = data.opening;
                 this.closing = data.closing;
