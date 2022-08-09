@@ -49,7 +49,7 @@ Vue.component('manage-closing-report', {
     },
 
     computed: {
-        vueTableFetch: function () {
+        vueTableFetch: function() {
             return axios.get;
         },
     },
@@ -73,7 +73,9 @@ Vue.component('manage-closing-report', {
                 this.fancy_inward = data.fancy_inward;
                 this.fc_delivery = data.fc_delivery;
                 this.others_inward = data.others_inward;
-            }).catch(reason => { }).finally(() => {
+                this.pending_bag = data.pending_bag;
+                this.eod_bag = data.eod_bag;
+            }).catch(reason => {}).finally(() => {
                 this.isLoading = false;
             });
         },

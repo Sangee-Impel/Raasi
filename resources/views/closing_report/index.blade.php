@@ -102,6 +102,16 @@
                                         <td></td>
                                     </tr>
                                     <tr>
+                                        <td>Processing Bags</td>
+                                        <td>
+                                            <div v-html="pending_bag"></div>
+                                        </td>
+                                        <td>EOD Bags</td>
+                                        <td>
+                                            <div v-html="eod_bag"></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <td></td>
                                         <td></td>
                                         <td>Closing</td>
