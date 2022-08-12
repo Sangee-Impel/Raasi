@@ -102,20 +102,32 @@
                                         <td></td>
                                     </tr>
                                     <tr>
+                                        <td><strong>Total</strong></td>
+                                        <td><div v-html="inward_total"></div></td>
+                                        <td><strong>Total</strong></td>
+                                        <td><div v-html="outward_total"></div></td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td><strong>Closing</strong></td>
+                                        <td> <div v-html="closing"></div></td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
                                         <td>Processing Bags</td>
                                         <td>
                                             <div v-html="pending_bag"></div>
-                                        </td>
-                                        <td>EOD Bags</td>
-                                        <td>
-                                            <div v-html="eod_bag"></div>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td></td>
                                         <td></td>
-                                        <td>Closing</td>
-                                        <td> <div v-html="closing"></div></td>
+                                        <td>EOD Bags</td>
+                                        <td>
+                                            <div v-html="eod_bag"></div>
+                                        </td>
                                     </tr>
                                 </table>
                             </div>

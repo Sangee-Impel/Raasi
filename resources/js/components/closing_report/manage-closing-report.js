@@ -35,6 +35,8 @@ Vue.component('manage-closing-report', {
             fancy_inward: 0,
             fc_delivery: 0,
             others_inward: 0,
+            inward_total: 0,
+            outward_total: 0,
         };
     },
     created() {
@@ -75,6 +77,8 @@ Vue.component('manage-closing-report', {
                 this.others_inward = data.others_inward;
                 this.pending_bag = data.pending_bag;
                 this.eod_bag = data.eod_bag;
+                this.inward_total = parseFloat(data.opening) + parseFloat(data.casting_inward) + parseFloat(data.kambi_inward) + parseFloat(data.fancy_inward) + parseFloat(data.others_inward);
+                this.outward_total = parseFloat(data.scrap) + parseFloat(data.channam) + parseFloat(data.loss) + parseFloat(data.fc_delivery);
             }).catch(reason => {}).finally(() => {
                 this.isLoading = false;
             });
