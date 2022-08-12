@@ -65,20 +65,20 @@ Vue.component('manage-closing-report', {
                 params: this.vueTableParams
             }).then(response => {
                 let data = response.data.data[0];
-                this.opening = data.opening;
-                this.closing = data.closing;
-                this.kambi = data.kambi_inward;
-                this.casting = data.casting_inward;
-                this.scrap = data.scrap;
-                this.chanam = data.channam;
-                this.loss = data.loss;
-                this.fancy_inward = data.fancy_inward;
-                this.fc_delivery = data.fc_delivery;
-                this.others_inward = data.others_inward;
-                this.pending_bag = data.pending_bag;
-                this.eod_bag = data.eod_bag;
-                this.inward_total = parseFloat(data.opening) + parseFloat(data.casting_inward) + parseFloat(data.kambi_inward) + parseFloat(data.fancy_inward) + parseFloat(data.others_inward);
-                this.outward_total = parseFloat(data.scrap) + parseFloat(data.channam) + parseFloat(data.loss) + parseFloat(data.fc_delivery);
+                this.opening = parseFloat(data.opening).toFixed(3);
+                this.closing = parseFloat(data.closing).toFixed(3);
+                this.kambi = parseFloat(data.kambi_inward).toFixed(3);
+                this.casting = parseFloat(data.casting_inward).toFixed(3);
+                this.scrap = parseFloat(data.scrap).toFixed(3);
+                this.chanam = parseFloat(data.channam).toFixed(3);
+                this.loss = parseFloat(data.loss).toFixed(3);
+                this.fancy_inward = parseFloat(data.fancy_inward).toFixed(3);
+                this.fc_delivery = parseFloat(data.fc_delivery).toFixed(3);
+                this.others_inward = parseFloat(data.others_inward).toFixed(3);
+                this.pending_bag = parseFloat(data.pending_bag).toFixed(3);
+                this.eod_bag = parseFloat(data.eod_bag).toFixed(3);
+                this.inward_total = parseFloat(parseFloat(data.opening) + parseFloat(data.casting_inward) + parseFloat(data.kambi_inward) + parseFloat(data.fancy_inward) + parseFloat(data.others_inward)).toFixed(3);
+                this.outward_total = parseFloat(parseFloat(data.scrap) + parseFloat(data.channam) + parseFloat(data.loss) + parseFloat(data.fc_delivery)).toFixed(3);
             }).catch(reason => {}).finally(() => {
                 this.isLoading = false;
             });
