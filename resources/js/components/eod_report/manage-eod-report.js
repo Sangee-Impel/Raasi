@@ -16,7 +16,7 @@ Vue.component('manage-eod-report', {
         return {
             fields: FieldDefs,
             vueTableParams: {
-                trash: 0, per_page: 100,
+                trash: 0, per_page: 100000,
                 advanceFilter: {
                     from_date: null,
                     to_date: null,
