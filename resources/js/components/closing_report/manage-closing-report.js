@@ -37,6 +37,8 @@ Vue.component('manage-closing-report', {
             others_inward: 0,
             inward_total: 0,
             outward_total: 0,
+            pending_bag: 0,
+            eod_bag: 0
         };
     },
     created() {
