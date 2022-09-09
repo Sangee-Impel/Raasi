@@ -112,9 +112,7 @@ class TransactionController extends Controller
             'transaction_items.*.other_accessories_id' => 'required_without:transaction_items.*.bag_style_id',
             'transaction_items.*.bag_style_id' => 'required_without:transaction_items.*.other_accessories_id',
             'transaction_items.*.quantity' => 'required|integer|gt:0',
-            'transaction_items.*.uom_id' => 'required|numeric',
-
-
+            'transaction_items.*.uom_id' => 'required|numeric'
         ]);
         // DB::transaction(function() use ($request) {
 
@@ -327,7 +325,6 @@ class TransactionController extends Controller
                             $t = Transaction::where('bag_id', '=', $bag['id'])->get();
                             if (isset($mergeData['transfer'])) {
                                 $transfer = Bag::create($transferBag);
-
                                 if ($transfer) {
                                     $fromBagID = $transfer['id'];
                                     if (!empty($t)) {
@@ -376,7 +373,6 @@ class TransactionController extends Controller
                                                         "weight"                => $bagStyle['weight'],
                                                         "receive_weight"        => $bagStyle['weight'],
                                                         "type"                  => $type,
-
                                                     ];
                                                     //#need to create transaction items...!
                                                     TransactionItem::create($transactionItem);
@@ -440,8 +436,12 @@ class TransactionController extends Controller
                             $updateTransaction->total_transfer_quantity = $totalTransferQuantity;
                             $updateTransaction->total_transfer_weight = $totalTransferWeight;
                             $updateTransaction->total_receive_weight = $totalTransferWeight;
+                            $updateTransaction->total_receive_weight = $totalTransferWeight;
+                            $updateTransaction->total_receive_weight = $totalTransferWeight;
                             $updateTransaction->to_bag_id = $toBagID;
                             $updateTransaction->bag_id = $fromBagID;
+                            $updateTransaction->total_loss_weight = 0;
+                            $updateTransaction->total_loss_quantity = 0;
                             $updateTransaction->save();
                         }
                     } else {
