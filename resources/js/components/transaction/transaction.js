@@ -337,7 +337,7 @@ Vue.component('transaction', {
                     .then(response => {
                         this.$snotify.success(response.name, 'saved!');
                         this.showGrid();
-                        // window.location.reload();
+                        window.location.reload();
                     })
                     .catch(reason => {
                         this.$snotify.error(reason.message);
@@ -1262,6 +1262,7 @@ Vue.component('transaction', {
                         let transfer_transaction_item = Object.assign({}, transaction_items[index]);
                         if (total_loss > 0) {
                             t_transfer_weight = CommonMethods.precisionRound(transfer_transaction_item.weight) - CommonMethods.precisionRound(total_loss);
+                            // t_transfer_weight = CommonMethods.precisionRound(transfer_transaction_item.weight);
                             total_loss = CommonMethods.precisionRound(total_loss) - CommonMethods.precisionRound(transfer_transaction_item.weight);
                         } else {
                             t_transfer_weight = CommonMethods.precisionRound(transfer_transaction_item.weight);
@@ -1276,8 +1277,8 @@ Vue.component('transaction', {
                 }
 
                 let mergeReceiveBag = [];
-                let total_receive_loss =  CommonMethods.precisionRound(this.merge_selected_bag.last_transaction.total_loss_weight);
-                let  t_transfer_receive_weight = '';
+                let total_receive_loss = CommonMethods.precisionRound(this.merge_selected_bag.last_transaction.total_loss_weight);
+                let t_transfer_receive_weight = '';
                 this.merge_selected_bag.bag_styles.forEach((item) => {
 
                     let isDuplicate = false;
@@ -1290,12 +1291,13 @@ Vue.component('transaction', {
                         uom = item.style.uom;
                     }
                     if (total_receive_loss > 0) {
-                        t_transfer_receive_weight = CommonMethods.precisionRound(item.weight) - CommonMethods.precisionRound(total_receive_loss);
+                        // t_transfer_receive_weight = CommonMethods.precisionRound(item.weight) - CommonMethods.precisionRound(total_receive_loss);
+                        t_transfer_receive_weight = CommonMethods.precisionRound(item.weight);
                         total_receive_loss = CommonMethods.precisionRound(total_receive_loss) - CommonMethods.precisionRound(item.weight);
                     } else {
                         t_transfer_receive_weight = CommonMethods.precisionRound(item.weight);
                     }
-                    
+
                     item.weight = CommonMethods.precisionRound(parseFloat(t_transfer_receive_weight));
                     mergeReceiveBag.push(item);
                     let type = this.types.findTransactionType('bag', 'value', 'transaction_type')['id'];
@@ -1303,7 +1305,7 @@ Vue.component('transaction', {
                         type = this.types.findTransactionType('other_accessories', 'value', 'transaction_type')['id'];
                     }
                     if (transferItem.length > 0) {
-                        for (var itemIndex in transferItem) {                            
+                        for (var itemIndex in transferItem) {
                             if (transferItem[itemIndex].type == this.types.findTransactionType('bag', 'value', 'transaction_type')['id']) {
                                 if (item.style_id == transferItem[itemIndex].bag_style.style_id) {
                                     transferItem[itemIndex].disabled = false;

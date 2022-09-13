@@ -188,6 +188,26 @@ class TransactionController extends Controller
                         if ($validatorValue['split']['receive']['quantity'] > 0)
                             $rules['transaction_items.' . $validatorKey . '.split.receive.weight'] = 'required|gt:0';
                     }
+
+                    $transaction_items = $post_data['transaction_items'];
+                    $splitArray = array_column($transaction_items, 'split');
+
+                    $transferArray = array_filter(array_column($splitArray, "transfer"), function ($value) {
+                        return $value['quantity'] > 0 && $value['weight'] > 0;
+                    });
+                    $receiveArray = array_filter(array_column($splitArray, "receive"), function ($value) {
+                        return $value['quantity'] > 0 && $value['weight'] > 0;
+                    });
+                    $weight =  $qty = 0;
+
+                    foreach ($receiveArray as $k => $tk) {
+                        $weight += $tk['weight'];
+                        $qty += $tk['quantity'];
+                    }
+                    $post_data['total_transfer_weight'] = $post_data['total_transfer_weight'] - $weight;
+                    $post_data['total_receive_weight'] = $post_data['total_receive_weight'] - $weight;
+                    $post_data['total_transfer_quantity'] = $post_data['total_transfer_quantity'] - $qty;
+
                     /*$request->validate([
                             'transaction_items.*.split.receive.quantity' => 'required_if:transaction_items.*.split.receive.weight,gt,0',
                         ]);*/
@@ -284,7 +304,8 @@ class TransactionController extends Controller
                             });
                             $receiveArray = array_filter(array_column($splitArray, "receive"), function ($value) {
                                 return $value['quantity'] > 0 && $value['weight'] > 0;
-                            });
+                            });  
+
                             if (count($transferArray) > 0) {
                                 //print_r($transferBag);exit;
                                 $transfer = Bag::create($transferBag);
@@ -298,8 +319,11 @@ class TransactionController extends Controller
                                 }
                             }
                             if (count($receiveArray) > 0) {
+                                $receive_t = Transaction::where('id', '=', $transaction['id'])->first();
                                 $receive = Bag::create($receiveBag);
                                 $receiveBagID = $receive['id'];
+                                $receive_t->to_bag_id = $receiveBagID;
+                                $receive_t->save();
                             }
                         }
                     }
@@ -433,6 +457,7 @@ class TransactionController extends Controller
                             }
                             //#need to update transaction...!
                             $updateTransaction = Transaction::findOrFail($transaction['id']);
+
                             $updateTransaction->total_transfer_quantity = $totalTransferQuantity;
                             $updateTransaction->total_transfer_weight = $totalTransferWeight;
                             $updateTransaction->total_receive_weight = $totalTransferWeight;
