@@ -148,30 +148,30 @@ class ClosingReportController extends Controller
       (CASE 
       WHEN (IFNULL((SELECT count(1) FROM transaction t1 WHERE t1.bag_id = bs2.bag_id), 0) > 1) THEN 
         IFNULL((SELECT t2.total_transfer_weight FROM transaction t2 WHERE bs2.bag_id=t2.bag_id ORDER BY t2.id ASC LIMIT 1), 0) -
-        IFNULL((SELECT SUM(bs.weight) FROM bag_styles bs WHERE bs.bag_id in (SELECT t3.to_bag_id FROM transaction t3 WHERE  t3.bag_id = bs2.bag_id AND t3.transaction_mode = 1) AND bs.style_id != ''), 0) +
-        IFNULL((SELECT SUM(bs.weight) FROM bag_styles bs WHERE bs.bag_id=bs2.bag_id AND bs.other_accessories_id != ''), 0) 
+        (IFNULL((SELECT SUM(bs.weight) FROM bag_styles bs WHERE bs.bag_id in (SELECT t3.to_bag_id FROM transaction t3 WHERE  t3.bag_id = bs2.bag_id AND t3.transaction_mode = 1) AND bs.style_id != ''), 0) +
+        IFNULL((SELECT SUM(bs.weight) FROM bag_styles bs WHERE bs.bag_id=bs2.bag_id AND bs.other_accessories_id != ''), 0)) 
       ELSE 
         ROUND(SUM(bs2.weight), 3) 
       END) 
     , 0)
     FROM bag_styles bs2 JOIN bag b2 on bs2.bag_id=b2.id WHERE b2.id=b.id AND b2.status not in (1,2,4,5) AND b2.department_id not in (1,9)) as bag_bs_total, ";
     $query .= "(SELECT 
-    IFNULL(
-      (SELECT SUM(ROUND(
-        IFNULL(t2.total_receive_weight, 0) - 
-        IFNULL((SELECT t3.total_receive_weight FROM transaction t3 WHERE t3.bag_id=b2.id AND t3.id < t2.id ORDER BY t3.ID DESC LIMIT 1), 0)
-        , 3))
-      FROM (SELECT t1.* FROM transaction t1 WHERE t1.bag_id=b2.id AND t1.transaction_mode=2) t2)
-    , 0)
+      IFNULL((SELECT 
+      ROUND(SUM(
+        IFNULL(t1.total_receive_weight, 0) - IFNULL((SELECT t3.total_receive_weight FROM transaction t3 WHERE t3.bag_id=t1.bag_id AND t3.id < t1.id ORDER BY t3.id DESC LIMIT 1), 0)
+      ), 3)
+      FROM  transaction t1
+      WHERE t1.bag_id=b2.id 
+      AND   t1.transaction_mode=2),0) 
     FROM bag b2 WHERE b2.id=b.id AND b2.status not in (1,2,4,5) AND b2.department_id not in (1,9)) as bag_bs_merge_inward, ";
     $query .= "(SELECT 
-    IFNULL(
-      (SELECT SUM(ROUND(
-        IFNULL(t2.total_receive_weight, 0) - 
-        IFNULL((SELECT t3.total_receive_weight FROM transaction t3 WHERE t3.bag_id=t2.bag_id AND t3.id < t2.id ORDER BY t3.ID DESC LIMIT 1), 0)
-        , 3))
-      FROM (SELECT t1.* FROM transaction t1 WHERE t1.to_bag_id=b2.id AND t1.transaction_mode=2) t2)
-    , 0)
+      IFNULL((SELECT 
+      ROUND(SUM(
+        IFNULL(t1.total_receive_weight, 0) - IFNULL((SELECT t3.total_receive_weight FROM transaction t3 WHERE t3.bag_id=t1.bag_id AND t3.id < t1.id ORDER BY t3.id DESC LIMIT 1), 0)
+      ), 3)
+      FROM  transaction t1
+      WHERE t1.to_bag_id=b2.id 
+      AND   t1.transaction_mode=2), 0) 
     FROM bag b2 WHERE b2.id=b.id AND b2.status not in (1,2,4,5) AND b2.department_id not in (1,9)) as bag_bs_merge_outward, ";    
 
     $query .= "(SELECT IFNULL(sum(tils1.weight), 0) FROM transaction_item_loss_details tils1 JOIN transaction ts1 on ts1.id=tils1.transaction_id JOIN bag tb1 on ts1.bag_id=tb1.id WHERE tb1.id=b.id AND tils1.type=1 AND tb1.status not in (1,2,4,5) AND tb1.department_id not in (1,9)) as bag_bs_scrap, ";

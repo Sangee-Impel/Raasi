@@ -44,8 +44,8 @@ class PendingReportController extends Controller
         (CASE 
         WHEN (IFNULL((SELECT count(1) FROM transaction t1 WHERE t1.bag_id = bag.id), 0) > 1) THEN 
           IFNULL((SELECT t2.total_transfer_weight FROM transaction t2 WHERE bag.id=t2.bag_id ORDER BY t2.id ASC LIMIT 1), 0) -
-          IFNULL((SELECT SUM(bs.weight) FROM bag_styles bs WHERE bs.bag_id in (SELECT t3.to_bag_id FROM transaction t3 WHERE  t3.bag_id = bag.id AND t3.transaction_mode = 1) AND bs.style_id != ''), 0) +
-          IFNULL((SELECT SUM(bs.weight) FROM bag_styles bs WHERE bs.bag_id=bag.id AND bs.other_accessories_id != ''), 0) 
+          (IFNULL((SELECT SUM(bs.weight) FROM bag_styles bs WHERE bs.bag_id in (SELECT t3.to_bag_id FROM transaction t3 WHERE  t3.bag_id = bag.id AND t3.transaction_mode = 1) AND bs.style_id != ''), 0) +
+          IFNULL((SELECT SUM(bs.weight) FROM bag_styles bs WHERE bs.bag_id=bag.id AND bs.other_accessories_id != ''), 0)) 
         ELSE 
           ROUND(SUM(bag_styles.weight), 3) 
         END) 
@@ -60,53 +60,51 @@ class PendingReportController extends Controller
           (CASE 
           WHEN (IFNULL((SELECT count(1) FROM transaction t1 WHERE t1.bag_id = bag.id), 0) > 1) THEN 
             IFNULL((SELECT t2.total_transfer_weight FROM transaction t2 WHERE bag.id=t2.bag_id ORDER BY t2.id ASC LIMIT 1), 0) -
-            IFNULL((SELECT SUM(bs.weight) FROM bag_styles bs WHERE bs.bag_id in (SELECT t3.to_bag_id FROM transaction t3 WHERE  t3.bag_id = bag.id AND t3.transaction_mode = 1) AND bs.style_id != ''), 0) +
-            IFNULL((SELECT SUM(bs.weight) FROM bag_styles bs WHERE bs.bag_id=bag.id AND bs.other_accessories_id != ''), 0) 
+            (IFNULL((SELECT SUM(bs.weight) FROM bag_styles bs WHERE bs.bag_id in (SELECT t3.to_bag_id FROM transaction t3 WHERE  t3.bag_id = bag.id AND t3.transaction_mode = 1) AND bs.style_id != ''), 0) +
+            IFNULL((SELECT SUM(bs.weight) FROM bag_styles bs WHERE bs.bag_id=bag.id AND bs.other_accessories_id != ''), 0)) 
           ELSE 
             ROUND(SUM(bag_styles.weight), 3) 
           END) 
           , 0) +
-        IFNULL(
-          (SELECT SUM(ROUND(
-            IFNULL(t2.total_receive_weight, 0) - 
-            IFNULL((SELECT t3.total_receive_weight FROM transaction t3 WHERE t3.bag_id=bag.id AND t3.id < t2.id ORDER BY t3.ID DESC LIMIT 1), 0)
-            , 3))
-          FROM (SELECT t1.* FROM transaction t1 WHERE t1.bag_id=bag.id AND t1.transaction_mode=2) t2)
-        , 0)) 
+          IFNULL((SELECT 
+          ROUND(SUM(
+            IFNULL(t1.total_receive_weight, 0) - IFNULL((SELECT t3.total_receive_weight FROM transaction t3 WHERE t3.bag_id=t1.bag_id AND t3.id < t1.id ORDER BY t3.id DESC LIMIT 1), 0)
+          ), 3)
+          FROM  transaction t1
+          WHERE t1.bag_id=bag.id 
+          AND   t1.transaction_mode=2),0)) 
         -
         (
         (SELECT IFNULL(sum(til3.weight), 0) FROM transaction_item_loss_details til3 JOIN transaction t3 on t3.id=til3.transaction_id WHERE t3.bag_id=bag.id AND til3.type=1) +
         (SELECT IFNULL(sum(til3.weight), 0) FROM transaction_item_loss_details til3 JOIN transaction t3 on t3.id=til3.transaction_id WHERE t3.bag_id=bag.id AND til3.type=2) +
         (SELECT IFNULL(sum(til3.weight), 0) FROM transaction_item_loss_details til3 JOIN transaction t3 on t3.id=til3.transaction_id WHERE t3.bag_id=bag.id AND til3.type=0) +
-        IFNULL(
-          (SELECT SUM(ROUND(
-            IFNULL(t2.total_receive_weight, 0) - 
-            IFNULL((SELECT t3.total_receive_weight FROM transaction t3 WHERE t3.bag_id=t2.bag_id AND t3.id < t2.id ORDER BY t3.ID DESC LIMIT 1), 0)
-            , 3))
-          FROM (SELECT t1.* FROM transaction t1 WHERE t1.to_bag_id=bag.id AND t1.transaction_mode=2) t2)
-        , 0)
+        IFNULL((SELECT 
+        ROUND(SUM(
+          IFNULL(t1.total_receive_weight, 0) - IFNULL((SELECT t3.total_receive_weight FROM transaction t3 WHERE t3.bag_id=t1.bag_id AND t3.id < t1.id ORDER BY t3.id DESC LIMIT 1), 0)
+        ), 3)
+        FROM  transaction t1
+        WHERE t1.to_bag_id=bag.id 
+        AND   t1.transaction_mode=2), 0) 
         ), 3) as cross_weight"),      
       DB::raw("GROUP_CONCAT(bag_styles.style_id) as style"),
       DB::raw("GROUP_CONCAT(bag_styles.instructions) instruction"),
       DB::raw("GROUP_CONCAT(style.sku) sku"),
       "employee.name as employee",
-      DB::raw("
-      IFNULL(
-        (SELECT SUM(ROUND(
-          IFNULL(t2.total_receive_weight, 0) - 
-          IFNULL((SELECT t3.total_receive_weight FROM transaction t3 WHERE t3.bag_id=bag.id AND t3.id < t2.id ORDER BY t3.ID DESC LIMIT 1), 0)
-          , 3))
-        FROM (SELECT t1.* FROM transaction t1 WHERE t1.bag_id=bag.id AND t1.transaction_mode=2) t2)
-      , 0)
+      DB::raw("IFNULL((SELECT 
+      ROUND(SUM(
+        IFNULL(t1.total_receive_weight, 0) - IFNULL((SELECT t3.total_receive_weight FROM transaction t3 WHERE t3.bag_id=t1.bag_id AND t3.id < t1.id ORDER BY t3.id DESC LIMIT 1), 0)
+      ), 3)
+      FROM  transaction t1
+      WHERE t1.bag_id=bag.id 
+      AND   t1.transaction_mode=2),0) 
       as merge_inward"),
-      DB::raw("
-      IFNULL(
-        (SELECT SUM(ROUND(
-          IFNULL(t2.total_receive_weight, 0) - 
-          IFNULL((SELECT t3.total_receive_weight FROM transaction t3 WHERE t3.bag_id=t2.bag_id AND t3.id < t2.id ORDER BY t3.ID DESC LIMIT 1), 0)
-          , 3))
-        FROM (SELECT t1.* FROM transaction t1 WHERE t1.to_bag_id=bag.id AND t1.transaction_mode=2) t2)
-      , 0)
+      DB::raw("IFNULL((SELECT 
+      ROUND(SUM(
+        IFNULL(t1.total_receive_weight, 0) - IFNULL((SELECT t3.total_receive_weight FROM transaction t3 WHERE t3.bag_id=t1.bag_id AND t3.id < t1.id ORDER BY t3.id DESC LIMIT 1), 0)
+      ), 3)
+      FROM  transaction t1
+      WHERE t1.to_bag_id=bag.id 
+      AND   t1.transaction_mode=2), 0) 
       as merge_outward"),
     );
 
