@@ -86,7 +86,7 @@ class ClosingReportController extends Controller
 
     $query .= "IFNULL( ";
     $query .=  "(CASE ";
-    $query .=  "WHEN ((SELECT count(1) FROM transaction t1 WHERE t1.bag_id in (select distinct bs2.bag_id from bag_styles bs2 JOIN bag b2 on bs2.bag_id=b2.id WHERE b2.id=b.id AND bs2.style_id is not null AND bs2.created_at >= '" . $from_date . "' AND bs2.created_at <= '" . $to_date . "')) > 1) THEN ";
+    $query .=  "WHEN (IFNULL((SELECT count(1) FROM transaction t1 WHERE t1.bag_id in (select distinct bs2.bag_id from bag_styles bs2 JOIN bag b2 on bs2.bag_id=b2.id WHERE b2.id=b.id AND bs2.style_id is not null AND bs2.created_at >= '" . $from_date . "' AND bs2.created_at <= '" . $to_date . "')), 0) > 1) THEN ";
     $query .=  "IFNULL((SELECT t2.total_transfer_weight FROM transaction t2 WHERE t2.bag_id in (select distinct bs2.bag_id from bag_styles bs2 JOIN bag b2 on bs2.bag_id=b2.id WHERE b2.id=b.id AND bs2.style_id is not null AND bs2.created_at >= '" . $from_date . "' AND bs2.created_at <= '" . $to_date . "') ORDER BY t2.id ASC LIMIT 1), 0) - ";
     $query .=  "IFNULL((SELECT SUM(bs.weight) FROM bag_styles bs WHERE bs.bag_id in (SELECT t3.to_bag_id FROM transaction t3 WHERE  t3.bag_id = b.id AND t3.transaction_mode = 1) AND bs.style_id != '' AND bs.created_at >= '" . $from_date . "' AND bs.created_at <= '" . $to_date . "'), 0) ";
     $query .=  "ELSE ";
