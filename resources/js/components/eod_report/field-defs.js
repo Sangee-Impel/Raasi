@@ -75,6 +75,20 @@ export default [{
         dataClass: 'left aligned'
     },
     {
+        name: 'merge_inward',
+        title: 'Merge Inward',
+        sortField: 'merge_inward',
+        titleClass: 'center aligned',
+        dataClass: 'left aligned'
+    },
+    {
+        name: 'merge_outward',
+        title: 'Merge Outward',
+        sortField: 'merge_outward',
+        titleClass: 'center aligned',
+        dataClass: 'left aligned'
+    },
+    {
         name: 'cross_weight',
         title: 'Cross Weight',
         sortField: 'cross_weight',
@@ -94,5 +108,5 @@ export default [{
         sortField: 'department',
         titleClass: 'center aligned',
         dataClass: 'left aligned'
-    }
+    },
 ]

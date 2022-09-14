@@ -37,7 +37,9 @@ Vue.component('manage-pending-report', {
             totalScarpWeight: 0,
             totalChanamWeight: 0,
             totalLossWeight: 0,
-            totalCrossWeight: 0
+            totalCrossWeight: 0,
+            totalMergeInward: 0,
+            totalMergeOutward: 0,
         };
     },
     created() {
@@ -76,6 +78,8 @@ Vue.component('manage-pending-report', {
                 this.totalChanamWeight = parseFloat(data.reduce((a, b) => a + b.channam, 0)).toFixed(2);
                 this.totalLossWeight = parseFloat(data.reduce((a, b) => a + b.loss, 0)).toFixed(2);
                 this.totalCrossWeight = parseFloat(data.reduce((a, b) => a + b.cross_weight, 0)).toFixed(2);
+                this.totalMergeInward = parseFloat(data.reduce((a, b) => a + b.merge_inward, 0)).toFixed(2);
+                this.totalMergeOutward = parseFloat(data.reduce((a, b) => a + b.merge_outward, 0)).toFixed(2);
             }).catch(reason => { }).finally(() => {
                 this.isLoading = false;
             });

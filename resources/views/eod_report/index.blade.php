@@ -64,7 +64,7 @@
                                 <table class="ui blue selectable celled stackable attached table">
                                     <tfoot class="vuetable-body">
                                         <tr>
-                                            <td style="text-align: right; width: 51.4%;">Total</td>
+                                            <td style="text-align: right; width: 42.75%;">Total</td>
                                             <td style="width: 4.9%;">
                                                 <div v-html="totalWeight"></div>
                                             </td>
@@ -76,6 +76,12 @@
                                             </td>
                                             <td style="width: 7.4%;">
                                                 <div v-html="totalLossWeight"></div>
+                                            </td>
+                                            <td style="width: 5%;">
+                                                <div v-html="totalMergeInward"></div>
+                                            </td>
+                                            <td style="width: 5%;">
+                                                <div v-html="totalMergeOutward"></div>
                                             </td>
                                             <td style="width: 8.1%;">
                                                 <div v-html="totalCrossWeight"></div>

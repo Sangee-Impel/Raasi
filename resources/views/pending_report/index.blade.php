@@ -77,6 +77,12 @@
                                             <td style="width: 8.3%;">
                                                 <div v-html="totalLossWeight"></div>
                                             </td>
+                                            <td style="width: 8.3%;">
+                                                <div v-html="totalMergeInward"></div>
+                                            </td>
+                                            <td style="width: 8.3%;">
+                                                <div v-html="totalMergeOutward"></div>
+                                            </td>
                                             <td style="width: 8.9%;">
                                                 <div v-html="totalCrossWeight"></div>
                                             </td>

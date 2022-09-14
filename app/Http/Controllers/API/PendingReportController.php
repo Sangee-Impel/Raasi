@@ -39,20 +39,75 @@ class PendingReportController extends Controller
       DB::raw("DATE_FORMAT(bag.updated_at, '%d/%c/%Y %r') as time"),
       //DB::raw("SUM(bag_styles.quantity) as quantity"),
       DB::raw("(SUM(bag_styles.quantity) - IFNULL((SELECT lst.total_loss_quantity FROM transaction lst WHERE lst.bag_id = bag.id ORDER BY lst.id DESC LIMIT 1), 0)) as quantity"),
-      DB::raw("ROUND(SUM(bag_styles.weight), 3) as weight"),
+      //DB::raw("ROUND(SUM(bag_styles.weight), 3) as weight"),
+      DB::raw("IFNULL(
+        (CASE 
+        WHEN ((SELECT count(1) FROM transaction t1 WHERE t1.bag_id = bag.id) > 1) THEN 
+          IFNULL((SELECT t2.total_transfer_weight FROM transaction t2 WHERE bag.id=t2.bag_id ORDER BY t2.id ASC LIMIT 1), 0) -
+          IFNULL((SELECT SUM(bs.weight) FROM bag_styles bs WHERE bs.bag_id in (SELECT t3.to_bag_id FROM transaction t3 WHERE  t3.bag_id = bag.id AND t3.transaction_mode = 1) AND bs.style_id != ''), 0) +
+          IFNULL((SELECT SUM(bs.weight) FROM bag_styles bs WHERE bs.bag_id=bag.id AND bs.other_accessories_id != ''), 0) 
+        ELSE 
+          ROUND(SUM(bag_styles.weight), 3) 
+        END) 
+        , 0) as weight"),
       DB::raw("ROUND((SELECT IFNULL(sum(til3.weight), 0) FROM transaction_item_loss_details til3 JOIN transaction t3 on t3.id=til3.transaction_id WHERE t3.bag_id=bag.id AND til3.type=1), 3) as scrap"),
       DB::raw("ROUND((SELECT IFNULL(sum(til3.weight), 0) FROM transaction_item_loss_details til3 JOIN transaction t3 on t3.id=til3.transaction_id WHERE t3.bag_id=bag.id AND til3.type=2), 3) as channam"),
       DB::raw("ROUND((SELECT IFNULL(sum(til3.weight), 0) FROM transaction_item_loss_details til3 JOIN transaction t3 on t3.id=til3.transaction_id WHERE t3.bag_id=bag.id AND til3.type=0), 3) as loss"),
       //DB::raw("ROUND(IFNULL((SELECT t3.total_receive_weight FROM transaction t3 WHERE t3.bag_id=bag.id ORDER BY ID DESC LIMIT 1), ROUND(SUM(bag_styles.weight), 3)), 3)  as cross_weight"),
-      DB::raw("ROUND(SUM(bag_styles.weight) - (
+      //DB::raw("ROUND(SUM(bag_styles.weight) - (
+      DB::raw("ROUND(
+        (IFNULL(
+          (CASE 
+          WHEN ((SELECT count(1) FROM transaction t1 WHERE t1.bag_id = bag.id) > 1) THEN 
+            IFNULL((SELECT t2.total_transfer_weight FROM transaction t2 WHERE bag.id=t2.bag_id ORDER BY t2.id ASC LIMIT 1), 0) -
+            IFNULL((SELECT SUM(bs.weight) FROM bag_styles bs WHERE bs.bag_id in (SELECT t3.to_bag_id FROM transaction t3 WHERE  t3.bag_id = bag.id AND t3.transaction_mode = 1) AND bs.style_id != ''), 0) +
+            IFNULL((SELECT SUM(bs.weight) FROM bag_styles bs WHERE bs.bag_id=bag.id AND bs.other_accessories_id != ''), 0) 
+          ELSE 
+            ROUND(SUM(bag_styles.weight), 3) 
+          END) 
+          , 0) +
+        IFNULL(
+          (SELECT SUM(ROUND(
+            IFNULL(t2.total_receive_weight, 0) - 
+            IFNULL((SELECT t3.total_receive_weight FROM transaction t3 WHERE t3.bag_id=bag.id AND t3.id < t2.id ORDER BY t3.ID DESC LIMIT 1), 0)
+            , 3))
+          FROM (SELECT t1.* FROM transaction t1 WHERE t1.bag_id=bag.id AND t1.transaction_mode=2) t2)
+        , 0)) 
+        -
+        (
         (SELECT IFNULL(sum(til3.weight), 0) FROM transaction_item_loss_details til3 JOIN transaction t3 on t3.id=til3.transaction_id WHERE t3.bag_id=bag.id AND til3.type=1) +
         (SELECT IFNULL(sum(til3.weight), 0) FROM transaction_item_loss_details til3 JOIN transaction t3 on t3.id=til3.transaction_id WHERE t3.bag_id=bag.id AND til3.type=2) +
-        (SELECT IFNULL(sum(til3.weight), 0) FROM transaction_item_loss_details til3 JOIN transaction t3 on t3.id=til3.transaction_id WHERE t3.bag_id=bag.id AND til3.type=0)
+        (SELECT IFNULL(sum(til3.weight), 0) FROM transaction_item_loss_details til3 JOIN transaction t3 on t3.id=til3.transaction_id WHERE t3.bag_id=bag.id AND til3.type=0) +
+        IFNULL(
+          (SELECT SUM(ROUND(
+            IFNULL(t2.total_receive_weight, 0) - 
+            IFNULL((SELECT t3.total_receive_weight FROM transaction t3 WHERE t3.bag_id=t2.bag_id AND t3.id < t2.id ORDER BY t3.ID DESC LIMIT 1), 0)
+            , 3))
+          FROM (SELECT t1.* FROM transaction t1 WHERE t1.to_bag_id=bag.id AND t1.transaction_mode=2) t2)
+        , 0)
         ), 3) as cross_weight"),      
       DB::raw("GROUP_CONCAT(bag_styles.style_id) as style"),
       DB::raw("GROUP_CONCAT(bag_styles.instructions) instruction"),
       DB::raw("GROUP_CONCAT(style.sku) sku"),
       "employee.name as employee",
+      DB::raw("
+      IFNULL(
+        (SELECT SUM(ROUND(
+          IFNULL(t2.total_receive_weight, 0) - 
+          IFNULL((SELECT t3.total_receive_weight FROM transaction t3 WHERE t3.bag_id=bag.id AND t3.id < t2.id ORDER BY t3.ID DESC LIMIT 1), 0)
+          , 3))
+        FROM (SELECT t1.* FROM transaction t1 WHERE t1.bag_id=bag.id AND t1.transaction_mode=2) t2)
+      , 0)
+      as merge_inward"),
+      DB::raw("
+      IFNULL(
+        (SELECT SUM(ROUND(
+          IFNULL(t2.total_receive_weight, 0) - 
+          IFNULL((SELECT t3.total_receive_weight FROM transaction t3 WHERE t3.bag_id=t2.bag_id AND t3.id < t2.id ORDER BY t3.ID DESC LIMIT 1), 0)
+          , 3))
+        FROM (SELECT t1.* FROM transaction t1 WHERE t1.to_bag_id=bag.id AND t1.transaction_mode=2) t2)
+      , 0)
+      as merge_outward"),
     );
 
     $query->leftJoin('bag_styles', 'bag_styles.bag_id', '=', 'bag.id');

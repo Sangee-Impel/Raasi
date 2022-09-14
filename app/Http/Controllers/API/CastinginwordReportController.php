@@ -38,22 +38,11 @@ class CastinginwordReportController extends Controller
       "department.name as department",
       DB::raw("DATE_FORMAT(bag_styles.updated_at, '%d/%c/%Y %r') as time"),
       DB::raw("SUM(bag_styles.quantity) as quantity"),
-      //DB::raw("ROUND(SUM(bag_styles.weight), 3) as weight"),
-      // DB::raw(
-      //   "CASE WHEN ((SELECT count(1) FROM `bag` tstb WHERE tstb.bag_number = `bag`.bag_number AND tstb.status IN (2, 4)) > 0) THEN
-      //     (SELECT   ROUND(SUM(bag_styles1.weight), 3) 
-      //      FROM     `bag_styles` bag_styles1
-      //      JOIN (SELECT bag1.id FROM `bag` bag1 WHERE bag1.bag_number = `bag`.bag_number AND bag1.status IN (2, 4) ORDER BY id ASC LIMIT 1) s1
-      //      ON bag_styles1.bag_id = s1.id)
-      //   ELSE 
-      //     ROUND(SUM(bag_styles.weight), 3)
-      //   END as weight"
-      // ),
       DB::raw("IFNULL(
       (CASE 
       WHEN ((SELECT count(1) FROM transaction t1 WHERE t1.bag_id = bag.id) > 1) THEN 
         IFNULL((SELECT t2.total_transfer_weight FROM transaction t2 WHERE bag.id=t2.bag_id ORDER BY t2.id ASC LIMIT 1), 0) -
-        IFNULL((SELECT SUM(bs.weight) FROM bag_styles bs WHERE bs.bag_id in (SELECT t3.to_bag_id FROM transaction t3 WHERE  t3.bag_id = bag.id AND t3.transaction_mode = 1) AND bs.style_id != ''), 0)
+        IFNULL((SELECT SUM(bs.weight) FROM bag_styles bs WHERE bs.bag_id in (SELECT t3.to_bag_id FROM transaction t3 WHERE  t3.bag_id = bag.id AND t3.transaction_mode = 1) AND bs.style_id != ''), 0) 
       ELSE 
         ROUND(SUM(bag_styles.weight), 3) 
       END) 
