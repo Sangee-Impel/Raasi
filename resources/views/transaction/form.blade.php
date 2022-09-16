@@ -103,7 +103,8 @@
                                             <div class="col-lg-4 ">
                                                 <h3>Transfer Items</h3>
                                             </div>
-                                            <div class="col-lg-8">
+
+                                            <div class="col-lg-8" v-if="from_department && from_department.id != 1">
                                                 <div class="row">
                                                     <div class="col-lg-12">
                                                         @permission('merge.transaction')

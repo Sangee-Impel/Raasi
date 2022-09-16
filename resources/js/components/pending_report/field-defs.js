@@ -47,6 +47,41 @@ export default [{
         dataClass: 'left aligned'
     },
     {
+        name: 'split_outward',
+        title: 'Split',
+        sortField: 'split_outward',
+        titleClass: 'center aligned',
+        dataClass: 'left aligned'
+    },
+    {
+        name: 'current_inward',
+        title: 'Inward',
+        sortField: 'current_inward',
+        titleClass: 'center aligned',
+        dataClass: 'left aligned'
+    },
+    {
+        name: 'kambi_inward',
+        title: 'Kambi',
+        sortField: 'kambi_inward',
+        titleClass: 'center aligned',
+        dataClass: 'left aligned'
+    },
+    {
+        name: 'fancy_inward',
+        title: 'Fancy',
+        sortField: 'fancy_inward',
+        titleClass: 'center aligned',
+        dataClass: 'left aligned'
+    },
+    {
+        name: 'others_inward',
+        title: 'Others',
+        sortField: 'others_inward',
+        titleClass: 'center aligned',
+        dataClass: 'left aligned'
+    },
+    {
         name: 'scrap',
         title: 'Scrap Weight',
         sortField: 'scrap',

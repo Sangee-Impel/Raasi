@@ -68,6 +68,21 @@
                                             <td style="width: 5.6%;">
                                                 <div v-html="totalWeight"></div>
                                             </td>
+                                            <td style="width: 4.9%;">
+                                                <div v-html="totalSplitOutward"></div>
+                                            </td>
+                                            <td style="width: 4.9%;">
+                                                <div v-html="totalCurrentInward"></div>
+                                            </td>
+                                            <td style="width: 4.9%;">
+                                                <div v-html="totalKambiInward"></div>
+                                            </td>
+                                            <td style="width: 4.9%;">
+                                                <div v-html="totalFancyInward"></div>
+                                            </td>
+                                            <td style="width: 4.9%;">
+                                                <div v-html="totalOtherInward"></div>
+                                            </td>
                                             <td style="width: 8.8%;">
                                                 <div v-html="totalScarpWeight"></div>
                                             </td>

@@ -105,7 +105,6 @@ Vue.component('transaction', {
                     if ((transaction_items[index].other_accessories.id === undefined) || this.form.transaction_item_loss_detail_status) {
                         qty += transaction_items[index].quantity;
                     }
-
                 }
             }
             if (qty <= 1) {
@@ -325,7 +324,6 @@ Vue.component('transaction', {
             this.showStyleModel(selectedIndex);
         },
         submit() {
-
             if (this.checkTransferItemError()) {
                 this.formAssign();
                 this.isLoading = true;
@@ -953,6 +951,7 @@ Vue.component('transaction', {
             if (this.to_department != null) {
                 to_department_id = this.to_department.id
             }
+            console.log(from_department_id);
             let data = {
                 from_department_id: from_department_id,
                 from_employee_id: from_employee_id,
@@ -1465,6 +1464,7 @@ Vue.component('transaction', {
                         }
 
                         for (var index in transaction_items) {
+                            console.log(transaction_items);
                             let isReceiveLoopValid = false;
                             let transaction_item = transaction_items[index];
                             let transfer_quantity = 0;
@@ -1482,12 +1482,11 @@ Vue.component('transaction', {
                             if ((transfer_weight > 0) || (transfer_quantity > 0))
                                 isReceiveLoopValid = true;
                             if (isReceiveLoopValid) {
-                                console.log(transaction_items);
                                 let toItem = transaction_item.split.receive;
                                 if (type != "transfer")
                                     toItem = transaction_item.split.transfer;
-
                                 toItem.quantity += transfer_quantity;
+                                toItem.class = typeof transaction_items[index].other_accessories.id !== 'undefined' ? transaction_items[index].other_accessories.id : 0;
                                 toItem.weight = CommonMethods.BigDecimalFunction("add", toItem.weight, transfer_weight);
                                 fromItem.quantity -= transfer_quantity;
                                 fromItem.weight = CommonMethods.BigDecimalFunction("subtract", fromItem.weight, transfer_weight);

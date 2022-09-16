@@ -39,7 +39,12 @@ Vue.component('manage-eod-report', {
             totalLossWeight: 0,
             totalCrossWeight: 0,
             totalMergeInward: 0,
-            totalMergeOutward: 0
+            totalMergeOutward: 0,
+            totalSplitOutward: 0,
+            totalCurrentInward: 0,
+            totalKambiInward: 0,
+            totalFancyInward: 0,
+            totalOtherInward: 0,
         };
     },
     created() {
@@ -125,6 +130,11 @@ Vue.component('manage-eod-report', {
                 this.totalCrossWeight = parseFloat(data.reduce((a, b) => a + b.cross_weight, 0)).toFixed(2);
                 this.totalMergeInward = parseFloat(data.reduce((a, b) => a + b.merge_inward, 0)).toFixed(2);
                 this.totalMergeOutward = parseFloat(data.reduce((a, b) => a + b.merge_outward, 0)).toFixed(2);
+                this.totalSplitOutward = parseFloat(data.reduce((a, b) => a + b.split_outward, 0)).toFixed(2);
+                this.totalCurrentInward = parseFloat(data.reduce((a, b) => a + b.current_inward, 0)).toFixed(2);
+                this.totalKambiInward = parseFloat(data.reduce((a, b) => a + b.kambi_inward, 0)).toFixed(2);
+                this.totalFancyInward = parseFloat(data.reduce((a, b) => a + b.fancy_inward, 0)).toFixed(2);
+                this.totalOtherInward = parseFloat(data.reduce((a, b) => a + b.others_inward, 0)).toFixed(2);
             }).catch(reason => { }).finally(() => {
                 this.isLoading = false;
             });

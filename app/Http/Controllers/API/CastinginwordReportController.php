@@ -40,7 +40,7 @@ class CastinginwordReportController extends Controller
       DB::raw("SUM(bag_styles.quantity) as quantity"),
       DB::raw("IFNULL(
       (CASE 
-      WHEN (IFNULL((SELECT count(1) FROM transaction t1 WHERE t1.bag_id = bag.id), 0) > 1) THEN 
+      WHEN (IFNULL((SELECT count(1) FROM transaction t1 WHERE t1.bag_id = bag.id), 0) > 0) THEN 
         IFNULL((SELECT t2.total_transfer_weight FROM transaction t2 WHERE bag.id=t2.bag_id ORDER BY t2.id ASC LIMIT 1), 0) -
         IFNULL((SELECT SUM(bs.weight) FROM bag_styles bs WHERE bs.bag_id in (SELECT t3.to_bag_id FROM transaction t3 WHERE  t3.bag_id = bag.id AND t3.transaction_mode = 1) AND bs.style_id != ''), 0) 
       ELSE 

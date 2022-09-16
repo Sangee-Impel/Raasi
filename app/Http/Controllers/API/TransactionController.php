@@ -204,6 +204,7 @@ class TransactionController extends Controller
                         $weight += $tk['weight'];
                         $qty += $tk['quantity'];
                     }
+
                     $post_data['total_transfer_weight'] = $post_data['total_transfer_weight'] - $weight;
                     $post_data['total_receive_weight'] = $post_data['total_receive_weight'] - $weight;
                     $post_data['total_transfer_quantity'] = $post_data['total_transfer_quantity'] - $qty;
@@ -304,7 +305,7 @@ class TransactionController extends Controller
                             });
                             $receiveArray = array_filter(array_column($splitArray, "receive"), function ($value) {
                                 return $value['quantity'] > 0 && $value['weight'] > 0;
-                            });  
+                            });
 
                             if (count($transferArray) > 0) {
                                 //print_r($transferBag);exit;
@@ -324,6 +325,33 @@ class TransactionController extends Controller
                                 $receiveBagID = $receive['id'];
                                 $receive_t->to_bag_id = $receiveBagID;
                                 $receive_t->save();
+
+                                $weight =  $qty = 0;
+                                $oa = array_column($transaction_items, 'other_accessories');
+                                $i = [];
+
+                                foreach ($oa as $k => $a) {
+                                    if (!empty($a)) {
+                                        $i[] = @$a['id'];
+                                    }
+                                }
+
+                                foreach ($receiveArray as $k => $tk) {
+                                    if (!in_array($tk['class'], $i)) {
+                                        $weight += $tk['weight'];
+                                        $qty += $tk['quantity'];
+                                    }
+                                }
+
+                                $n_transaction = Transaction::create($post_data);
+                                $n_transaction->bag_id = $receiveBagID;
+                                $n_transaction->total_transfer_quantity = $qty;
+                                $n_transaction->total_transfer_weight = $weight;
+                                $n_transaction->total_receive_weight = $weight;
+                                $n_transaction->total_loss_weight = 0;
+                                $n_transaction->total_loss_quantity = 0;
+                                $n_transaction->transaction_mode = 0;
+                                $n_transaction->save();
                             }
                         }
                     }
