@@ -452,13 +452,21 @@ class TransactionController extends Controller
                                     ];
                                     $receive = Bag::create($receiveBag);
                                     $t = Transaction::where('bag_id', '=', $oldReceiveBag['id'])->get();
-
                                     if (!empty($t)) {
                                         foreach ($t as $k => $tk) {
                                             $tk->bag_id = $fromBagID;
                                             $tk->save();
                                         }
                                     }
+
+                                    $to = Transaction::where('to_bag_id', '=', $oldReceiveBag['id'])->get();
+                                    if (!empty($to)) {
+                                        foreach ($to as $k => $tok) {
+                                            $tok->to_bag_id = $receive['id'];
+                                            $tok->save();
+                                        }
+                                    }
+
                                     if ($receive) {
                                         $toBagID = $receive['id'];
                                         if (!empty($t)) {

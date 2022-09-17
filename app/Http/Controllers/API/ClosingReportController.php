@@ -67,12 +67,7 @@ class ClosingReportController extends Controller
           SUM(b3.pre_channam_outward) + 
           SUM(b3.pre_loss) + 
           (
-            SUM(b3.bs_closing1) - 
-            (
-              SUM(b3.bs_closing1_scrap) + 
-              SUM(b3.bs_closing1_channam) + 
-              SUM(b3.bs_closing1_loss)
-            )
+            SUM(b3.bs_closing1)
           )
         )
       ,3) as opening, ";
@@ -95,16 +90,7 @@ class ClosingReportController extends Controller
         SUM(b3.loss)
       )
     ,3) as loss, ";
-    $query .= "ROUND(
-                (
-                  SUM(b3.fc_bag_bs_total) - 
-                  (
-                    SUM(b3.fc_bag_bs_scrap) + 
-                    SUM(b3.fc_bag_bs_channam) + 
-                    SUM(b3.fc_bag_bs_loss)
-                  )
-                )
-              ,3) as fc_delivery, ";
+    $query .= "ROUND(SUM(b3.fc_bag_bs_total), 3) as fc_delivery, ";
     $query .= "ROUND(
       (
         SUM(b3.pre_casting_inward) + 
@@ -121,23 +107,13 @@ class ClosingReportController extends Controller
         SUM(b3.pre_channam_outward) + 
         SUM(b3.pre_loss) + 
         (
-          SUM(b3.bs_closing1) - 
-          (
-            SUM(b3.bs_closing1_scrap) + 
-            SUM(b3.bs_closing1_channam) + 
-            SUM(b3.bs_closing1_loss)
-          )
+          SUM(b3.bs_closing1)
         ) + 
         SUM(b3.scrap_outward) + 
         SUM(b3.channam_outward) + 
         SUM(b3.loss) + 
         (
-          SUM(b3.fc_bag_bs_total) - 
-          (
-            SUM(b3.fc_bag_bs_scrap) + 
-            SUM(b3.fc_bag_bs_channam) + 
-            SUM(b3.fc_bag_bs_loss)
-          )
+          SUM(b3.fc_bag_bs_total)
         )
       )
     ,3) as closing, ";
@@ -151,10 +127,7 @@ class ClosingReportController extends Controller
     $query .= "ELSE (select IFNULL(bs2.weight, 0) from bag_styles bs2 JOIN bag b2 on bs2.bag_id=b2.id WHERE b2.department_id=9 AND b2.id=b.id AND b2.updated_at < '" . $from_date_raw . "') END) ";
     $query .= "), 0) as bs_closing, ";
 
-    $query .= "(SELECT IFNULL(SUM(bs3.weight), 0) FROM bag_styles bs3 JOIN bag b3 on bs3.bag_id=b3.id WHERE b3.id=b.id AND b3.department_id=9 AND bs3.updated_at < '" . $from_date_raw . "') as bs_closing1, ";
-    $query .= "(SELECT IFNULL(sum(tils1.weight), 0) FROM transaction_item_loss_details tils1 JOIN transaction ts1 on ts1.id=tils1.transaction_id JOIN bag tb1 on ts1.bag_id=tb1.id WHERE tb1.id=b.id AND tils1.type=1 AND tb1.department_id=9 AND tils1.created_at < '" . $from_date_raw . "') as bs_closing1_scrap, ";
-    $query .= "(SELECT IFNULL(sum(tils1.weight), 0) FROM transaction_item_loss_details tils1 JOIN transaction ts1 on ts1.id=tils1.transaction_id JOIN bag tb1 on ts1.bag_id=tb1.id WHERE tb1.id=b.id AND tils1.type=2 AND tb1.department_id=9 AND tils1.created_at < '" . $from_date_raw . "') as bs_closing1_channam, ";
-    $query .= "(SELECT IFNULL(sum(tils1.weight), 0) FROM transaction_item_loss_details tils1 JOIN transaction ts1 on ts1.id=tils1.transaction_id JOIN bag tb1 on ts1.bag_id=tb1.id WHERE tb1.id=b.id AND tils1.type=0 AND tb1.department_id=9 AND tils1.created_at < '" . $from_date_raw . "') as bs_closing1_loss, ";
+    $query .= "IFNULL((SELECT IFNULL(t1.total_receive_weight, 0) FROM transaction t1 WHERE t1.bag_id = b.id AND t1.transaction_date < '" . $from_date_raw . "' AND t1.to_department_id=9 order by t1.id desc limit 1), 0) as bs_closing1, ";
 
     $query .= "ROUND(
       (
@@ -241,16 +214,7 @@ class ClosingReportController extends Controller
     $query .= "ELSE (select IFNULL(bs2.weight, 0) from bag_styles bs2 JOIN bag b2 on bs2.bag_id=b2.id WHERE b2.department_id=9 AND b2.id=b.id AND bs2.updated_at >= '" . $from_date . "' AND bs2.updated_at <= '" . $to_date . "') END) ";
     $query .= "), 0) as fcdelivery_outward, ";
 
-    $query .= "(SELECT IFNULL(SUM(bs3.weight), 0) FROM bag_styles bs3 JOIN bag b3 on bs3.bag_id=b3.id WHERE b3.id=b.id AND b3.department_id=9 AND bs3.updated_at >= '" . $from_date . "' AND bs3.updated_at <= '" . $to_date . "') as fc_bag_bs_total, ";
-    $query .= "(SELECT IFNULL(sum(tils1.weight), 0) FROM transaction_item_loss_details tils1 JOIN transaction ts1 on ts1.id=tils1.transaction_id JOIN bag tb1 on ts1.bag_id=tb1.id WHERE tb1.id=b.id AND tils1.type=1 AND tb1.department_id=9 AND tils1.created_at >= '" . $from_date . "' AND tils1.created_at <= '" . $to_date . "') as fc_bag_bs_scrap, ";
-    $query .= "(SELECT IFNULL(sum(tils1.weight), 0) FROM transaction_item_loss_details tils1 JOIN transaction ts1 on ts1.id=tils1.transaction_id JOIN bag tb1 on ts1.bag_id=tb1.id WHERE tb1.id=b.id AND tils1.type=2 AND tb1.department_id=9 AND tils1.created_at >= '" . $from_date . "' AND tils1.created_at <= '" . $to_date . "') as fc_bag_bs_channam, ";
-    $query .= "(SELECT IFNULL(sum(tils1.weight), 0) FROM transaction_item_loss_details tils1 JOIN transaction ts1 on ts1.id=tils1.transaction_id JOIN bag tb1 on ts1.bag_id=tb1.id WHERE tb1.id=b.id AND tils1.type=0 AND tb1.department_id=9 AND tils1.created_at >= '" . $from_date . "' AND tils1.created_at <= '" . $to_date . "') as fc_bag_bs_loss, ";
-
-    // $query .= "IFNULL(SUM(";
-    // $query .= "(CASE WHEN (SELECT IFNULL(t1.total_receive_weight, 0) FROM transaction t1 JOIN bag b2 on t1.bag_id=b2.id WHERE t1.bag_id = b.id AND b2.id=b.id AND b2.status not in (1,2,4,5) AND b2.department_id not in (1,9) order by t1.id desc limit 1) > 0 THEN ";
-    // $query .= "(SELECT IFNULL(t1.total_receive_weight, 0) FROM transaction t1 JOIN bag b2 on t1.bag_id=b2.id WHERE t1.bag_id = b.id AND b2.id=b.id AND b2.status not in (1,2,4,5) AND b2.department_id not in (1,9) order by t1.id desc limit 1) ";
-    // $query .= "ELSE (select IFNULL(SUM(bs2.weight), 0) from bag_styles bs2 JOIN bag b2 on bs2.bag_id=b2.id WHERE b2.id=b.id AND b2.status not in (1,2,4,5) AND b2.department_id not in (1,9)) END) ";
-    // $query .= "), 0) as pending_bag, ";
+    $query .= "IFNULL((SELECT IFNULL(t1.total_receive_weight, 0) FROM transaction t1 WHERE t1.bag_id = b.id AND t1.transaction_date >= '" . $from_date . "' AND t1.transaction_date <= '" . $to_date . "' AND t1.to_department_id=9 order by t1.id desc limit 1), 0) as fc_bag_bs_total, ";
 
     $query .= "
     IFNULL(
@@ -309,12 +273,6 @@ class ClosingReportController extends Controller
       ) 
     ,0) as pending_bag, ";
 
-    // $query .= "IFNULL(SUM(";
-    // $query .= "(CASE WHEN (SELECT IFNULL(t1.total_receive_weight, 0) FROM transaction t1 JOIN bag b2 on t1.bag_id=b2.id WHERE t1.bag_id = b.id AND b2.id=b.id AND b2.status not in (1,2,4,5) AND b2.department_id=1 order by t1.id desc limit 1) > 0 THEN ";
-    // $query .= "(SELECT IFNULL(t1.total_receive_weight, 0) FROM transaction t1 JOIN bag b2 on t1.bag_id=b2.id WHERE t1.bag_id = b.id AND b2.id=b.id AND b2.status not in (1,2,4,5) AND b2.department_id=1 order by t1.id desc limit 1) ";
-    // $query .= "ELSE (select IFNULL(SUM(bs2.weight), 0) from bag_styles bs2 JOIN bag b2 on bs2.bag_id=b2.id WHERE b2.id=b.id AND b2.status not in (1,2,4,5) AND b2.department_id=1) END) ";
-    // $query .= "), 0) as eod_bag, ";
-
     $query .= "
     IFNULL(
       (
@@ -369,15 +327,6 @@ class ClosingReportController extends Controller
         FROM bag b2 WHERE b2.id=b.id AND b2.status not in (1,2,4,5) AND b2.department_id=1
       )
     ,0) as eod_bag ";
-
-    // Merge Bag Loss details
-    // $query .= "(SELECT IFNULL(sum(til3.weight), 0) FROM transaction_item_loss_details til3 JOIN transaction t3 on t3.id=til3.transaction_id WHERE t3.bag_id in (SELECT m.id FROM bag m WHERE m.status = 4 AND m.bag_number=b.bag_number AND b.parent_bag_id is NULL) AND til3.type=1 AND til3.created_at < '" . $from_date_raw . "') as pre_merge_scrap_outward, ";
-    // $query .= "(SELECT IFNULL(sum(til3.weight), 0) FROM transaction_item_loss_details til3 JOIN transaction t3 on t3.id=til3.transaction_id WHERE t3.bag_id in (SELECT m.id FROM bag m WHERE m.status = 4 AND m.bag_number=b.bag_number AND b.parent_bag_id is NULL) AND til3.type=2 AND til3.created_at < '" . $from_date_raw . "') as pre_merge_channam_outward, ";
-    // $query .= "(SELECT IFNULL(sum(til4.weight), 0) FROM transaction_item_loss_details til4 JOIN transaction t4 on t4.id=til4.transaction_id WHERE t4.bag_id in (SELECT m.id FROM bag m WHERE m.status = 4 AND m.bag_number=b.bag_number AND b.parent_bag_id is NULL) AND til4.type=0 AND til4.created_at < '" . $from_date_raw . "') as pre_merge_loss, ";
-
-    // $query .= "(SELECT IFNULL(sum(til3.weight), 0) FROM transaction_item_loss_details til3 JOIN transaction t3 on t3.id=til3.transaction_id WHERE t3.bag_id in (SELECT m.id FROM bag m WHERE m.status = 4 AND m.bag_number=b.bag_number AND b.parent_bag_id is NULL) AND til3.type=1 AND til3.created_at >= '" . $from_date . "' AND til3.created_at <= '" . $to_date . "') as merge_scrap_outward, ";
-    // $query .= "(SELECT IFNULL(sum(til3.weight), 0) FROM transaction_item_loss_details til3 JOIN transaction t3 on t3.id=til3.transaction_id WHERE t3.bag_id in (SELECT m.id FROM bag m WHERE m.status = 4 AND m.bag_number=b.bag_number AND b.parent_bag_id is NULL) AND til3.type=2 AND til3.created_at >= '" . $from_date . "' AND til3.created_at <= '" . $to_date . "') as merge_channam_outward, ";
-    // $query .= "(SELECT IFNULL(sum(til4.weight), 0) FROM transaction_item_loss_details til4 JOIN transaction t4 on t4.id=til4.transaction_id WHERE t4.bag_id in (SELECT m.id FROM bag m WHERE m.status = 4 AND m.bag_number=b.bag_number AND b.parent_bag_id is NULL) AND til4.type=0 AND til4.created_at >= '" . $from_date . "' AND til4.created_at <= '" . $to_date . "') as merge_loss ";
 
     $query .= "FROM bag b ";
     $query .= "WHERE b.status not in (2, 4) ";
