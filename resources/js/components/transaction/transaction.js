@@ -476,7 +476,7 @@ Vue.component('transaction', {
                 }
             }
             console.log("1 . this.form.total_loss_weight" + parseInt(this.form.total_loss_weight));
-            if (parseInt(this.form.total_loss_weight) == 0) {
+            if (parseFloat(this.form.total_loss_weight) == 0) {
                 console.log("Selected Bag" + this.selected_bag);
                 if (this.selected_bag.last_transaction != undefined) {
                     this.form.total_loss_weight = this.selected_bag.last_transaction.total_loss_weight;

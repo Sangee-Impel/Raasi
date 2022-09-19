@@ -226,6 +226,8 @@ class TransactionController extends Controller
         }
         //#block for check
         //$post_data['status'] = XModel::getConfigType("completed","transaction","value")['id'];
+        // echo '<pre>';
+        // print_r($post_data);echo '</pre>';exit;
         $transaction = Transaction::create($post_data);
 
         if ($transaction) {
@@ -577,29 +579,32 @@ class TransactionController extends Controller
                         }
                     }
                 }
+               
                 if (count($transaction_item_loss_details) > 0) {
                     $admin_loss                 = StyleDepartmentLossApproval::where('department_id', $bag->department_id)->get();
                     $admin_approval_loss_weight = $admin_loss[0]->percentage;
                     $status = XModel::getConfigType("in_progress", "bag_status", "value")['id'];
                     foreach ($transaction_item_loss_details as $transaction_item_loss_detail_key => $transaction_item_loss_detail_value) {
-                        if ($transaction_item_loss_detail_value['weight'] > 0) {
+                        if ((float) $transaction_item_loss_detail_value['weight'] > 0) {
                             //$transaction_item_loss_detail_value['transaction_item_id'] = $transaction_item['id'];
                             $transaction_item_loss_detail_value['transaction_id'] = $transaction['id'];
                             //$transaction_item_loss_detail_value['bag_style_id'] = $transaction_item_value['bag_style_id'];
                             $transaction_item_loss_detail_value['date'] = $transaction['transaction_date'];
                             //$transaction_item_loss_detail_value['user_id'] = $bagEmployee['user_id'];
-                            $transaction_item_loss_detail_value['admin_approval_loss_weight'] = (float) $admin_approval_loss_weight;
+                            $transaction_item_loss_detail_value['admin_approval_loss_weight'] = $admin_approval_loss_weight;
                             $transaction_item_loss_detail_value['status'] = XModel::getConfigType("approved", "transaction_item_loss_status", "value")['id'];
                             if ($transaction_item_loss_detail_value['type'] == XModel::getConfigType("loss", "transaction_item_loss_type", "value")['id']) {
-                                if ($admin_approval_loss_weight < $transaction_item_loss_detail_value['weight']) {
+                                if ((float) $admin_approval_loss_weight < (float) $transaction_item_loss_detail_value['weight']) {
                                     $transaction_item_loss_detail_value['status'] = XModel::getConfigType("waiting_admin_approval", "transaction_item_loss_status", "value")['id'];
                                     $status = XModel::getConfigType("admin_loss_approval", "bag_status", "value")['id'];
                                 }
                             }
+                            //print_r($transaction_item_loss_detail_value);exit;
                             //#status for loss approval...!
                             TransactionItemLossDetails::create($transaction_item_loss_detail_value);
                         }
                     }
+                   
                     $bag->status    = $status;
                     $bag->save();
                 }

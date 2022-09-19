@@ -124,7 +124,7 @@ class LossApprovalController extends Controller
                                 if (count($transaction_items) > 0) {
                                     foreach ($transaction_items as $transaction_item_key => $transaction_item_value) {
                                         if (isset($transaction_item_value['bag_style_id']) && $transaction_item_value['bag_style_id'] > 0) {
-                                            print_r($transaction_item_value);
+                                            //print_r($transaction_item_value);
                                             //#block to update the receive quantity as quantity...!
                                             $bagStyle = BagStyle::findOrFail($transaction_item_value['bag_style_id']);
                                             $bagStyle->weight = $transaction_item_value['receive_weight'];
