@@ -114,7 +114,8 @@ class ClosingReportController extends Controller
         SUM(b3.loss) + 
         (
           SUM(b3.fc_bag_bs_total)
-        )
+        ) +
+        SUM(b3.pre_casting_inward_1)
       )
     ,3) as closing, ";
     $query .= "ROUND(SUM(b3.pending_bag),3) as pending_bag, ";
@@ -189,11 +190,26 @@ class ClosingReportController extends Controller
             FROM  transaction t1
             WHERE t1.bag_id=b.id
             AND   t1.transaction_mode=1
-            AND   t1.transaction_date <= '" . $from_date_raw . "'
+            AND   t1.transaction_date < '" . $from_date_raw . "'
           )
         ,0) 
       )
     , 3) as pre_casting_inward, ";
+
+    $query .= "ROUND(
+      (
+        IFNULL(
+          (
+            SELECT 
+              ROUND((SELECT IFNULL(sum(bs2.weight), 0) from bag_styles bs2 WHERE bs2.bag_id=t1.to_bag_id AND bs2.style_id IS NOT NULL), 3) 
+            FROM  transaction t1
+            WHERE t1.bag_id in (SELECT b1.id FROM bag b1 WHERE b1.id=b.id AND b1.created_at < '" . $from_date_raw . "')
+            AND   t1.transaction_mode=1
+            AND   t1.transaction_date <= '" . $from_date_raw . "'
+          )
+        ,0) 
+      )
+    , 3) as pre_casting_inward_1, ";
 
     $query .= "(select IFNULL(sum(bs2.weight), 0) from bag_styles bs2 JOIN bag b2 on bs2.bag_id=b2.id WHERE b2.id=b.id AND bs2.other_accessories_id=1 AND bs2.created_at < '" . $from_date_raw . "') as pre_kambi_inward, ";
     $query .= "(select IFNULL(sum(bs2.weight), 0) from bag_styles bs2 JOIN bag b2 on bs2.bag_id=b2.id WHERE b2.id=b.id AND bs2.other_accessories_id=2 AND bs2.created_at < '" . $from_date_raw . "') as pre_fancy_inward, ";
