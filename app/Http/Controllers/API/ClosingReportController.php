@@ -200,13 +200,19 @@ class ClosingReportController extends Controller
       (
         IFNULL(
           (
-            SELECT 
-              ROUND((SELECT IFNULL(sum(bs2.weight), 0) from bag_styles bs2 WHERE bs2.bag_id=t1.to_bag_id AND bs2.style_id IS NOT NULL), 3) 
-            FROM  transaction t1
-            WHERE t1.bag_id in (SELECT b1.id FROM bag b1 WHERE b1.id=b.id AND b1.created_at < '" . $from_date_raw . "')
-            AND   t1.transaction_mode=1
-            AND   t1.transaction_date <= '" . $from_date_raw . "'
-          )
+            CASE WHEN (IFNULL((SELECT IFNULL((SELECT IFNULL(sum(bs2.weight), 0) from bag_styles bs2 WHERE bs2.bag_id=t1.to_bag_id AND bs2.style_id IS NOT NULL), 0) FROM transaction t1 WHERE t1.bag_id=b.id AND t1.transaction_mode=1 AND t1.transaction_date < '" . $from_date_raw . "'), 0) > 0) THEN 
+            0
+            ELSE 
+              (
+                SELECT 
+                  ROUND((SELECT IFNULL(sum(bs2.weight), 0) from bag_styles bs2 WHERE bs2.bag_id=t1.to_bag_id AND bs2.style_id IS NOT NULL), 3) 
+                FROM  transaction t1
+                WHERE t1.bag_id in (SELECT b1.id FROM bag b1 WHERE b1.id=b.id AND b1.created_at < '" . $from_date_raw . "')
+                AND   t1.transaction_mode=1
+                AND   t1.transaction_date = '" . $from_date_raw . "'
+              )
+            END
+          ) 
         ,0) 
       )
     , 3) as pre_casting_inward_1, ";
