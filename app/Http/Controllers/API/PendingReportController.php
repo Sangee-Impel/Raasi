@@ -50,7 +50,7 @@ class PendingReportController extends Controller
       DB::raw("
         IFNULL(
           (SELECT 
-              ROUND((SELECT IFNULL(sum(bs2.weight), 0) from bag_styles bs2 WHERE bs2.bag_id=t1.to_bag_id AND bs2.style_id IS NOT NULL), 3) 
+              ROUND(SUM((SELECT IFNULL(sum(bs2.weight), 0) from bag_styles bs2 WHERE bs2.bag_id=t1.to_bag_id AND bs2.style_id IS NOT NULL)), 3) 
             FROM  transaction t1
             WHERE t1.bag_id=bag.id 
             AND   t1.transaction_mode=1)
@@ -71,7 +71,7 @@ class PendingReportController extends Controller
           -
           (
             IFNULL((SELECT 
-              ROUND((SELECT IFNULL(sum(bs2.weight), 0) from bag_styles bs2 WHERE bs2.bag_id=t1.to_bag_id AND bs2.style_id IS NOT NULL), 3) 
+              ROUND(SUM((SELECT IFNULL(sum(bs2.weight), 0) from bag_styles bs2 WHERE bs2.bag_id=t1.to_bag_id AND bs2.style_id IS NOT NULL)), 3) 
             FROM  transaction t1
             WHERE t1.bag_id=bag.id 
             AND   t1.transaction_mode=1), 0) 
@@ -127,7 +127,7 @@ class PendingReportController extends Controller
           IFNULL(
             (
               SELECT 
-                ROUND((SELECT IFNULL(sum(bs2.weight), 0) from bag_styles bs2 WHERE bs2.bag_id=t1.to_bag_id AND bs2.style_id IS NOT NULL), 3) 
+                ROUND(SUM((SELECT IFNULL(sum(bs2.weight), 0) from bag_styles bs2 WHERE bs2.bag_id=t1.to_bag_id AND bs2.style_id IS NOT NULL)), 3) 
               FROM  transaction t1
               WHERE t1.bag_id=bag.id 
               AND   t1.transaction_mode=1
