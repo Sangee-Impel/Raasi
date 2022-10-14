@@ -54,34 +54,20 @@ class ClosingReportController extends Controller
     $prev_date = date('Y-m-d', strtotime('-1 day', strtotime($from_date)));
     $from_date_raw = date('Y-m-d', strtotime($from_date));
 
-    $query =  "SELECT ";
-    $query .= "ROUND(SUM(bbb.opening),3) as opening, ";
-    $query .= "ROUND(SUM(bbb.casting_inward),3) as casting_inward, ";
-    $query .= "ROUND(SUM(bbb.kambi_inward),3) as kambi_inward, ";
-    $query .= "ROUND(SUM(bbb.fancy_inward),3) as fancy_inward, ";
-    $query .= "ROUND(SUM(bbb.others_inward),3) as others_inward, ";
-    $query .= "ROUND(SUM(bbb.scrap),3) as scrap, ";
-    $query .= "ROUND(SUM(bbb.channam),3) as channam, ";
-    $query .= "ROUND(SUM(bbb.loss),3) as loss, ";
-    $query .= "ROUND(SUM(bbb.fc_delivery),3) as fc_delivery, ";
-    $query .= "ROUND(SUM(bbb.closing),3) as closing, ";
-    $query .= "ROUND(SUM(bbb.pending_bag),3) as pending_bag, ";
-    $query .= "ROUND(SUM(bbb.eod_bag),3) as eod_bag ";
-    $query .= "FROM (SELECT 
+    $query =  "SELECT 
     ROUND(
       (
         SUM(b3.pre_casting_inward) + 
         SUM(b3.pre_kambi_inward) + 
         SUM(b3.pre_fancy_inward) + 
         SUM(b3.pre_others_inward) +
-        SUM(b3.pre_merge_inward) 
+        SUM(b3.pre_merge_inward)
       ) - 
       (
         SUM(b3.pre_scrap_outward) + 
         SUM(b3.pre_channam_outward) + 
         SUM(b3.pre_loss) + 
-        SUM(b3.bs_closing1) +
-        SUM(b3.pre_split_outward) 
+        SUM(b3.bs_closing1) 
       )
     ,3) as opening, ";
 
@@ -127,8 +113,7 @@ class ClosingReportController extends Controller
             SUM(b3.scrap_outward) + 
             SUM(b3.channam_outward) + 
             SUM(b3.loss) + 
-            SUM(b3.fc_bag_bs_total) +
-            SUM(b3.split_outward) 
+            SUM(b3.fc_bag_bs_total) 
           )) < 0 THEN 0 
         ELSE
           ((
@@ -151,8 +136,7 @@ class ClosingReportController extends Controller
             SUM(b3.scrap_outward) + 
             SUM(b3.channam_outward) + 
             SUM(b3.loss) + 
-            SUM(b3.fc_bag_bs_total) +
-            SUM(b3.split_outward) 
+            SUM(b3.fc_bag_bs_total) 
           ))
         END)
       ,0)
@@ -161,7 +145,6 @@ class ClosingReportController extends Controller
     $query .= "ROUND(SUM(b3.eod_bag),3) as eod_bag ";
     $query .= "FROM ( ";
     $query .= "SELECT ";
-    $query .= "b.id as bagid, ";
     $query .= "IFNULL(sum(";
     $query .= "(CASE WHEN (SELECT IFNULL(t1.total_receive_weight, 0) FROM transaction t1 WHERE t1.bag_id = b.id AND t1.transaction_date < '" . $from_date_raw . "' AND t1.to_department_id=9 order by t1.id desc limit 1) > 0 THEN ";
     $query .= "(SELECT IFNULL(t1.total_receive_weight, 0) FROM transaction t1 WHERE t1.bag_id = b.id AND t1.transaction_date < '" . $from_date_raw . "' AND t1.to_department_id=9 order by t1.id desc limit 1) ";
@@ -180,9 +163,9 @@ class ClosingReportController extends Controller
       (
         IFNULL(
           (CASE 
-            WHEN (IFNULL((SELECT count(1) FROM transaction t1 WHERE t1.bag_id in (SELECT b1.id FROM bag b1 WHERE b1.id=b.id AND b1.created_at >= '" . $from_date . "' AND b1.created_at <= '" . $to_date . "') AND t1.transaction_date >= '" . $from_date . "' AND t1.transaction_date <= '" . $to_date . "' AND IFNULL(t1.transaction_mode, 0) > 0), 0) > 0) THEN 
+            WHEN (IFNULL((SELECT count(1) FROM transaction t1 WHERE t1.bag_id in (SELECT b1.id FROM bag b1 WHERE b1.id=b.id AND b1.created_at >= '" . $from_date . "' AND b1.created_at <= '" . $to_date . "') AND t1.transaction_date >= '" . $from_date . "' AND t1.transaction_date <= '" . $to_date . "'), 0) > 0) THEN 
               IFNULL(
-                (SELECT t2.total_transfer_weight FROM transaction t2 WHERE t2.bag_id = b.id ORDER BY t2.id ASC LIMIT 1)
+                (SELECT t2.total_transfer_weight FROM transaction t2 WHERE t2.bag_id in (SELECT b1.id FROM bag b1 WHERE b1.id=b.id AND b1.created_at >= '" . $from_date . "' AND b1.created_at <= '" . $to_date . "')  AND t2.transaction_date >= '" . $from_date . "' AND t2.transaction_date <= '" . $to_date . "' ORDER BY t2.id ASC LIMIT 1)
               ,0)
             ELSE 
               ROUND((SELECT IFNULL(sum(bs2.weight), 0) FROM bag_styles bs2 WHERE bs2.bag_id=b.id AND bs2.style_id is not null AND bs2.created_at >= '" . $from_date . "' AND bs2.created_at <= '" . $to_date . "'), 3) 
@@ -190,6 +173,20 @@ class ClosingReportController extends Controller
           ) 
         ,0)
       ) 
+      -
+      (
+        IFNULL(
+          (
+            SELECT 
+              ROUND(SUM((SELECT IFNULL(sum(bs2.weight), 0) from bag_styles bs2 WHERE bs2.bag_id=t1.to_bag_id AND bs2.style_id IS NOT NULL)), 3) 
+            FROM  transaction t1
+            WHERE t1.bag_id in (SELECT b1.id FROM bag b1 WHERE b1.id=b.id AND b1.created_at >= '" . $from_date . "' AND b1.created_at <= '" . $to_date . "') 
+            AND   t1.transaction_mode=1
+            AND   t1.transaction_date >= '" . $from_date . "' 
+            AND   t1.transaction_date <= '" . $to_date . "'
+          )
+        ,0) 
+      )
     ,3) as casting_inward, ";
     //$query .= "(select IFNULL(sum(bs2.weight), 0) from bag_styles bs2 JOIN bag b2 on bs2.bag_id=b2.id WHERE b2.id=b.id AND bs2.style_id is not null AND bs2.created_at >= '" . $from_date . "' AND bs2.created_at <= '" . $to_date . "') as casting_inward, ";
 
@@ -200,22 +197,35 @@ class ClosingReportController extends Controller
     $query .= "(SELECT IFNULL(sum(til3.weight), 0) FROM transaction_item_loss_details til3 JOIN transaction t3 on t3.id=til3.transaction_id WHERE t3.bag_id=b.id AND til3.type=2 AND til3.created_at >= '" . $from_date . "' AND til3.created_at <= '" . $to_date . "') as channam_outward, ";
     $query .= "(SELECT IFNULL(sum(til4.weight), 0) FROM transaction_item_loss_details til4 JOIN transaction t4 on t4.id=til4.transaction_id WHERE t4.bag_id=b.id AND til4.type=0 AND til4.created_at >= '" . $from_date . "' AND til4.created_at <= '" . $to_date . "') as loss, ";
 
-    $query .= "ROUND(
-      (
-        IFNULL(
-          (CASE 
-            WHEN (IFNULL((SELECT count(1) FROM transaction t1 WHERE t1.bag_id in (SELECT b1.id FROM bag b1 WHERE b1.id=b.id AND b1.created_at < '" . $from_date_raw . "') AND t1.created_at < '" . $from_date_raw . "' AND IFNULL(t1.transaction_mode, 0) > 0), 0) > 0) THEN 
-              IFNULL(
-                (SELECT t2.total_transfer_weight FROM transaction t2 WHERE t2.bag_id=b.id ORDER BY t2.id ASC LIMIT 1)
-              ,0)
-            ELSE 
-              ROUND((SELECT IFNULL(sum(bs2.weight), 0) FROM bag_styles bs2 WHERE bs2.bag_id=b.id AND bs2.style_id is not null AND bs2.created_at < '" . $from_date_raw . "'), 3) 
-            END
-          ) 
-        ,0)
-      ) 
-    , 3) as pre_casting_inward, ";
-    //$query .= "(select IFNULL(sum(bs2.weight), 0) from bag_styles bs2 JOIN bag b2 on bs2.bag_id=b2.id WHERE b2.id=b.id AND bs2.style_id is not null AND bs2.created_at < '" . $from_date_raw . "') as pre_casting_inward, ";
+    // $query .= "ROUND(
+    //   (
+    //     IFNULL(
+    //       (CASE 
+    //         WHEN (IFNULL((SELECT count(1) FROM transaction t1 WHERE t1.bag_id in (SELECT b1.id FROM bag b1 WHERE b1.id=b.id AND b1.created_at < '" . $from_date_raw . "') AND t1.created_at < '" . $from_date_raw . "'), 0) > 0) THEN 
+    //           IFNULL(
+    //             (SELECT t2.total_transfer_weight FROM transaction t2 WHERE t2.bag_id in (SELECT b1.id FROM bag b1 WHERE b1.id=b.id AND b1.created_at < '" . $from_date_raw . "') AND t2.created_at < '" . $from_date_raw . "' ORDER BY t2.id ASC LIMIT 1)
+    //           ,0)
+    //         ELSE 
+    //           ROUND((SELECT IFNULL(sum(bs2.weight), 0) FROM bag_styles bs2 WHERE bs2.bag_id=b.id AND bs2.style_id is not null AND bs2.created_at < '" . $from_date_raw . "'), 3) 
+    //         END
+    //       ) 
+    //     ,0)
+    //   ) 
+    //   -
+    //   (
+    //     IFNULL(
+    //       (
+    //         SELECT 
+    //           ROUND(SUM((SELECT IFNULL(sum(bs2.weight), 0) from bag_styles bs2 WHERE bs2.bag_id=t1.to_bag_id AND bs2.style_id IS NOT NULL)), 3) 
+    //         FROM  transaction t1
+    //         WHERE t1.bag_id=b.id
+    //         AND   t1.transaction_mode=1
+    //         AND   t1.transaction_date < '" . $from_date_raw . "'
+    //       )
+    //     ,0) 
+    //   )
+    // , 3) as pre_casting_inward, ";
+    $query .= "(select IFNULL(sum(bs2.weight), 0) from bag_styles bs2 JOIN bag b2 on bs2.bag_id=b2.id WHERE b2.id=b.id AND bs2.style_id is not null AND bs2.created_at < '" . $from_date_raw . "') as pre_casting_inward, ";
 
     $query .= "ROUND(
       (
@@ -468,46 +478,15 @@ class ClosingReportController extends Controller
           AND   t1.transaction_date <= '" . $to_date . "' 
         ) 
       ) 
-    ,0) as merge_outward, ";
+    ,0) as merge_outward ";
     //$query .= "0 as merge_outward ";
-
-    $query .= "ROUND(
-      (
-        IFNULL(
-          (
-            SELECT 
-              ROUND(SUM((SELECT IFNULL(sum(bs2.weight), 0) from bag_styles bs2 WHERE bs2.bag_id=t1.to_bag_id AND bs2.style_id IS NOT NULL)), 3) 
-            FROM  transaction t1
-            WHERE t1.bag_id in (SELECT b1.id FROM bag b1 WHERE b1.id=b.id AND b1.created_at >= '" . $from_date . "' AND b1.created_at <= '" . $to_date . "') 
-            AND   t1.transaction_mode=1
-            AND   t1.transaction_date >= '" . $from_date . "' 
-            AND   t1.transaction_date <= '" . $to_date . "'
-          )
-        ,0) 
-      )
-    ,3) as split_outward, ";
-
-    $query .= "ROUND(
-      (
-        IFNULL(
-          (
-            SELECT 
-              ROUND(SUM((SELECT IFNULL(sum(bs2.weight), 0) from bag_styles bs2 WHERE bs2.bag_id=t1.to_bag_id AND bs2.style_id IS NOT NULL)), 3) 
-            FROM  transaction t1
-            WHERE t1.bag_id in (SELECT b1.id FROM bag b1 WHERE b1.id=b.id AND b1.created_at < '" . $from_date_raw . "') 
-            AND   t1.transaction_mode=1
-            AND   t1.transaction_date < '" . $from_date_raw . "' 
-          )
-        ,0) 
-      )
-    ,3) as pre_split_outward ";
 
     $query .= "FROM bag b ";
     $query .= "WHERE b.status not in (2, 4) ";
 
-    $query .= "group by b.id) b3 group by b3.bagid) bbb ";
-    // print_r($query);
-    // exit;
+    $query .= "group by b.id) b3";
+    print_r($query);
+    exit;
 
     $data = [
       'current_page' => 1,
