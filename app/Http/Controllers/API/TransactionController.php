@@ -599,14 +599,15 @@ class TransactionController extends Controller
                                     $status = XModel::getConfigType("admin_loss_approval", "bag_status", "value")['id'];
                                 }
                             }
+                            $transaction_item_loss_detail_value['status'] = 0;
                             //print_r($transaction_item_loss_detail_value);exit;
                             //#status for loss approval...!
                             TransactionItemLossDetails::create($transaction_item_loss_detail_value);
                         }
                     }
                    
-                    $bag->status    = $status;
-                    $bag->save();
+                   // $bag->status    = $status;
+                    //$bag->save();
                 }
             }
         }
