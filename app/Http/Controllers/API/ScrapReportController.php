@@ -34,7 +34,7 @@ class ScrapReportController extends Controller
       "bag.id",
       "bag.bag_number",
       "bag.order_number",
-      DB::raw("ROUND(transaction_item_loss_details.weight, 3) as weight"),
+      DB::raw("ROUND((transaction_item_loss_details.weight), 3) as weight"),
       DB::raw("DATE_FORMAT(transaction_item_loss_details.updated_at, '%d/%c/%Y %r') as time"),
       DB::raw("1 as quantity"),
       DB::raw("GROUP_CONCAT(style.sku) sku"),
@@ -75,7 +75,7 @@ class ScrapReportController extends Controller
 
     $query->where("transaction_item_loss_details.type", "=", "1");
     $query->whereNotIn("bag.status", array(2, 4));
-    $query->groupBy('bag.id', 'bag.bag_number', 'bag.order_number', 'transaction_item_loss_details.weight');
+    $query->groupBy('bag.id', 'bag.bag_number', 'bag.order_number', 'transaction_item_loss_details.weight', 'transaction_item_loss_details.created_at');
     $query->orderBy('bag.id', 'DESC');
 
     return XModel::preparePagination($query, $request, ['bag.bag_number', 'bag.order_number']);
