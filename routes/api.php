@@ -102,6 +102,7 @@ Route::group([
     Route::apiResource('closing-report', 'API\ClosingReportController');
     Route::apiResource('eod-report', 'API\EodReportController');
     Route::apiResource('delete-data', 'API\DeleteDataController');
+    Route::post('/delete-data/generate-otp','API\DeleteDataController@generateOtp');
 
 });
 

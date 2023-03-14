@@ -14,23 +14,25 @@ Vue.component('form-truncate', {
     methods: {
         getFormData() {
             return new SparkForm({
-                id: null,
-                name: "",
-                weight: 0,
+                otp: ""
             });
         },
         submit() {
+            this.$parent.isLoading = true;
             var method = Spark.post;
             let url = '/api/delete-data';
             method(url, this.form)
                 .then(response => {
                     this.$snotify.success(response.name, 'Data truncated successfully');
+                    this.form.otp = '';
+                    this.$parent.isFormLoading = false;
                 })
                 .catch(reason => {
-                    this.$snotify.error(reason.message);
+                    this.$snotify.error(reason.message, 'Invalid OTP');
                 })
                 .finally(() => {
-                    this.isLoading = false;
+                    this.$parent.isLoading = false;
+                   
                 });
         }
     }

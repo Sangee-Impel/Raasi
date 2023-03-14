@@ -38,13 +38,18 @@ Vue.component('manage-configuration', {
                 .then(response => {
                     let data = response.data;
                     let alreadyConfigurationValue = data.configration;
+                   
                     this.department_options = data.departments;
                     if (alreadyConfigurationValue.length > 0) {
                         for (var index = 0; index <= alreadyConfigurationValue.length; index++) {
                             let configrationIndex = alreadyConfigurationValue[index];
+                           
                             switch (configrationIndex.config_key) {
                                 case "precision":
                                     this.form.precision.config_value = configrationIndex.config_value;
+                                    break;
+                                case "bag_cancel_number":
+                                    this.form.bag_cancel_number.config_value = configrationIndex.config_value;
                                     break;
                                 case "bag_starting_department":
                                     this.form.bag_starting_department.department = configrationIndex.bag_starting_department;
@@ -52,11 +57,11 @@ Vue.component('manage-configuration', {
                                 case "otp_number_1":
                                     this.form.otp_number_1.config_value = configrationIndex.config_value;
                                     break;
-                                    case "otp_number_2":
-                                        this.form.otp_number_2.config_value = configrationIndex.config_value;
-                                        break;
+                                case "otp_number_2":
+                                    this.form.otp_number_2.config_value = configrationIndex.config_value;
+                                    break;
                                 default:
-                                    this.form.bag_cancel_number.config_value = configrationIndex.config_value;
+                                    //this.form.bag_cancel_number.config_value = configrationIndex.config_value;
                                     break;
                                 //this.form.precision = config_value;
                             }

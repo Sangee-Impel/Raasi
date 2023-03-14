@@ -14,6 +14,7 @@ Vue.component('manage-delete-data', {
     data() {
         return {
             isLoading: false,
+            isFormLoading: false,
         };
     },
     created() {
@@ -29,5 +30,14 @@ Vue.component('manage-delete-data', {
     },
 
     methods: {
+        actionSendOtp() {
+            this.isLoading = true;
+            axios.post('/api/delete-data/generate-otp')
+                .then(response => {
+
+                }).catch(reason => {
+
+                }).finally(() => { this.isLoading = false; this.isFormLoading = true; });
+        }
     }
 });
